@@ -1,1 +1,10 @@
+# .gitignore для Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+*.log
+
 test/
