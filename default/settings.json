@@ -1,0 +1,26 @@
+{
+  "max_file_recursion": 5,
+  "dir": "~/Vzlet/",
+  "preamble": true,
+  "makefile": true,
+  "output_dir": "~/omd2tex/test/",
+  "deletesafe_files": ["Makefile"],
+
+  "headlines":
+  {
+
+  },
+
+  "images": 
+  {
+
+  },
+
+  "codeblocks":
+
+  {
+
+  }
+
+    
+}
