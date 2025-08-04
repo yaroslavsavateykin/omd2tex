@@ -88,7 +88,10 @@ class Document():
             pass
 
         shutil.copy2("default/Makefile", self.dir)
-        preamble = self.preamble.to_latex_project()
+        if self.preamble:
+            preamble = self.preamble.to_latex_project()
+        else:
+            preamble = self.preamble
         file = main.to_latex_project()
         
 
