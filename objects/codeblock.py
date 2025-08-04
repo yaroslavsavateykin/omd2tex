@@ -50,3 +50,8 @@ class CodeBlock:
                  settings = {}):
 
         return self._apply_blocktype().to_latex()
+
+    def to_latex_project(self,
+                         settings = {}):
+
+        return self.to_latex(settings)

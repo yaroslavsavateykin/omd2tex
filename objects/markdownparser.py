@@ -27,9 +27,11 @@ class MarkdownParser:
     def __init__(self, 
                  filename: str, 
                  settings: dict,
+                 parrentdir: str,
                  depth: int = 0) -> None:
         
         self.filename = filename
+        self.parrentdir = parrentdir
         self.settings = settings
         self.depth = depth
 
@@ -114,6 +116,7 @@ class MarkdownParser:
                 elements.append(File(filename + ".md" if not filename.endswith(".md") else filename, 
                                      self.settings, 
                                      parrentfilename=self.filename,
+                                     parrentdir =self.parrentdir, 
                                      depth = self.depth + 1))
                 i += 1
                 continue
@@ -207,81 +210,4 @@ class MarkdownParser:
 
 
 
-"""
-            if in_code_block:
-                if line.strip() == '```':
-                    self.elements.append(CodeBlock(code_lang, code_lines))
-                    in_code_block = False
-                    code_lang = ""
-                    code_lines = []
-                else:
-                    code_lines.append(line)
-                i += 1
-                continue
 
-            m = self.re_codeblock_start.match(line)
-            if m:
-                in_code_block = True
-                code_lang = m.group(1) or ""
-                code_lines = []
-                i += 1
-                continue
-
-            m = self.re_heading.match(line)
-            if m:
-                level = len(m.group(1))
-                text = m.group(2).strip()
-                self.elements.append(Heading(level, text))
-                i += 1
-                continue
-
-            m = self.re_equation.match(line)
-            if m:
-                self.elements.append(Equation(m.group(1).strip()))
-                i += 1
-                continue
-
-            if self.re_table_row.match(line):
-                header = [c.strip() for c in line.strip('|').split('|')]
-                i += 1
-                if i < len(lines):
-                    i += 1  # пропускаем разделитель таблицы
-                rows = []
-                while i < len(lines) and self.re_table_row.match(lines[i]):
-                    row = [c.strip() for c in lines[i].strip('|').split('|')]
-                    rows.append(row)
-                    i += 1
-                self.elements.append(Table(header, rows))
-                continue
-
-            m = self.re_image.match(line)
-            if m:
-                alt, path = m.groups()
-                self.elements.append(Image(path.strip(), alt.strip()))
-                i += 1
-                continue
-
-            m = self.re_link.match(line)
-            if m:
-                text, href = m.groups()
-                self.elements.append(Link(text.strip(), href.strip()))
-                i += 1
-                continue
-
-            m = self.re_comment.match(line)
-            if m:
-                self.elements.append(Comment(m.group(1).strip()))
-                i += 1
-                continue
-
-            m = self.re_footnote.match(line)
-            if m:
-                label, foot_text = m.groups()
-                self.elements.append(Footnote(label.strip(), foot_text.strip()))
-                i += 1
-                continue
-
-            if not line.strip():
-                i += 1
-                continue
-"""

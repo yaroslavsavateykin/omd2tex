@@ -5,6 +5,8 @@
   "makefile": true,
   "output_dir": "~/omd2tex/test/",
   "deletesafe_files": ["Makefile"],
+  "branching_project": false,
+
 
   "headlines":
   {

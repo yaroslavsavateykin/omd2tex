@@ -8,15 +8,13 @@ def main():
 
     doc = Document(filename)
 
-    text = doc.to_latex()
+#    text = doc.to_latex()
 
-    doc.to_latex_file("test.tex")
-
-    print(text)
+    doc.to_latex_porject()
 
 
 if __name__ == "__main__":
 
     main()
 
-    print(GLOBAL_REFERENCE_DICT)
+    #print(GLOBAL_REFERENCE_DICT)
