@@ -19,10 +19,15 @@ class MarkdownParser:
     re_codeblock_start = re.compile(r'^```(\w+)?$')
     
     #re_text_files1 = re.compile(r'!?\[\[([^\[\]#\|\^]+)(?:\|([^\[\]]+))?\]\]')
+        
     re_text_files1 = re.compile(r'!?\[\[([^|\[\]]+?(?:\.(?:md|tex|txt))?)(?:\|([^\[\]]+))?\]\]')
     re_text_files2 = re.compile(r'!?\[([^\[\]]*)\]\(([^)]*?)(?:\.(md|tex|txt))?\)')
 
     re_reference = re.compile(r'\^([a-zA-Z0-9_-]+)')
+    
+
+    re_markdown_image = re.compile(r'!\[([^|\]]*?)(?:\|([^|\]]*?))?\]\(([^)]+)\)(?:\s*\^([a-zA-Z0-9_-]+))?')
+    re_wiki_image = re.compile(r'!\[\[([^|\]]+?)(?:\|([^|\]]*?))?(?:\|([^|\]]*?))?\]\](?:\s*\^([a-zA-Z0-9_-]+))?')
 
     def __init__(self, 
                  filename: str, 
@@ -39,6 +44,19 @@ class MarkdownParser:
         
         self.yaml = None
     
+    @staticmethod    
+    def _parse_size_parameter(size_str):
+        """
+        Парсит строку размера в формате "300" или "300x200"
+        Возвращает (width, height) или (None, None)
+        """
+        if not size_str or not re.match(r"^\d+(x\d+)?$", size_str.strip()):
+            return None, None
+        
+        size_parts = size_str.strip().split("x")
+        width = int(size_parts[0])
+        height = int(size_parts[1]) if len(size_parts) > 1 else None
+        return width, height
 
     def parse(self):
         
@@ -52,6 +70,7 @@ class MarkdownParser:
         ".mp3", ".mp4", ".avi", ".mov",           # Медиа
     ]
 
+        image_extensions = [".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff", ".webp", ".svg"]
 
         with open(self.dir_filename, "r", encoding="utf-8") as f:
             lines = f.read().splitlines()
@@ -99,10 +118,8 @@ class MarkdownParser:
             if m:
                 if self.depth >= self.settings["max_file_recursion"]:
                     raise RecursionError(f"Maximum file nesting depth ({self.settings["max_file_recursion"]}) exceeded")
-
                 filename, _ = m.groups()
                 
-                               
                 if any(filename.endswith(ext) for ext in non_md_extensions): 
                     i += 1
                     continue
@@ -110,14 +127,12 @@ class MarkdownParser:
                 if filename.startswith("#^"):
                     i += 1 
                     continue
-
-
                 
                 elements.append(File(filename + ".md" if not filename.endswith(".md") else filename, 
-                                     self.settings, 
-                                     parrentfilename=self.filename,
-                                     parrentdir =self.parrentdir, 
-                                     depth = self.depth + 1))
+                                    self.settings, 
+                                    parrentfilename=self.filename,
+                                    parrentdir=self.parrentdir, 
+                                    depth=self.depth + 1))
                 i += 1
                 continue
 
@@ -125,30 +140,112 @@ class MarkdownParser:
             if n:
                 if self.depth >= self.settings["max_file_recursion"]:
                     raise RecursionError(f"Maximum file nesting depth ({self.settings["max_file_recursion"]}) exceeded")
-
-                _, filename  = n.groups()
+                _, filename, extension = n.groups()
                 
                 if filename.startswith("#^"):
                     i += 1 
                     continue
-
-
-
                 if any(filename.endswith(ext) for ext in non_md_extensions): 
                     i += 1
                     continue
                 
-                elements.append(File(filename + ".md" if not filename.endswith(".md") else filename, 
-                                     self.settings, 
-                                     parrentfilename=self.filename,
-                                     depth = self.depth + 1))
+                if extension:
+                    full_filename = f"{filename}.{extension}"
+                else:
+                    full_filename = filename + ".md" if not filename.endswith(".md") else filename
+                
+                elements.append(File(full_filename, 
+                                    self.settings, 
+                                    parrentfilename=self.filename,
+                                    parrentdir=self.parrentdir,
+                                    depth=self.depth + 1))
                 i += 1
                 continue
-            
+
+                        
+
+            m = self.re_markdown_image.match(line)
+            if m:
+                alt_text, size_param, filename, ref_link = m.groups()
+                
+                if not any(filename.lower().endswith(ext) for ext in image_extensions):
+                    i += 1
+                    continue
+                
+                if filename.startswith("#^"):
+                    i += 1 
+                    continue
+                
+                width, height =self._parse_size_parameter(size_param)
+                caption = alt_text if alt_text else None
+                
+                image_obj = Image(filename=filename,
+                                parrentfilename=self.filename,
+                                caption=caption,
+                                width=width,
+                                height=height,
+                                settings=self.settings)
+                print("Да") 
+                if ref_link:
+                    image_obj.reference = ref_link
+                
+                elements.append(image_obj)
+                i += 1
+                continue
+
+            n = self.re_wiki_image.match(line)
+            if n:
+                filename, param1, param2, ref_link = n.groups()
+                
+                if not any(filename.lower().endswith(ext) for ext in image_extensions):
+                    i += 1
+                    continue
+                
+                if filename.startswith("#^"):
+                    i += 1 
+                    continue
+                
+                width = None
+                height = None
+                caption = None
+                reference = None
+                
+                if param2:
+                    width, height =self._parse_size_parameter(param2)
+                    if width is not None:
+                        reference = param1 if param1 else None
+                    else:
+                        width, height =self._parse_size_parameter(param1)
+                        if width is None:
+                            reference = param1 if param1 else None
+                            caption = param2 if param2 else None
+                        else:
+                            caption = param2 if param2 else None
+                else:
+                    if param1:
+                        width, height =self._parse_size_parameter(param1)
+                        if width is None:
+                            reference = param1
+                
+                image_obj = Image(filename=filename,
+                                parrentfilename=self.filename,
+                                caption=caption,
+                                width=width,
+                                height=height,
+                                settings=self.settings)
+                
+                if reference:
+                    image_obj.reference = reference
+                
+                if ref_link:
+                    image_obj.reference = ref_link
+                
+                elements.append(image_obj)
+                i += 1
+                continue 
 
             # БЛОКИ КОДА
             if line.startswith("```") and not in_code_block:
-                # Начало блока кода
                 blocktype = line.strip("```").strip()
                 blocklines = []
                 in_code_block = True
@@ -157,7 +254,7 @@ class MarkdownParser:
 
             if in_code_block:
                 if line.startswith("```"):
-                    if blocklines:  # Проверка на пустые блоки
+                    if blocklines:  
                         elements.append(CodeBlock(blocktype, blocklines, settings=self.settings["codeblocks"]))
                     in_code_block = False
                     i += 1

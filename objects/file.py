@@ -23,12 +23,10 @@ class File:
     def to_latex(self, settings = {}):
         
         #print(len(self.elements))
-        #print(self.elements)
-        
+        print(self.elements) 
         elements = attach_reference(self.elements) 
 
         #print(len(elements))
-        #print(elements)
 
         text = "\n\n".join([elem.to_latex(self.settings) for elem in elements])
         

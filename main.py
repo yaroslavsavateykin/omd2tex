@@ -8,9 +8,9 @@ def main():
 
     doc = Document(filename)
 
-#    text = doc.to_latex()
-
-    doc.to_latex_porject()
+    text = doc.to_latex()
+    #print(text)
+#     doc.to_latex_porject()
 
 
 if __name__ == "__main__":
