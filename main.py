@@ -2,7 +2,7 @@ from objects.document import GLOBAL_REFERENCE_DICT, Document
 
 def main():
  
-    with open("default/current.md", "r") as f: 
+    with open("default/current", "r") as f: 
         
         filename = f.read().strip() 
 
