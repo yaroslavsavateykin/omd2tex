@@ -1,8 +1,11 @@
+import re
+
 class Paragraph:
 
-    def __init__(self, text) -> None:
+    def __init__(self, 
+                 text: str) -> None:
         
-        self.text = text
+        self.text = self._parse_text(text)
 
         self.reference = None    
 
@@ -14,3 +17,33 @@ class Paragraph:
                          settings = {}):
 
         return self.to_latex(settings)
+    
+    @staticmethod
+    def _change_letters_for_equations(text):
+
+        change_dict = {
+            "test": "no_test"
+        }
+
+
+        for key in change_dict:
+    
+            text = text.replace(key, change_dict[key])
+
+        return text 
+
+    def _parse_text(self, text: str) -> str:
+        
+        print(text)
+        
+        
+        text = re.sub(r"\$(?:[^$\\]|\\\$|\\[^$])*?\$", 
+                      lambda x: f"${self._change_letters_for_equations(x.group(0).strip("$"))}$", 
+                      text)
+        
+
+        print(text)
+
+
+        return text
+

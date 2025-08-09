@@ -1,6 +1,6 @@
 {
   "max_file_recursion": 5,
-  "dir": "~/omd2tex/default/",
+  "dir": "~/storage/shared/Obsidian/",
   "preamble": true,
   "makefile": true,
   "output_dir": "~/omd2tex/test/",

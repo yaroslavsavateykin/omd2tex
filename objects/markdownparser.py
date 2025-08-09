@@ -276,9 +276,9 @@ class MarkdownParser:
 
 
             # УРАВНЕНИЯ
-            if line.strip().startswith("$$"):
+            if line.strip().startswith("$$") or line.strip().endswith("$$"):
                 if not in_equation:
-                    equationlines = []
+                    equationlines = [line.strip("$$")]
                     in_equation = True
                 else:
                     if equationlines:
@@ -289,7 +289,7 @@ class MarkdownParser:
 
             if in_equation:
                 equationlines.append(line)  
-                i += 1
+                i += 1 
                 continue
 
 
