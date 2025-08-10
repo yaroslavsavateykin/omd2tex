@@ -1,4 +1,5 @@
 import re
+import json
 
 class Paragraph:
 
@@ -19,12 +20,12 @@ class Paragraph:
         return self.to_latex(settings)
     
     @staticmethod
-    def _change_letters_for_equations(text):
-
-        change_dict = {
-            "test": "no_test"
-        }
-
+    def _change_letters_for_equations(text, 
+                                      dict_file = "default/formulas4equations.json"):
+        
+        with open(dict_file, "r") as f:
+            change_dict = json.load(f)
+        
 
         for key in change_dict:
     

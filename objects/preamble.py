@@ -1,11 +1,9 @@
 from typing import Dict
 
-class Preamble:
-    def __init__(self, 
-                 preamble: Dict,
-                 parrentdir = "") -> None:
 
-        self.preamble = preamble 
+class Preamble:
+    def __init__(self, preamble: Dict, parrentdir="") -> None:
+        self.preamble = preamble
         self.parrentdir = parrentdir
 
     def to_latex(self):
@@ -213,14 +211,12 @@ class Preamble:
 """
         return string
 
-    def to_latex_project(self, 
-                         settings = {}):
-        
+    def to_latex_project(self, settings={}):
         """
         with open(self.parrentdir + "/" + "preamble.tex", "w") as f:
 
             f.write(self.to_latex())
-        
+
         return f"\\include{{preabmble.tex}}"
         """
 

@@ -1,15 +1,9 @@
-
 class Reference:
-
-    def __init__(self, 
-                 ref_text: str) -> None:
-        
+    def __init__(self, ref_text: str) -> None:
         self.ref_text = ref_text
 
     def to_latex(self):
-
         return ""
 
     def to_latex_project(self):
-        
         return self.to_latex()
