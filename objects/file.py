@@ -1,6 +1,6 @@
 from tools.search import find_file
 from .markdownparser import MarkdownParser
-from tools.attach_reference import attach_reference
+from .reference import Reference
 
 
 class File:
@@ -23,7 +23,7 @@ class File:
     def to_latex(self, settings={}):
         # print(len(self.elements))
         print(self.elements)
-        elements = attach_reference(self.elements)
+        elements = Reference.attach_reference(self.elements)
 
         # print(len(elements))
 
@@ -32,7 +32,7 @@ class File:
         return text
 
     def to_latex_project(self, settings={}) -> str:
-        elements = attach_reference(self.elements)
+        elements = Reference.attach_reference(self.elements)
 
         if self.settings["branching_project"]:
             pass

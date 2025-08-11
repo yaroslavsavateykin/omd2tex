@@ -1,11 +1,12 @@
 import re
 import yaml
 
-from .equation import Equation
 from tools.search import find_file
+from .equation import Equation
 from .paragraph import Paragraph
 from .codeblock import CodeBlock
 from .reference import Reference
+from .image import Image, ImageFrame
 
 
 class MarkdownParser:
@@ -47,7 +48,7 @@ class MarkdownParser:
         self.yaml = None
 
     @staticmethod
-    def _parse_size_parameter(size_str):
+    def __parse_size_parameter(size_str):
         """
         Парсит строку размера в формате "300" или "300x200"
         Возвращает (width, height) или (None, None)
@@ -205,7 +206,7 @@ class MarkdownParser:
                     i += 1
                     continue
 
-                width, height = self._parse_size_parameter(size_param)
+                width, height = self.__parse_size_parameter(size_param)
                 caption = alt_text if alt_text else None
 
                 image_obj = Image(
@@ -216,7 +217,6 @@ class MarkdownParser:
                     height=height,
                     settings=self.settings,
                 )
-                print("Да")
                 if ref_link:
                     image_obj.reference = ref_link
 
@@ -335,6 +335,6 @@ class MarkdownParser:
                 paragraph_lines.append(lines[i])
                 i += 1
             joined = "\n".join(l.strip() for l in paragraph_lines)
-            elements.append(Paragraph(joined))
+            elements.append(Paragraph(joined, self.settings))
 
         return elements

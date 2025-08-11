@@ -1,28 +1,17 @@
 {
   "max_file_recursion": 5,
-  "dir": "~/storage/shared/Obsidian/",
+  "dir": "~/Vzlet/",
   "preamble": true,
   "makefile": true,
   "output_dir": "~/omd2tex/test/",
-  "deletesafe_files": ["Makefile"],
   "branching_project": false,
-
-
-  "headlines":
-  {
-
+  "paragraph": {
+    "latinify": true,
+    "latinify_probability": 0.05,
+    "latinify_json": "default/latinify.json",
+    "formulas_json": "default/formulas.json"
   },
-
-  "images": 
-  {
-
-  },
-
-  "codeblocks":
-
-  {
-
-  }
-
-    
+  "headlines": {},
+  "images": {},
+  "codeblocks": {}
 }
