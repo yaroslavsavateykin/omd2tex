@@ -1,7 +1,9 @@
 import re
 
+from objects.equation import Equation
+
 from .paragraph import Paragraph
-from default.globals import GLOBAL_MIN_HEADLINE_LEVEL, GLOBAL_REFERENCE_DICT
+from .globals import Global
 
 
 class Headline:
@@ -14,26 +16,12 @@ class Headline:
         self._is_initialized = False
         self.reference = None
 
-    @staticmethod
-    def identify_headline_reference(elements: list) -> list:
-        new_list = []
-
-        for el in elements:
-            if isinstance(el, Headline):
-                el._is_initialized = True
-                el._identify_reference()
-                new_list.append(el)
-            else:
-                new_list.append(el)
-        return new_list
-
     def _identify_reference(self) -> None:
+        self._is_initialized = True
         if self.reference:
             settings = self.settings["headline"]
-            global GLOBAL_REFERENCE_DICT
-            global GLOBAL_MIN_HEADLINE_LEVEL
 
-            if GLOBAL_MIN_HEADLINE_LEVEL < self.level:
+            if Global.MIN_HEADLINE_LEVEL < self.level:
                 self.__global_level_align()
 
             if settings["numeration"]:
@@ -47,27 +35,20 @@ class Headline:
                     "txt",
                     "txt",
                 ]
-                GLOBAL_REFERENCE_DICT[self.reference] = ref_type[self.level]
+                Global.REFERENCE_DICT[self.reference] = ref_type[self.level]
             else:
-                GLOBAL_REFERENCE_DICT[self.reference] = "not_found_headline"
+                Global.REFERENCE_DICT[self.reference] = "not_found_headline"
 
     def __identify_level(self) -> None:
-        global GLOBAL_MIN_HEADLINE_LEVEL
-
-        if self.level < GLOBAL_MIN_HEADLINE_LEVEL:
-            GLOBAL_MIN_HEADLINE_LEVEL = self.level
+        if self.level < Global.MIN_HEADLINE_LEVEL:
+            Global.MIN_HEADLINE_LEVEL = self.level
 
     def __global_level_align(self) -> None:
-        global GLOBAL_MIN_HEADLINE_LEVEL
-
         settings = self.settings["headline"]
         if settings["global_level_align"]:
-            self.level -= GLOBAL_MIN_HEADLINE_LEVEL + 1
+            self.level -= Global.MIN_HEADLINE_LEVEL
 
     def _pick_surround(self):
-        global GLOBAL_MIN_HEADLINE_LEVEL
-        global GLOBAL_REFERENCE_DICT
-
         settings = self.settings["headline"]
 
         if settings["numeration"]:
@@ -173,8 +154,10 @@ class Headline:
 
     def to_latex(self):
         if not self._is_initialized:
-            raise RuntimeError("Headline is not initialized! Firstly call initialize()")
-
+            raise RuntimeError(
+                "Headline is not initialized! Firstly call _identify_reference()"
+            )
+        self.__global_level_align()
         return self._pick_surround()(self.text)
 
     def to_latex_project(self, settings={}):

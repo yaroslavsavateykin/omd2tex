@@ -6,7 +6,7 @@ import random
 class Paragraph:
     def __init__(self, text: str, settings={}) -> None:
         if settings:
-            self.settings = settings["paragraph"]
+            self.settings = settings.get("paragraph")
         else:
             self.settings = None
         self.text = text

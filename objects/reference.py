@@ -1,3 +1,7 @@
+from objects.equation import Equation
+from objects.headline import Headline
+
+
 class Reference:
     def __init__(self, ref_text: str) -> None:
         self.ref_text = ref_text
@@ -7,6 +11,19 @@ class Reference:
 
     def to_latex_project(self):
         return self.to_latex()
+
+    @staticmethod
+    def identify_elements_reference(elements: list) -> list:
+        new_list = []
+        types = [Headline, Equation]
+
+        for el in elements:
+            if type(el) in types:
+                el._identify_reference()
+                new_list.append(el)
+            else:
+                new_list.append(el)
+        return new_list
 
     @staticmethod
     def attach_reference(elements):

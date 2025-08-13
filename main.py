@@ -7,13 +7,9 @@ def main():
 
     doc = Document(filename)
 
-    # doc._check()
+    doc.check()
 
-    # text = doc.to_latex()
-
-    # print(text)
-
-    doc.to_latex_porject()
+    # doc.to_latex_porject()
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from default.globals import GLOBAL_REFERENCE_DICT
+from .globals import Global
 
 
 class Equation:
@@ -7,12 +7,19 @@ class Equation:
 
         self.reference = None
 
+        self._is_initialized = False
+
+    def _identify_reference(self):
+        self._is_initialized = True
+        Global.REFERENCE_DICT[self.reference] = "eq"
+
     def to_latex(self, settings={}):
-        global GLOBAL_REFERENCE_DICT
+        if not self._is_initialized:
+            raise RuntimeError(
+                "Equation is not initialized! Firstly call _identify_reference()"
+            )
 
         if self.reference:
-            GLOBAL_REFERENCE_DICT[self.reference] = "eq"
-
             equation = rf"""
 \begin{{equation}}
 {self.equation.strip("\n")}

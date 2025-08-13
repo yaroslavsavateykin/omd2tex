@@ -6,8 +6,7 @@ from objects.paragraph import Paragraph
 
 from .preamble import Preamble
 from .file import File
-
-from default.globals import GLOBAL_REFERENCE_DICT, GLOBAL_MIN_HEADLINE_LEVEL
+from .globals import Global
 
 
 class Document:
@@ -32,23 +31,19 @@ class Document:
         else:
             self.preamble = Paragraph("")
 
-    def _check(self):
+    def check(self):
         File(
             self.filename,
             self.settings,
             parrentdir=self.dir,
             parrentfilename=self.filename,
-        )._check()
+        ).check()
+
+        Global.check()
+        Global.clear()
 
     def _process_settings_logics(self):
         pass
-
-    @staticmethod
-    def _clear_globals() -> None:
-        global GLOBAL_MIN_HEADLINE_LEVEL
-        GLOBAL_MIN_HEADLINE_LEVEL = 100
-        global GLOBAL_REFERENCE_DICT
-        GLOBAL_REFERENCE_DICT.clear()
 
     def to_latex(self):
         preamble = self.preamble.to_latex()
@@ -69,7 +64,7 @@ class Document:
 
 \end{{document}}"""
 
-        self._clear_globals()
+        Global.clear()
         return document
 
     def to_latex_file(self, filename: str = "") -> None:
@@ -86,7 +81,7 @@ class Document:
         if self.settings["makefile"]:
             shutil.copy2("default/Makefile", dir)
 
-        self._clear_globals()
+        Global.clear()
 
     def to_latex_porject(self, filename="") -> None:
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
@@ -119,4 +114,4 @@ class Document:
         ) as f:
             f.write(document)
 
-        self._clear_globals()
+        Global.clear()

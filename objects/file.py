@@ -1,3 +1,4 @@
+from objects.globals import Global
 from objects.headline import Headline
 from tools.search import find_file
 from .markdownparser import MarkdownParser
@@ -23,21 +24,16 @@ class File:
             MarkdownParser(filename, settings, parrentdir, depth).parse()
         )
 
-    def _check(self):
+    def check(self):
         elements = self.elements
-        elements = Reference.attach_reference(self.elements)
+        elements = self._process_elements_list(elements)
         for el in elements:
             print(f"\n{el}\n{el.to_latex()}")
-
-        from .document import GLOBAL_REFERENCE_DICT
-
-        global GLOBAL_REFERENCE_DICT
-        print(GLOBAL_REFERENCE_DICT)
 
     @staticmethod
     def _process_elements_list(elements: list) -> list:
         elements = Reference.attach_reference(elements)
-        elements = Headline.identify_headline_reference(elements)
+        elements = Reference.identify_elements_reference(elements)
 
         return elements
 
