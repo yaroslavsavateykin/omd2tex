@@ -6,6 +6,8 @@ __pycache__/
 venv/
 .env
 *.log
+*.ipynb
 
 test/
+.ipynb_checkpoints/
 

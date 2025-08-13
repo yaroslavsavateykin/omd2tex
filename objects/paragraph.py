@@ -7,13 +7,13 @@ class Paragraph:
     def __init__(self, text: str, settings={}) -> None:
         if settings:
             self.settings = settings["paragraph"]
-            self.text = self._parse_text(text)
         else:
-            self.text = text
+            self.settings = None
+        self.text = text
         self.reference = None
 
     def to_latex(self, settings={}):
-        return self.text
+        return self._parse_text()
 
     def to_latex_project(self, settings={}):
         return self.to_latex(settings)
@@ -72,8 +72,6 @@ class Paragraph:
         def replace_inline(match):
             inline_equations.append(match.group(1))
             return f"@@INLINE-EQUATION-{len(inline_equations)}@@"
-
-        print(inline_equations)
 
         text = re.sub(r"\$(.*?)\$", replace_inline, text)
         return text, inline_equations
@@ -171,33 +169,38 @@ class Paragraph:
     def _text_errors_workaround(text):
         pass
 
-    def _parse_text(self, text: str) -> str:
-        text = re.sub(
-            r"\$(?:[^$\\]|\\\$|\\[^$])*?\$",
-            lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=self.settings['formulas_json'])}$",
-            text,
-        )
-        text = self._change_letters_for_equations(
-            text, surround_func=lambda x: f"${x}$"
-        )
-
-        text, inline_codes = self._replace_inline_code(text)
-
-        text, inline_equations = self._replace_inline_equation(text)
-
-        inline_equations = [self._eq_ru_letter_workaround(x) for x in inline_equations]
-
-        text = self._highlight_text(text)
-
-        text = self._restore_placeholders(
-            text, inline_codes=inline_codes, inline_equations=inline_equations
-        )
-
-        if self.settings["latinify"]:
-            text = self._latinify_lines(
-                text,
-                probability=self.settings["latinify_probability"],
-                change_dict=self.settings["latinify_json"],
+    def _parse_text(self) -> str:
+        if self.settings:
+            text = re.sub(
+                r"\$(?:[^$\\]|\\\$|\\[^$])*?\$",
+                lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=self.settings['formulas_json'])}$",
+                self.text,
             )
+            text = self._change_letters_for_equations(
+                text, surround_func=lambda x: f"${x}$"
+            )
+
+            text, inline_codes = self._replace_inline_code(text)
+
+            text, inline_equations = self._replace_inline_equation(text)
+
+            inline_equations = [
+                self._eq_ru_letter_workaround(x) for x in inline_equations
+            ]
+
+            text = self._highlight_text(text)
+
+            text = self._restore_placeholders(
+                text, inline_codes=inline_codes, inline_equations=inline_equations
+            )
+
+            if self.settings["latinify"]:
+                text = self._latinify_lines(
+                    text,
+                    probability=self.settings["latinify_probability"],
+                    change_dict=self.settings["latinify_json"],
+                )
+        else:
+            text = self.text
 
         return text

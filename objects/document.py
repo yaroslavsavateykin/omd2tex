@@ -2,10 +2,12 @@ import json
 import os
 import shutil
 
+from objects.paragraph import Paragraph
+
 from .preamble import Preamble
 from .file import File
 
-GLOBAL_REFERENCE_DICT = {}
+from default.globals import GLOBAL_REFERENCE_DICT, GLOBAL_MIN_HEADLINE_LEVEL
 
 
 class Document:
@@ -21,28 +23,42 @@ class Document:
         self.filename = filename
 
         dir = self.settings["output_dir"]
-        parrentfilename = self.filename
-        dir = (
-            os.path.expanduser(dir.strip("/") if dir.endswith("/") else dir)
-            + "/"
-            + parrentfilename.strip(".md")
-        )
-
+        dir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
         self.dir = dir
 
         if self.settings["preamble"]:
             with open(preamble, "r") as f:
                 self.preamble = Preamble(json.load(f), parrentdir=self.dir)
         else:
-            self.preamble = ""
+            self.preamble = Paragraph("")
+
+    def _check(self):
+        File(
+            self.filename,
+            self.settings,
+            parrentdir=self.dir,
+            parrentfilename=self.filename,
+        )._check()
+
+    def _process_settings_logics(self):
+        pass
+
+    @staticmethod
+    def _clear_globals() -> None:
+        global GLOBAL_MIN_HEADLINE_LEVEL
+        GLOBAL_MIN_HEADLINE_LEVEL = 100
+        global GLOBAL_REFERENCE_DICT
+        GLOBAL_REFERENCE_DICT.clear()
 
     def to_latex(self):
-        if self.preamble:
-            preamble = self.preamble.to_latex()
-        else:
-            preamble = ""
+        preamble = self.preamble.to_latex()
 
-        file = File(self.filename, self.settings).to_latex()
+        # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
+        file = File(
+            self.filename,
+            self.settings,
+            parrentdir=self.dir,
+        ).to_latex()
 
         document = rf"""
 {preamble}
@@ -53,6 +69,7 @@ class Document:
 
 \end{{document}}"""
 
+        self._clear_globals()
         return document
 
     def to_latex_file(self, filename: str = "") -> None:
@@ -62,37 +79,44 @@ class Document:
             filename = self.filename.strip(".md") + ".tex"
 
         # with open(os.getcwd() + "/" + filename, "w") as f:
-        dir = self.settings["output_dir"]
-        dir = os.path.expanduser(dir.strip("/") if dir.endswith("/") else dir)
-        with open(dir + "/" + filename, "w") as f:
+
+        with open(self.dir + "/" + self.filename.strip(".md"), "w") as f:
             f.write(file)
 
         if self.settings["makefile"]:
             shutil.copy2("default/Makefile", dir)
 
+        self._clear_globals()
+
     def to_latex_porject(self, filename="") -> None:
-        main = File(self.filename, self.settings, parrentdir=self.dir)
+        # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
+
+        main = File(
+            self.filename,
+            self.settings,
+            parrentdir=self.dir + "/" + self.filename.strip(".md"),
+        )
 
         try:
-            os.makedirs(self.dir)
+            os.makedirs(self.dir + "/" + self.filename.strip(".md"))
         except:
+            print("Не удалось создать директорию проекта или она уже создана")
             pass
 
-        shutil.copy2("default/Makefile", self.dir)
-        if self.preamble:
-            preamble = self.preamble.to_latex_project()
-        else:
-            preamble = self.preamble
-        file = main.to_latex_project()
+        shutil.copy2("default/Makefile", self.dir + "/" + self.filename.strip(".md"))
 
-        document = rf"""
-{preamble}
+        document = f"""
+{self.preamble.to_latex_project()}
 
-\begin{{document}}
+\\begin{{document}}
 
-{file}
+{main.to_latex_project()}
 
-\end{{document}}"""
+\\end{{document}}"""
 
-        with open(self.dir + "/" + "main.tex", "w") as f:
+        with open(
+            self.dir + "/" + self.filename.strip(".md") + "/" + "main.tex", "w"
+        ) as f:
             f.write(document)
+
+        self._clear_globals()

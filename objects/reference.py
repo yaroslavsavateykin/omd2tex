@@ -11,15 +11,18 @@ class Reference:
     @staticmethod
     def attach_reference(elements):
         result = []
-        pending_reference = None
+        last_reference = None
 
         for el in elements:
             if isinstance(el, Reference):
-                pending_reference = el
+                # Обновляем последний референс (перезаписываем если были подряд)
+                last_reference = el
+                # Прикрепляем к последнему элементу в результате (если есть)
+                if result:
+                    result[-1].reference = last_reference.ref_text
             else:
-                if pending_reference:
-                    setattr(el, "reference", pending_reference)
-                    pending_reference = None
+                # Сбрасываем референс для нового элемента
+                last_reference = None
                 result.append(el)
 
         return result

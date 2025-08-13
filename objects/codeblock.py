@@ -7,8 +7,7 @@ class CodeBlock:
         self.blocklines = blocklines
 
         if settings:
-            self.settings = settings["codeblocks"]
-            self.par_settings = settings["paragraph"]
+            self.settings = settings
         else:
             self.settings = {}
 
@@ -21,6 +20,17 @@ class CodeBlock:
 \\begin{{minted}}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{{python}}") 
 {"\n".join(blocklines)}
 \\end{{minted}}
+"""
+        return Paragraph(block)
+
+    @staticmethod
+    def _default_codeblock(blocklines: list):
+        block = f"""
+\\begin{{tcolorbox}}[colback=gray!20, colframe=gray!50, sharp corners, boxrule=1pt]
+\\begin{{verbatim}}
+{"\n".join(blocklines)}
+\\end{{verbatim}}
+\\end{{tcolorbox}}
 """
         return Paragraph(block)
 
@@ -41,7 +51,7 @@ class CodeBlock:
         if self.blocktype in functions:
             return functions[self.blocktype](self.blocklines)
         else:
-            return Paragraph("\n".join(self.blocklines))
+            return self._default_codeblock(self.blocklines)
 
     def to_latex(self, settings={}):
         return self._apply_blocktype().to_latex()

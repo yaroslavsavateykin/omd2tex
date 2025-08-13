@@ -1,3 +1,6 @@
+from default.globals import GLOBAL_REFERENCE_DICT
+
+
 class Equation:
     def __init__(self, equation: str) -> None:
         self.equation = equation
@@ -5,8 +8,6 @@ class Equation:
         self.reference = None
 
     def to_latex(self, settings={}):
-        from .document import GLOBAL_REFERENCE_DICT
-
         global GLOBAL_REFERENCE_DICT
 
         if self.reference:
@@ -14,14 +15,14 @@ class Equation:
 
             equation = rf"""
 \begin{{equation}}
-{self.equation}
+{self.equation.strip("\n")}
 \label{{eq:{self.reference}}}
 \end{{equation}}
 """
         else:
             equation = rf"""
 \begin{{equation*}}
-{self.equation}
+{self.equation.strip("\n")}
 \end{{equation*}}
 """
         return equation

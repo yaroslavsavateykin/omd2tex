@@ -1,6 +1,6 @@
 class Makefile:
     def __init__(self, settings) -> None:
-        self.settinfs = settings
+        self.settings = settings
 
     def to_string(self):
         string = """

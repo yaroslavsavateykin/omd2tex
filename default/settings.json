@@ -11,7 +11,18 @@
     "latinify_json": "default/latinify.json",
     "formulas_json": "default/formulas.json"
   },
-  "headlines": {},
-  "images": {},
-  "codeblocks": {}
+  "headline": {
+    "global_level_align": true,
+    "numeration": true,
+    "clean_markdown_numeration": true
+  },
+  "image": {
+    "wh_aspect_borders": [
+      0.6,
+      1.8
+    ],
+    "default_width": "8cm",
+    "default_height": "8cm"
+  },
+  "citation": {}
 }

@@ -1,4 +1,4 @@
-from objects.document import GLOBAL_REFERENCE_DICT, Document
+from objects.document import Document
 
 
 def main():
@@ -7,13 +7,14 @@ def main():
 
     doc = Document(filename)
 
-    text = doc.to_latex()
-    print(text)
+    # doc._check()
+
+    # text = doc.to_latex()
+
+    # print(text)
 
     doc.to_latex_porject()
 
 
 if __name__ == "__main__":
     main()
-
-    # print(GLOBAL_REFERENCE_DICT)
