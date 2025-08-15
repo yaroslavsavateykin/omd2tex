@@ -18,11 +18,9 @@ class Headline:
 
     def _identify_reference(self) -> None:
         self._is_initialized = True
+        self.__global_level_align()
         if self.reference:
             settings = self.settings["headline"]
-
-            if Global.MIN_HEADLINE_LEVEL < self.level:
-                self.__global_level_align()
 
             if settings["numeration"]:
                 ref_type = [
@@ -36,8 +34,6 @@ class Headline:
                     "txt",
                 ]
                 Global.REFERENCE_DICT[self.reference] = ref_type[self.level]
-            else:
-                Global.REFERENCE_DICT[self.reference] = "not_found_headline"
 
     def __identify_level(self) -> None:
         if self.level < Global.MIN_HEADLINE_LEVEL:
@@ -117,7 +113,6 @@ class Headline:
             str: Очищенная строка без нумерации
         """
         # Компилируем комплексное регулярное выражение
-        print(heading)
         pattern = re.compile(
             r"^\s*"  # Начальные пробелы
             r"[\[({]?"  # Необязательная открывающая скобка
@@ -141,7 +136,6 @@ class Headline:
             re.IGNORECASE | re.UNICODE,
         )
         heading = pattern.sub("", heading, count=1).strip()
-        print(heading)
         # Удаляем нумерацию и возвращаем результат
         return heading
 
@@ -157,7 +151,7 @@ class Headline:
             raise RuntimeError(
                 "Headline is not initialized! Firstly call _identify_reference()"
             )
-        self.__global_level_align()
+
         return self._pick_surround()(self.text)
 
     def to_latex_project(self, settings={}):

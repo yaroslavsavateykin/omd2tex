@@ -2,6 +2,8 @@ import re
 import json
 import random
 
+from objects.globals import Global
+
 
 class Paragraph:
     def __init__(self, text: str, settings={}) -> None:
@@ -101,8 +103,11 @@ class Paragraph:
 
     @staticmethod
     def _latinify_lines(
-        lines, probability=0.05, seed=None, change_dict="default/latinify_line.json"
-    ):
+        lines: str,
+        probability=0.05,
+        seed=None,
+        change_dict="default/latinify_line.json",
+    ) -> str:
         if seed is not None:
             random.seed(seed)
 
@@ -121,7 +126,7 @@ class Paragraph:
         return "".join([replace_in_string(line) for line in lines])
 
     @staticmethod
-    def _eq_ru_letter_workaround(text):
+    def _eq_ru_letter_workaround(text: str) -> str:
         change_list = [
             "й",
             "ц",
@@ -166,8 +171,33 @@ class Paragraph:
         return "".join(new_text)
 
     @staticmethod
-    def _text_errors_workaround(text):
+    def _text_errors_workaround(text: str) -> str:
         pass
+
+    @staticmethod
+    def _process_references(text: str) -> str:
+        ref_pattern = re.compile(
+            r"\[\[(?:([^\|\]#]+)?#)?\^([^\|\]]+)(?:\|([^\]]+))?\]\]"
+        )
+
+        def process_ref_match(match):
+            file_reference = match.group(1) or ""
+            ref_id = match.group(2)
+            text = match.group(3)
+
+            if ref_id in Global.REFERENCE_DICT:
+                latex_ref = f"\\cref{{{Global.REFERENCE_DICT[ref_id]}:{ref_id}}}"
+            else:
+                latex_ref = ""
+                print(f"Reference {ref_id} not found in Global.REFERENCE_DICT")
+
+            if text:
+                return text + " " + latex_ref
+            return latex_ref
+
+        text = ref_pattern.sub(process_ref_match, text)
+
+        return text
 
     def _parse_text(self) -> str:
         if self.settings:
@@ -193,6 +223,8 @@ class Paragraph:
             text = self._restore_placeholders(
                 text, inline_codes=inline_codes, inline_equations=inline_equations
             )
+
+            text = self._process_references(text)
 
             if self.settings["latinify"]:
                 text = self._latinify_lines(

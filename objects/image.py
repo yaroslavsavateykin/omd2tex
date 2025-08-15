@@ -3,7 +3,9 @@ from PIL import Image as PillowImage
 import os
 
 from objects import reference
+from objects.paragraph import Paragraph
 from tools.search import find_file
+from objects.globals import Global
 
 
 class Image:
@@ -32,11 +34,9 @@ class Image:
 
     def _identify_reference(self) -> None:
         if self.reference:
-            global GLOBAL_REFERENCE_DICT
-
-            GLOBAL_REFERENCE_DICT[self.reference] = "fig"
+            Global.REFERENCE_DICT[self.reference] = "fig"
         else:
-            GLOBAL_REFERENCE_DICT[self.reference] = "not_found_headline"
+            Global.REFERENCE_DICT[self.reference] = "not_found_headline"
 
     def _get_image_dimensions(self):
         try:
@@ -46,15 +46,17 @@ class Image:
             return None, None
 
     def to_latex(self, setting={}):
-        if self.reference:
-            self.reference = f"\\label{{fig:{self.reference}}}"
-        else:
-            self.reference = ""
-
         if self.caption:
-            self.caption = f"\\caption{{{self.caption}}}"
+            self.caption = f"\\caption{{{Paragraph(self.caption, settings=self.settings).to_latex()}}}"
         else:
             self.caption = ""
+
+        if self.reference:
+            self.reference = f"\\label{{fig:{self.reference}}}"
+            if not self.caption:
+                self.caption = "\\caption{}"
+        else:
+            self.reference = ""
 
         dir = self.dir
         settings = self.settings.get("image", {})
@@ -87,9 +89,9 @@ class Image:
 
         latex_lines = f"""\\begin{{figure}}[H] 
 \\centering
-{self.reference}
 {image_include}
 {self.caption}
+{self.reference}
 \\end{{figure}}
 """
         return latex_lines

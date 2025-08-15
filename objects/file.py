@@ -26,7 +26,6 @@ class File:
 
     def check(self):
         elements = self.elements
-        elements = self._process_elements_list(elements)
         for el in elements:
             print(f"\n{el}\n{el.to_latex()}")
 
