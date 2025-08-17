@@ -1,46 +1,47 @@
 import json
 import os
 import shutil
+from typing import Any, Dict, Union
+
 
 from objects.paragraph import Paragraph
-
 from objects.preamble import Preamble
 from objects.file import File
 from tools.globals import Global
+from tools.settings import Settings
 
 
 class Document:
     def __init__(
         self,
         filename: str,
-        settings="default/settings.json",
+        settings: Union[Dict[str, Any], str] = None,
         preamble="default/preamble.json",
     ):
-        with open(settings, "r") as f:
-            self.settings = json.load(f)
-
         self.filename = filename
 
-        dir = self.settings["output_dir"]
+        if settings:
+            Settings.update(settings)
+
+        dir = Settings.Export.export_dir
         dir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
         self.dir = dir
 
-        if self.settings["preamble"]:
+        if Settings.Preamble.create_preamble:
             with open(preamble, "r") as f:
-                self.preamble = Preamble(json.load(f), parrentdir=self.dir)
+                self.preamble = Preamble()
         else:
             self.preamble = Paragraph("")
 
     def check(self):
         File(
             self.filename,
-            self.settings,
             parrentdir=self.dir,
             parrentfilename=self.filename,
         ).check()
 
         Global.check()
-        Global.clear()
+        Global.to_default()
 
     def _process_settings_logics(self):
         pass
@@ -51,7 +52,6 @@ class Document:
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
         file = File(
             self.filename,
-            self.settings,
             parrentdir=self.dir,
         ).to_latex()
 
@@ -64,7 +64,7 @@ class Document:
 
 \end{{document}}"""
 
-        Global.clear()
+        Global.to_default()
         return document
 
     def to_latex_file(self, filename: str = "") -> None:
@@ -78,17 +78,16 @@ class Document:
         with open(self.dir + "/" + self.filename.strip(".md"), "w") as f:
             f.write(file)
 
-        if self.settings["makefile"]:
+        if Settings.Export.makefile:
             shutil.copy2("default/Makefile", dir)
 
-        Global.clear()
+        Global.to_default()
 
     def to_latex_porject(self, filename="") -> None:
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
 
         main = File(
             self.filename,
-            self.settings,
             parrentdir=self.dir + "/" + self.filename.strip(".md"),
         )
 
@@ -98,7 +97,10 @@ class Document:
             # print("Не удалось создать директорию проекта или она уже создана")
             pass
 
-        shutil.copy2("default/Makefile", self.dir + "/" + self.filename.strip(".md"))
+        if Settings.Export.makefile:
+            shutil.copy2(
+                "default/Makefile", self.dir + "/" + self.filename.strip(".md")
+            )
 
         document = f"""
 {self.preamble.to_latex_project()}
@@ -114,4 +116,4 @@ class Document:
         ) as f:
             f.write(document)
 
-        Global.clear()
+        Global.to_default()

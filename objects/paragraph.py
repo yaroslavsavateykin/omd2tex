@@ -3,22 +3,21 @@ import json
 import random
 
 from tools.globals import Global
+from tools.settings import Settings
 
 
 class Paragraph:
-    def __init__(self, text: str, settings={}) -> None:
-        if settings:
-            self.settings = settings.get("paragraph")
-        else:
-            self.settings = None
+    def __init__(self, text: str, parse=True) -> None:
         self.text = text
+        self.parse = parse
+
         self.reference = None
 
-    def to_latex(self, settings={}):
+    def to_latex(self):
         return self._parse_text()
 
-    def to_latex_project(self, settings={}):
-        return self.to_latex(settings)
+    def to_latex_project(self):
+        return self.to_latex()
 
     @staticmethod
     def _change_letters_for_equations(
@@ -200,10 +199,10 @@ class Paragraph:
         return text
 
     def _parse_text(self) -> str:
-        if self.settings:
+        if self.parse:
             text = re.sub(
                 r"\$(?:[^$\\]|\\\$|\\[^$])*?\$",
-                lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=self.settings.get('formulas_json'))}$",
+                lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=Settings.Paragraph.formulas_json)}$",
                 self.text,
             )
             text = self._change_letters_for_equations(
@@ -226,11 +225,11 @@ class Paragraph:
 
             text = self._process_references(text)
 
-            if self.settings.get("latinify"):
+            if Settings.Paragraph.latinify:
                 text = self._latinify_lines(
                     text,
-                    probability=self.settings.get("latinify_probability"),
-                    change_dict=self.settings.get("latinify_json"),
+                    probability=Settings.Paragraph.latinify_probability,
+                    change_dict=Settings.Paragraph.latinify_json,
                 )
         else:
             text = self.text

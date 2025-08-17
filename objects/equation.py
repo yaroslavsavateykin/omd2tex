@@ -13,7 +13,7 @@ class Equation:
         self._is_initialized = True
         Global.REFERENCE_DICT[self.reference] = "eq"
 
-    def to_latex(self, settings={}):
+    def to_latex(self):
         if not self._is_initialized:
             raise RuntimeError(
                 "Equation is not initialized! Firstly call _identify_reference()"
@@ -34,5 +34,5 @@ class Equation:
 """
         return equation
 
-    def to_latex_project(self, settings={}):
-        return self.to_latex(settings)
+    def to_latex_project(self):
+        return self.to_latex()

@@ -1,16 +1,16 @@
 import re
 
 from objects.equation import Equation
+from tools.settings import Settings
 
 from .paragraph import Paragraph
 from tools.globals import Global
 
 
 class Headline:
-    def __init__(self, level: int, text: str, settings={}) -> None:
+    def __init__(self, level: int, text: str) -> None:
         self.level = level
         self.__identify_level()
-        self.settings = settings
         self.text = text
 
         self._is_initialized = False
@@ -19,10 +19,9 @@ class Headline:
     def _identify_reference(self) -> None:
         self._is_initialized = True
         self.__global_level_align()
-        if self.reference:
-            settings = self.settings["headline"]
 
-            if settings["numeration"]:
+        if self.reference:
+            if Settings.Headline.numeration:
                 ref_type = [
                     "sec",
                     "subsec",
@@ -40,14 +39,11 @@ class Headline:
             Global.MIN_HEADLINE_LEVEL = self.level
 
     def __global_level_align(self) -> None:
-        settings = self.settings["headline"]
-        if settings["global_level_align"]:
+        if Settings.Headline.global_level_align:
             self.level -= Global.MIN_HEADLINE_LEVEL
 
     def _pick_surround(self):
-        settings = self.settings["headline"]
-
-        if settings["numeration"]:
+        if Settings.Headline.numeration:
             latex_command = [
                 "section",
                 "subsection",
@@ -140,8 +136,9 @@ class Headline:
         return heading
 
     def _parse_text(self, text):
-        text = self._clean_markdown_numeration(text)
-        par = Paragraph(text=text, settings=self.settings)
+        if Settings.Headline.clean_markdown_numeration:
+            text = self._clean_markdown_numeration(text)
+        par = Paragraph(text=text)
         text = par._parse_text()
 
         return text
@@ -154,5 +151,5 @@ class Headline:
 
         return self._pick_surround()(self.text)
 
-    def to_latex_project(self, settings={}):
+    def to_latex_project(self):
         return self.to_latex()

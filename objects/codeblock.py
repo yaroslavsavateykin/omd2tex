@@ -6,11 +6,6 @@ class CodeBlock:
         self.blocktype = blocktype
         self.blocklines = blocklines
 
-        if settings:
-            self.settings = settings
-        else:
-            self.settings = {}
-
         self.reference = None
 
     @staticmethod
@@ -21,7 +16,7 @@ class CodeBlock:
 {"\n".join(blocklines)}
 \\end{{minted}}
 """
-        return Paragraph(block)
+        return Paragraph(block, parse=False)
 
     @staticmethod
     def _default_codeblock(blocklines: list):
@@ -32,14 +27,14 @@ class CodeBlock:
 \\end{{verbatim}}
 \\end{{tcolorbox}}
 """
-        return Paragraph(block)
+        return Paragraph(block, parse=False)
 
     def _apply_blocktype(self):
         functions = {
             "example": lambda content: Paragraph(
                 f"\\begin{{example}}\n{'\n'.join(content)}\n\\end{{example}}"
             ),
-            "hidden": lambda content: Paragraph(""),
+            "hidden": lambda content: Paragraph("", parse=False),
             "text": lambda content: Paragraph("\n".join(content)),
             "python": self._minted_python,
             "c": self._minted_python,
@@ -53,8 +48,8 @@ class CodeBlock:
         else:
             return self._default_codeblock(self.blocklines)
 
-    def to_latex(self, settings={}):
+    def to_latex(self):
         return self._apply_blocktype().to_latex()
 
-    def to_latex_project(self, settings={}):
-        return self.to_latex(settings)
+    def to_latex_project(self):
+        return self.to_latex()

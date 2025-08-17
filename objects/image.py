@@ -6,6 +6,7 @@ from objects import reference
 from objects.paragraph import Paragraph
 from tools.search import find_file
 from tools.globals import Global
+from tools.settings import Settings
 
 
 class Image:
@@ -20,9 +21,9 @@ class Image:
     ) -> None:
         self.filename = filename
         self.parrentdir = parrentdir
-        self.settings = settings
+        # self.settings = settings
 
-        self.dir = find_file(filename, settings["dir"])
+        self.dir = find_file(filename, Settings.Export.search_dir)
 
         self.caption = caption
 
@@ -59,7 +60,6 @@ class Image:
             self.reference = ""
 
         dir = self.dir
-        settings = self.settings.get("image", {})
 
         if self.width:
             if self.height:
@@ -75,13 +75,13 @@ class Image:
         else:
             wh_ratio = self.original_width / self.original_height
 
-            if wh_ratio < settings.get("wh_aspect_borders", [0.6, 1.8])[0]:
+            if wh_ratio < Settings.Image.wh_aspect_borders[0]:
                 image_include = f"\\includegraphics[height = \\textheight, keepaspectratio]{{{dir}}}"
-            elif wh_ratio < settings.get("wh_aspect_borders", [0.6, 1.8])[1]:
+            elif wh_ratio < Settings.Image.wh_aspect_borders[1]:
                 if self.original_width < self.original_height:
-                    image_include = f"\\includegraphics[width = {settings.get('default_width', '8cm')}, keepaspectratio]{{{dir}}}"
+                    image_include = f"\\includegraphics[width = {Settings.Image.default_width}, keepaspectratio]{{{dir}}}"
                 else:
-                    image_include = f"\\includegraphics[height = {settings.get('default_height', '8cm')}, keepaspectratio]{{{dir}}}"
+                    image_include = f"\\includegraphics[height = {Settings.Image.default_height}, keepaspectratio]{{{dir}}}"
             else:
                 image_include = (
                     f"\\includegraphics[width = \\textwidth, keepaspectratio]{{{dir}}}"

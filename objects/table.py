@@ -7,9 +7,8 @@ from objects.paragraph import Paragraph
 
 
 class Table:
-    def __init__(self, lines: List[str], settings={}):
+    def __init__(self, lines: List[str]):
         self.lines = lines
-        self.settings = settings
 
         self.ilen = 2
         self.jlen = 2
@@ -24,10 +23,9 @@ class Table:
 
     def _identify_reference(self):
         self._is_initialized = True
-        if self.reference:
-            Global.REFERENCE_DICT[self.reference] = "tab"
+        Global.REFERENCE_DICT[self.reference] = "tab"
 
-    def to_latex(self, settings={}):
+    def to_latex(self):
         if not self._is_initialized:
             raise RuntimeError(
                 "Table is not initialized! Firstly call _identify_reference()"
@@ -41,10 +39,7 @@ class Table:
     def _parse_lines(self) -> str:
         new_lines = []
         for i, line in enumerate(self.lines):
-            line = [
-                Paragraph(x, settings=self.settings).to_latex()
-                for x in line.strip("|").strip().split("|")
-            ]
+            line = [Paragraph(x).to_latex() for x in line.strip("|").strip().split("|")]
             if i == 1:
                 for box in line:
                     box = box.strip()

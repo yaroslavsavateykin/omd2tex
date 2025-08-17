@@ -10,6 +10,7 @@ from objects.headline import Headline
 from objects.table import Table
 from objects.image import Image, ImageFrame
 from objects.quote import Quote
+from tools.settings import Settings
 
 
 class MarkdownParser:
@@ -37,17 +38,15 @@ class MarkdownParser:
 
     def __init__(
         self,
-        settings: dict,
         parrentdir: str = "",
         filename: str = "",
         filedepth: int = 0,
         quotedepth=0,
     ) -> None:
         self.filename = filename
-        self.settings = settings
 
         if self.filename and (
-            settings.get("branching_project", False)
+            Settings.Export.branching_project
             and not parrentdir.endswith(self.filename.strip(".md"))
         ):
             self.parrentdir = parrentdir + "/" + self.filename.strip(".md")
@@ -57,7 +56,7 @@ class MarkdownParser:
         self.filedepth = filedepth
         self.quotedepth = quotedepth
 
-        self.dir_filename = find_file(filename, search_path=settings["dir"])
+        self.dir_filename = find_file(filename, search_path=Settings.Export.search_dir)
 
         self.yaml = None
 
@@ -169,7 +168,6 @@ class MarkdownParser:
                     caption=caption,
                     width=width,
                     height=height,
-                    settings=self.settings,
                 )
                 if ref_link:
                     image_obj.reference = ref_link
@@ -218,7 +216,6 @@ class MarkdownParser:
                     caption=caption,
                     width=width,
                     height=height,
-                    settings=self.settings,
                 )
 
                 if reference:
@@ -234,9 +231,9 @@ class MarkdownParser:
             # Extracting text files
             m = self.re_text_files1.match(line)
             if m:
-                if self.filedepth >= self.settings["max_file_recursion"]:
+                if self.filedepth >= Settings.File.max_file_recursion:
                     raise RecursionError(
-                        f"Maximum file nesting filedepth ({self.settings['max_file_recursion']}) exceeded"
+                        f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"
                     )
                 filename, _ = m.groups()
 
@@ -254,8 +251,9 @@ class MarkdownParser:
 
                 elements.append(
                     File(
-                        filename + ".md" if not filename.endswith(".md") else filename,
-                        self.settings,
+                        filename=filename + ".md"
+                        if not filename.endswith(".md")
+                        else filename,
                         parrentfilename=self.filename,
                         parrentdir=self.parrentdir,
                         filedepth=self.filedepth + 1,
@@ -266,9 +264,9 @@ class MarkdownParser:
 
             n = self.re_text_files2.match(line)
             if n:
-                if self.filedepth >= self.settings["max_file_recursion"]:
+                if self.filedepth >= Settings.File.max_file_recursion:
                     raise RecursionError(
-                        f"Maximum file nesting filedepth ({self.settings['max_file_recursion']}) exceeded"
+                        f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"
                     )
                 _, filename, extension = n.groups()
                 if any(filename.lower().endswith(ext) for ext in image_extensions):
@@ -292,7 +290,6 @@ class MarkdownParser:
                 elements.append(
                     File(
                         full_filename,
-                        self.settings,
                         parrentfilename=self.filename,
                         parrentdir=self.parrentdir,
                         filedepth=self.filedepth + 1,
@@ -316,7 +313,6 @@ class MarkdownParser:
                             CodeBlock(
                                 blocktype,
                                 blocklines,
-                                settings=self.settings,
                             )
                         )
                     in_code_block = False
@@ -352,60 +348,89 @@ class MarkdownParser:
                 i += 1
                 continue
 
-            # Начало таблицы
-            if line.strip().startswith("|") and not in_table:
-                in_table = True
-                tablelines = [line]
+            # Проверяем, есть ли следующая строка и начинается ли она с "|"
+            next_is_table = i + 1 < len(lines) and lines[i + 1].strip().startswith("|")
+
+            if line.strip().startswith("|"):
+                if not in_table:
+                    in_table = True
+                    tablelines = [line]
+                else:
+                    tablelines.append(line)
+
+                # Если текущая строка последняя ИЛИ следующая строка НЕ таблица
+                if i == len(lines) - 1 or not next_is_table:
+                    if len(tablelines) >= 2:  # Проверяем минимальный формат
+                        elements.append(Table(tablelines))
+                        in_table = False
+                        tablelines = []
                 i += 1
                 continue
 
-            if line.strip().startswith("|") and in_table:
-                tablelines.append(line)
-                i += 1
-                continue
+            else:
+                if in_table:
+                    if len(tablelines) >= 2:
+                        elements.append(Table(tablelines))
+                    in_table = False
+                    tablelines = []
+                    i += 1
+                    continue
 
-            if not line.strip().startswith("|") and in_table:
-                if len(tablelines) >= 2:  # Минимум заголовок и разделитель
-                    elements.append(Table(tablelines, settings=self.settings))
-                in_table = False
-                tablelines = []
-            # Конец обработки таблицы
+            # Проверяем, есть ли следующая строка и начинается ли она с ">"
+            next_is_quote = i + 1 < len(lines) and lines[i + 1].strip().startswith(">")
 
-            # Начало обработки блока пометок
-            if line.strip().startswith(">") and not in_quote:
-                in_quote = True
-                quotelines = [line]
-                i += 1
-                continue
+            if line.strip().startswith(">"):
+                if not in_quote:
+                    in_quote = True
+                    quotelines = [line]
+                else:
+                    quotelines.append(line)
 
-            if line.strip().startswith(">") and in_quote:
-                quotelines.append(line)
-                i += 1
-                continue
-
-            if not line.strip().startswith(">") and in_quote:
-                if self.quotedepth >= 3:
-                    raise RecursionError(
-                        "Maximum quote nesting quotedepth (3) exceeded"
+                # Если текущая строка последняя ИЛИ следующая строка НЕ цитата
+                if i == len(lines) - 1 or not next_is_quote:
+                    if self.quotedepth >= Settings.Quote.max_quote_recursion:
+                        raise RecursionError(
+                            f"Maximum quote nesting quotedepth ({Settings.Quote.max_quote_recursion}) exceeded"
+                        )
+                    elements.append(
+                        Quote(
+                            quotelines=quotelines,
+                            filename=self.filename,
+                            parrentfilename=self.filename,
+                            parrentdir=self.parrentdir,
+                            quotedepth=self.quotedepth + 1,
+                        )
                     )
-                elements.append(
-                    Quote(
-                        quotelines=quotelines,
-                        settings=self.settings,
-                        filename=self.filename,
-                        parrentfilename=self.filename,
-                        parrentdir=self.parrentdir,
-                        quotedepth=self.quotedepth + 1,
-                    )
-                )
-                in_quote = False
-                quotelines = []
+                    in_quote = False
+                    quotelines = []
+                i += 1
+                continue
 
-            # ЗАГОЛОВКИ
+            else:
+                if in_quote:
+                    if self.quotedepth >= Settings.Quote.max_quote_recursion:
+                        raise RecursionError(
+                            f"Maximum quote nesting quotedepth ({Settings.Quote.max_quote_recursion}) exceeded"
+                        )
+                    elements.append(
+                        Quote(
+                            quotelines=quotelines,
+                            filename=self.filename,
+                            parrentfilename=self.filename,
+                            parrentdir=self.parrentdir,
+                            quotedepth=self.quotedepth + 1,
+                        )
+                    )
+                    in_quote = False
+                    quotelines = []
+                    i += 1
+                    continue
+
+                # ЗАГОЛОВКИ
             n = self.re_heading.match(line)
             if n:
                 level, line = n.groups()
-                elements.append(Headline(len(level) - 1, line, settings=self.settings))
+                elements.append(Headline(len(level) - 1, line))
                 i += 1
                 continue
 
@@ -419,29 +444,7 @@ class MarkdownParser:
             ):
                 paragraph_lines.append(lines[i])
                 i += 1
-            joined = "\n".join(l.strip() for l in paragraph_lines)
-            elements.append(Paragraph(joined, self.settings))
-
-        if in_table and len(tablelines) >= 2:
-            elements.append(Table(tablelines, settings=self.settings))
-            in_table = False
-
-        if in_quote:
-            if self.quotedepth >= self.settings.get("quote")["max_quote_recursion"]:
-                raise RecursionError(
-                    f"Maximum quote nesting quotedepth ({self.settings.get('quote')['max_quote_recursion']}) exceeded"
-                )
-
-            elements.append(
-                Quote(
-                    quotelines=quotelines,
-                    settings=self.settings,
-                    filename=self.filename,
-                    parrentfilename=self.filename,
-                    parrentdir=self.parrentdir,
-                    quotedepth=self.quotedepth + 1,
-                )
-            )
-            in_quote = False
+            joined = "\n".join(line.strip() for line in paragraph_lines)
+            elements.append(Paragraph(joined))
 
         return elements

@@ -1,4 +1,5 @@
 from tools.markdown_parser import MarkdownParser
+from tools.settings import Settings
 from .reference import Reference
 
 
@@ -6,23 +7,20 @@ class File:
     def __init__(
         self,
         filename: str,
-        settings: dict,
-        depth: int = 0,
         parrentfilename: str = "",
         parrentdir: str = "",
+        filedepth: int = 0,
     ) -> None:
         self.filename = filename
         self.parrentfilename = parrentfilename
         self.parrentdir = parrentdir
-        self.settings = settings
-        self.filedepth = depth
+        self.filedepth = filedepth
 
         self.elements = File._process_elements_list(
             MarkdownParser(
-                settings=settings,
                 filename=filename,
                 parrentdir=parrentdir,
-                filedepth=depth,
+                filedepth=filedepth,
             ).parse()
         )
 
@@ -44,7 +42,7 @@ class File:
         return text
 
     def to_latex_project(self) -> str:
-        if self.settings["branching_project"]:
+        if Settings.Export.branching_project:
             pass
         else:
             # print(self.elements)

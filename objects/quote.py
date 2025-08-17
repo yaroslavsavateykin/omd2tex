@@ -6,7 +6,6 @@ class Quote:
     def __init__(
         self,
         quotelines: List[str],
-        settings: dict = {},
         filename: str = "",
         parrentfilename: str = "",
         parrentdir="",
@@ -14,7 +13,6 @@ class Quote:
         quotedepth=0,
     ):
         self.lines = quotelines
-        self.settings = settings
 
         self.type = None
         self.heading = None
@@ -33,7 +31,6 @@ class Quote:
 
         self.elements = File._process_elements_list(
             MarkdownParser(
-                settings=settings,
                 filename=filename,
                 parrentdir=parrentdir,
                 filedepth=filedepth,

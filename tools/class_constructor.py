@@ -78,10 +78,10 @@ class ClassConstructor:
         # Создаем атрибуты класса
         class_attrs = {}
 
+        # Добавляем вложенные классы как вложенные классы
         for key, value in data.items():
             if isinstance(value, dict):
-                # Для вложенных словарей создаем подкласс
-                nested_class_name = f"{key.capitalize()}Config"
+                nested_class_name = key.capitalize()
                 nested_config = self._create_config_from_dict(value, nested_class_name)
                 class_attrs[key] = nested_config
             else:
@@ -124,7 +124,7 @@ class ClassConstructor:
         print(f"Класс конфигурации сохранен в файл: {file_path}")
 
     def _generate_python_code(
-        self, data: Dict[str, Any], class_name: str, is_root: bool = True
+        self, data: Dict[str, Any], class_name: str, indent_level: int = 0
     ) -> str:
         """
         Генерирует код Python для класса конфигурации
@@ -132,53 +132,48 @@ class ClassConstructor:
         Args:
             data: Словарь с данными
             class_name: Имя класса
-            is_root: Является ли класс корневым
+            indent_level: Уровень отступа для вложенных классов
 
         Returns:
             Строка с кодом Python
         """
+        indent = "    " * indent_level
         code = ""
 
-        # Если это корневой класс, добавляем импорты и базовый класс
-        if is_root:
+        # Если это корневой класс, добавляем импорты
+        if indent_level == 0:
             code = "from tools.config_base import ConfigBase\n\n"
-        # with open("tools/config_base", "r") as f:
-        # code = f.read()
 
-        # Генерируем вложенные классы сначала
-        nested_classes = []
+        # Начинаем определение класса
+        code += f"{indent}class {class_name}(ConfigBase):\n"
+
+        # Генерируем вложенные классы как вложенные в текущий класс
         for key, value in data.items():
             if isinstance(value, dict):
-                nested_class_name = f"{key.capitalize()}Config"
+                nested_class_name = key.capitalize()
                 nested_code = self._generate_python_code(
-                    value, nested_class_name, False
+                    value, nested_class_name, indent_level + 1
                 )
-                nested_classes.append(nested_code)
+                code += nested_code + "\n"
 
-        # Добавляем вложенные классы
-        for nested_class in nested_classes:
-            code += nested_class + "\n"
-
-        # Генерируем основной класс
-        code += f"class {class_name}(ConfigBase):\n"
-
-        # Добавляем переменные класса
+        # Добавляем атрибуты текущего уровня (простые значения)
         for key, value in data.items():
             if not isinstance(value, dict):
-                code += f"    {key} = {repr(value)}\n"
+                code += f"{indent}    {key} = {repr(value)}\n"
 
-        code += "\n"
-        code += f"    def __init__(self):\n"
+        # Добавляем разделитель перед методами
+        if any(not isinstance(v, dict) for v in data.values()):
+            code += "\n"
 
-        # Добавляем инициализацию атрибутов экземпляра
+        # Добавляем __init__ метод
+        code += f"{indent}    def __init__(self):\n"
         for key, value in data.items():
             if isinstance(value, dict):
-                nested_class_name = f"{key.capitalize()}Config"
-                code += f"        self.{key} = {nested_class_name}()\n"
+                # Для вложенных классов создаем экземпляр
+                code += f"{indent}        self.{key} = self.__class__.{key.capitalize()}()\n"
             else:
-                code += f"        self.{key} = self.__class__.{key}\n"
-
-        code += f"        super().__init__()\n"
+                code += f"{indent}        self.{key} = self.__class__.{key}\n"
+        code += f"{indent}        super().__init__()\n\n"
 
         return code
 

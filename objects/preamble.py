@@ -1,13 +1,18 @@
+import json
 from typing import Dict
+
+from tools.settings import Settings
 
 
 class Preamble:
-    def __init__(self, preamble: Dict, parrentdir="") -> None:
-        self.preamble = preamble
-        self.parrentdir = parrentdir
+    def __init__(self) -> None:
+        pass
 
     def to_latex(self):
-        preamble = self.preamble
+        preamble = Settings.Preamble.settings_json
+        with open(preamble) as f:
+            preamble = json.load(f)
+
         string = rf"""
 \documentclass[{preamble["fontsize"]}]{{{preamble["documentclass"]}}} % Дополнительные размеры
 \linespread{{{preamble["linespread"]}}}

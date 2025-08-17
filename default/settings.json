@@ -1,15 +1,22 @@
 {
-  "max_file_recursion": 5,
-  "dir": "~/Vzlet/",
-  "preamble": true,
-  "makefile": true,
-  "output_dir": "~/omd2tex/test/",
-  "branching_project": false,
+  "export": {
+    "search_dir": "~/Obsidian/",
+    "makefile": true,
+    "export_dir": "./test/",
+    "branching_project": false
+  },
   "paragraph": {
     "latinify": true,
     "latinify_probability": 0.05,
     "latinify_json": "default/latinify.json",
     "formulas_json": "default/formulas.json"
+  },
+  "preamble": {
+    "create_preamble": true,
+    "settings_json": "default/preamble.json"
+  },
+  "file": {
+    "max_file_recursion": 5
   },
   "headline": {
     "global_level_align": true,
