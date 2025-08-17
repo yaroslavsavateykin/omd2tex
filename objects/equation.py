@@ -1,4 +1,4 @@
-from .globals import Global
+from tools.globals import Global
 
 
 class Equation:

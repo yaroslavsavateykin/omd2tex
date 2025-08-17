@@ -23,5 +23,8 @@
     ],
     "default_width": "8cm",
     "default_height": "8cm"
+  },
+  "quote": {
+    "max_quote_recursion": 5
   }
 }

@@ -7,6 +7,7 @@ def main():
 
     doc = Document(filename)
 
+    doc.check()
     doc.to_latex_porject()
 
 

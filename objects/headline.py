@@ -3,7 +3,7 @@ import re
 from objects.equation import Equation
 
 from .paragraph import Paragraph
-from .globals import Global
+from tools.globals import Global
 
 
 class Headline:

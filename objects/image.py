@@ -5,7 +5,7 @@ import os
 from objects import reference
 from objects.paragraph import Paragraph
 from tools.search import find_file
-from objects.globals import Global
+from tools.globals import Global
 
 
 class Image:

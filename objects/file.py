@@ -1,7 +1,4 @@
-from objects.globals import Global
-from objects.headline import Headline
-from tools.search import find_file
-from .markdownparser import MarkdownParser
+from tools.markdown_parser import MarkdownParser
 from .reference import Reference
 
 
@@ -18,10 +15,15 @@ class File:
         self.parrentfilename = parrentfilename
         self.parrentdir = parrentdir
         self.settings = settings
-        self.depth = depth
+        self.filedepth = depth
 
         self.elements = File._process_elements_list(
-            MarkdownParser(filename, settings, parrentdir, depth).parse()
+            MarkdownParser(
+                settings=settings,
+                filename=filename,
+                parrentdir=parrentdir,
+                filedepth=depth,
+            ).parse()
         )
 
     def check(self):

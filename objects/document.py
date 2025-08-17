@@ -4,9 +4,9 @@ import shutil
 
 from objects.paragraph import Paragraph
 
-from .preamble import Preamble
-from .file import File
-from .globals import Global
+from objects.preamble import Preamble
+from objects.file import File
+from tools.globals import Global
 
 
 class Document:
@@ -95,7 +95,7 @@ class Document:
         try:
             os.makedirs(self.dir + "/" + self.filename.strip(".md"))
         except:
-            print("Не удалось создать директорию проекта или она уже создана")
+            # print("Не удалось создать директорию проекта или она уже создана")
             pass
 
         shutil.copy2("default/Makefile", self.dir + "/" + self.filename.strip(".md"))

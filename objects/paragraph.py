@@ -2,7 +2,7 @@ import re
 import json
 import random
 
-from objects.globals import Global
+from tools.globals import Global
 
 
 class Paragraph:
@@ -43,8 +43,8 @@ class Paragraph:
             r"\~\~(.*?)\~\~": lambda x: f"\\sout{{{x.group(1)}}}",
             r"\#(.*?)": lambda x: f"{x.group(1)}",
             r"\<u>(.*?)<\/u>": lambda x: f"\\ul{{{x.group(1)}}}",
-            r"\<sup>(.*?)<\/sup>": lambda x: f"_\\text{{{x.group(1)}}}",
-            r"\<sub>(.*?)<\/sub>": lambda x: f"^\\text{{{x.group(1)}}}",
+            r"\<sup>(.*?)<\/sup>": lambda x: f"$_\\text{{{x.group(1)}}}$",
+            r"\<sub>(.*?)<\/sub>": lambda x: f"$^\\text{{{x.group(1)}}}$",
         }
 
         for regular in change_dict:
@@ -203,7 +203,7 @@ class Paragraph:
         if self.settings:
             text = re.sub(
                 r"\$(?:[^$\\]|\\\$|\\[^$])*?\$",
-                lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=self.settings['formulas_json'])}$",
+                lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=self.settings.get('formulas_json'))}$",
                 self.text,
             )
             text = self._change_letters_for_equations(
@@ -226,11 +226,11 @@ class Paragraph:
 
             text = self._process_references(text)
 
-            if self.settings["latinify"]:
+            if self.settings.get("latinify"):
                 text = self._latinify_lines(
                     text,
-                    probability=self.settings["latinify_probability"],
-                    change_dict=self.settings["latinify_json"],
+                    probability=self.settings.get("latinify_probability"),
+                    change_dict=self.settings.get("latinify_json"),
                 )
         else:
             text = self.text

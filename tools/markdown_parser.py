@@ -2,12 +2,14 @@ import re
 import yaml
 
 from tools.search import find_file
-from .equation import Equation
-from .paragraph import Paragraph
-from .codeblock import CodeBlock
-from .reference import Reference
-from .headline import Headline
-from .image import Image, ImageFrame
+from objects.equation import Equation
+from objects.paragraph import Paragraph
+from objects.codeblock import CodeBlock
+from objects.reference import Reference
+from objects.headline import Headline
+from objects.table import Table
+from objects.image import Image, ImageFrame
+from objects.quote import Quote
 
 
 class MarkdownParser:
@@ -34,19 +36,26 @@ class MarkdownParser:
     re_heading = re.compile(r"^(#{1,6})\s+(.*)")
 
     def __init__(
-        self, filename: str, settings: dict, parrentdir: str, depth: int = 0
+        self,
+        settings: dict,
+        parrentdir: str = "",
+        filename: str = "",
+        filedepth: int = 0,
+        quotedepth=0,
     ) -> None:
         self.filename = filename
         self.settings = settings
 
-        if settings.get("branching_project", False) and not parrentdir.endswith(
-            self.filename.strip(".md")
+        if self.filename and (
+            settings.get("branching_project", False)
+            and not parrentdir.endswith(self.filename.strip(".md"))
         ):
             self.parrentdir = parrentdir + "/" + self.filename.strip(".md")
         else:
             self.parrentdir = parrentdir
 
-        self.depth = depth
+        self.filedepth = filedepth
+        self.quotedepth = quotedepth
 
         self.dir_filename = find_file(filename, search_path=settings["dir"])
 
@@ -66,8 +75,8 @@ class MarkdownParser:
         height = int(size_parts[1]) if len(size_parts) > 1 else None
         return width, height
 
-    def parse(self):
-        from .file import File
+    def parse(self, lines=[]):
+        from objects.file import File
 
         non_md_extensions = [
             ".jpg",
@@ -99,13 +108,16 @@ class MarkdownParser:
             ".svg",
         ]
 
-        with open(self.dir_filename, "r", encoding="utf-8") as f:
-            lines = f.read().splitlines()
+        if not lines:
+            with open(self.dir_filename, "r", encoding="utf-8") as f:
+                lines = f.read().splitlines()
 
         i = 0
         in_yaml = False
         in_code_block = False
         in_equation = False
+        in_table = False
+        in_quote = False
 
         elements = []
 
@@ -222,9 +234,9 @@ class MarkdownParser:
             # Extracting text files
             m = self.re_text_files1.match(line)
             if m:
-                if self.depth >= self.settings["max_file_recursion"]:
+                if self.filedepth >= self.settings["max_file_recursion"]:
                     raise RecursionError(
-                        f"Maximum file nesting depth ({self.settings['max_file_recursion']}) exceeded"
+                        f"Maximum file nesting filedepth ({self.settings['max_file_recursion']}) exceeded"
                     )
                 filename, _ = m.groups()
 
@@ -246,7 +258,7 @@ class MarkdownParser:
                         self.settings,
                         parrentfilename=self.filename,
                         parrentdir=self.parrentdir,
-                        depth=self.depth + 1,
+                        filedepth=self.filedepth + 1,
                     )
                 )
                 i += 1
@@ -254,9 +266,9 @@ class MarkdownParser:
 
             n = self.re_text_files2.match(line)
             if n:
-                if self.depth >= self.settings["max_file_recursion"]:
+                if self.filedepth >= self.settings["max_file_recursion"]:
                     raise RecursionError(
-                        f"Maximum file nesting depth ({self.settings['max_file_recursion']}) exceeded"
+                        f"Maximum file nesting filedepth ({self.settings['max_file_recursion']}) exceeded"
                     )
                 _, filename, extension = n.groups()
                 if any(filename.lower().endswith(ext) for ext in image_extensions):
@@ -283,7 +295,7 @@ class MarkdownParser:
                         self.settings,
                         parrentfilename=self.filename,
                         parrentdir=self.parrentdir,
-                        depth=self.depth + 1,
+                        filedepth=self.filedepth + 1,
                     )
                 )
                 i += 1
@@ -340,6 +352,56 @@ class MarkdownParser:
                 i += 1
                 continue
 
+            # Начало таблицы
+            if line.strip().startswith("|") and not in_table:
+                in_table = True
+                tablelines = [line]
+                i += 1
+                continue
+
+            if line.strip().startswith("|") and in_table:
+                tablelines.append(line)
+                i += 1
+                continue
+
+            if not line.strip().startswith("|") and in_table:
+                if len(tablelines) >= 2:  # Минимум заголовок и разделитель
+                    elements.append(Table(tablelines, settings=self.settings))
+                in_table = False
+                tablelines = []
+            # Конец обработки таблицы
+
+            # Начало обработки блока пометок
+            if line.strip().startswith(">") and not in_quote:
+                in_quote = True
+                quotelines = [line]
+                i += 1
+                continue
+
+            if line.strip().startswith(">") and in_quote:
+                quotelines.append(line)
+                i += 1
+                continue
+
+            if not line.strip().startswith(">") and in_quote:
+                if self.quotedepth >= 3:
+                    raise RecursionError(
+                        "Maximum quote nesting quotedepth (3) exceeded"
+                    )
+                elements.append(
+                    Quote(
+                        quotelines=quotelines,
+                        settings=self.settings,
+                        filename=self.filename,
+                        parrentfilename=self.filename,
+                        parrentdir=self.parrentdir,
+                        quotedepth=self.quotedepth + 1,
+                    )
+                )
+                in_quote = False
+                quotelines = []
+
+            # ЗАГОЛОВКИ
             n = self.re_heading.match(line)
             if n:
                 level, line = n.groups()
@@ -350,10 +412,36 @@ class MarkdownParser:
             # Параграф
             paragraph_lines = [line]
             i += 1
-            while i < len(lines) and lines[i].strip():
+            while (
+                i < len(lines)
+                and lines[i].strip()
+                and not lines[i].strip().startswith(">")
+            ):
                 paragraph_lines.append(lines[i])
                 i += 1
             joined = "\n".join(l.strip() for l in paragraph_lines)
             elements.append(Paragraph(joined, self.settings))
+
+        if in_table and len(tablelines) >= 2:
+            elements.append(Table(tablelines, settings=self.settings))
+            in_table = False
+
+        if in_quote:
+            if self.quotedepth >= self.settings.get("quote")["max_quote_recursion"]:
+                raise RecursionError(
+                    f"Maximum quote nesting quotedepth ({self.settings.get('quote')['max_quote_recursion']}) exceeded"
+                )
+
+            elements.append(
+                Quote(
+                    quotelines=quotelines,
+                    settings=self.settings,
+                    filename=self.filename,
+                    parrentfilename=self.filename,
+                    parrentdir=self.parrentdir,
+                    quotedepth=self.quotedepth + 1,
+                )
+            )
+            in_quote = False
 
         return elements

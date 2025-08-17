@@ -1,6 +1,7 @@
 from objects.equation import Equation
 from objects.headline import Headline
 from objects.image import Image
+from objects.table import Table
 
 
 class Reference:
@@ -16,7 +17,7 @@ class Reference:
     @staticmethod
     def identify_elements_reference(elements: list) -> list:
         new_list = []
-        types = [Headline, Equation, Image]
+        types = [Headline, Equation, Image, Table]
 
         for el in elements:
             if type(el) in types:
