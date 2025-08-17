@@ -2,6 +2,7 @@ import re
 import json
 import random
 
+from objects.footnote import Footnote
 from tools.globals import Global
 from tools.settings import Settings
 
@@ -12,6 +13,8 @@ class Paragraph:
         self.parse = parse
 
         self.reference = None
+
+        self.footnote = Footnote().collection
 
     def to_latex(self):
         return self._parse_text()
@@ -198,6 +201,19 @@ class Paragraph:
 
         return text
 
+    def _process_footnotes(self, text: str) -> str:
+        def process(match):
+            key = match.group(1)
+            if self.footnote[key]:
+                return f" \\footnote{{{self.footnote[key]}}} "
+            else:
+                print(f"Footnote {key}")
+                return " "
+
+        text = re.sub(r"\[\^([^\]]+)\]", process, text)
+
+        return text
+
     def _parse_text(self) -> str:
         if self.parse:
             text = re.sub(
@@ -224,6 +240,8 @@ class Paragraph:
             )
 
             text = self._process_references(text)
+
+            text = self._process_footnotes(text)
 
             if Settings.Paragraph.latinify:
                 text = self._latinify_lines(

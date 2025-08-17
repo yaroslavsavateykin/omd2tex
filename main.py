@@ -8,6 +8,7 @@ def main():
 
     Settings.Export.search_dir = "~/Vzlet/"
     Settings.Export.export_dir = "~/omd2tex/test/"
+
     doc = Document(filename)
 
     # Settings.check()

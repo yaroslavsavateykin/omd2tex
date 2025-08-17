@@ -10,6 +10,7 @@ from objects.headline import Headline
 from objects.table import Table
 from objects.image import Image, ImageFrame
 from objects.quote import Quote
+from objects.footnote import Footnote
 from tools.settings import Settings
 
 
@@ -18,7 +19,6 @@ class MarkdownParser:
     re_image = re.compile(r"^!\[(.*?)\]\((.*?)\)")
     re_link = re.compile(r"^\[(.*?)\]\((.*?)\)")
     re_comment = re.compile(r"^<!--(.*?)-->$")
-    re_footnote = re.compile(r"^\[\^(.+?)\]:\s+(.*)")
 
     re_text_files1 = re.compile(
         r"!?\[\[([^|\[\]]+?(?:\.(?:md|tex|txt))?)(?:\|([^\[\]]+))?\]\]"
@@ -35,6 +35,8 @@ class MarkdownParser:
     )
 
     re_heading = re.compile(r"^(#{1,6})\s+(.*)")
+
+    re_footnote = re.compile(r"^\s*\[\^([^\]]+)\]:(.*)")
 
     def __init__(
         self,
@@ -146,6 +148,13 @@ class MarkdownParser:
                     yaml_lines.append(line)
                     i += 1
                     continue
+
+            m = self.re_footnote.match(line)
+            if m:
+                footnote_key, footnote_text = m.groups()
+                Footnote.append(footnote_key, footnote_text)
+                i += 1
+                continue
 
             m = self.re_markdown_image.match(line)
             if m:
@@ -446,5 +455,7 @@ class MarkdownParser:
                 i += 1
             joined = "\n".join(line.strip() for line in paragraph_lines)
             elements.append(Paragraph(joined))
+
+        Footnote.to_default()
 
         return elements
