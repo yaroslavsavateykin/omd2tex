@@ -4,6 +4,8 @@ import shutil
 from typing import Any, Dict, Union
 
 
+from objects import citation
+from objects.citation import Citation
 from objects.paragraph import Paragraph
 from objects.preamble import Preamble
 from objects.file import File
@@ -55,12 +57,23 @@ class Document:
             parrentdir=self.dir,
         ).to_latex()
 
+        if Global.CITATION_INITIALIZED:
+            citations = Citation.to_latex_preamble()
+            bibliography = "\\newpage\\printbibliography"
+        else:
+            citations = ""
+            bibliography = ""
+
         document = rf"""
 {preamble}
+
+{citations}
 
 \begin{{document}}
 
 {file}
+
+{bibliography}
 
 \end{{document}}"""
 
@@ -102,12 +115,23 @@ class Document:
                 "default/Makefile", self.dir + "/" + self.filename.strip(".md")
             )
 
+        if Global.CITATION_INITIALIZED:
+            citations = Citation.to_latex_preamble()
+            bibliography = "\\newpage\\printbibliography"
+        else:
+            citations = ""
+            bibliography = ""
+
         document = f"""
 {self.preamble.to_latex_project()}
+
+{citations}
 
 \\begin{{document}}
 
 {main.to_latex_project()}
+
+{bibliography}
 
 \\end{{document}}"""
 

@@ -1,3 +1,4 @@
+from objects.list import List
 from tools.markdown_parser import MarkdownParser
 from tools.settings import Settings
 from .reference import Reference
@@ -33,6 +34,8 @@ class File:
     def _process_elements_list(elements: list) -> list:
         elements = Reference.attach_reference(elements)
         elements = Reference.identify_elements_reference(elements)
+        elements = List.append_items(elements)
+        elements = List.merge_items(elements)
 
         return elements
 

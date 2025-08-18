@@ -1,6 +1,7 @@
 import re
 import yaml
 
+from objects.fragment import SplitLine
 from tools.search import find_file
 from objects.equation import Equation
 from objects.paragraph import Paragraph
@@ -11,6 +12,7 @@ from objects.table import Table
 from objects.image import Image, ImageFrame
 from objects.quote import Quote
 from objects.footnote import Footnote
+from objects.list import Enumerate, Bullet, Check
 from tools.settings import Settings
 
 
@@ -37,6 +39,8 @@ class MarkdownParser:
     re_heading = re.compile(r"^(#{1,6})\s+(.*)")
 
     re_footnote = re.compile(r"^\s*\[\^([^\]]+)\]:(.*)")
+
+    enumerate_pattern = r"^(\d+)[.)]\s+(.+)$"
 
     def __init__(
         self,
@@ -122,6 +126,8 @@ class MarkdownParser:
 
         elements = []
 
+        footnote = Footnote()
+
         while i < len(lines):
             line = lines[i]
 
@@ -129,6 +135,10 @@ class MarkdownParser:
             if not line.strip():
                 i += 1
                 continue
+
+            # CHANGING FOOTNOTE KEYS
+
+            line = footnote.change_footnote_keys(line)
 
             # READING YAML
             if i == 0 and line.startswith("---"):
@@ -149,9 +159,61 @@ class MarkdownParser:
                     i += 1
                     continue
 
+            if line.strip().startswith("---"):
+                elements.append(SplitLine())
+                i += 1
+                continue
+
+            depth = 0
+            stripped_line = line
+            while stripped_line.startswith("    "):
+                depth += 1
+                stripped_line = stripped_line[4:]
+
+            reference = None
+            reference_match = re.search(r"\^([a-zA-Z0-9]{6})$", stripped_line)
+            if reference_match:
+                reference = reference_match.group(1)
+                stripped_line = stripped_line[: reference_match.start()].rstrip()
+
+            enumerate_match = re.match(r"^(\d+)[.)]\s+(.+)$", stripped_line)
+            if enumerate_match:
+                number = int(enumerate_match.group(1))
+                text = enumerate_match.group(2)
+                item = Enumerate(text=text, number=number, depth=depth)
+                if reference:
+                    item.reference = reference
+                elements.append(item)
+                i += 1
+                continue
+
+            elif stripped_line.startswith("- [") and len(stripped_line) > 4:
+                complete = stripped_line[3] == "x"
+                text_start = stripped_line.find("] ")
+                if text_start != -1:
+                    text = stripped_line[text_start + 2 :]
+                else:
+                    text = ""
+                item = Check(text=text, complete=complete, depth=depth)
+                if reference:
+                    item.reference = reference
+                elements.append(item)
+                i += 1
+                continue
+
+            elif stripped_line.startswith("- "):
+                text = stripped_line[2:]
+                item = Bullet(text=text, depth=depth)
+                if reference:
+                    item.reference = reference
+                elements.append(item)
+                i += 1
+                continue
+
             m = self.re_footnote.match(line)
             if m:
                 footnote_key, footnote_text = m.groups()
+
                 Footnote.append(footnote_key, footnote_text)
                 i += 1
                 continue
@@ -443,6 +505,10 @@ class MarkdownParser:
                 i += 1
                 continue
 
+            elements.append(Paragraph(line))
+            i += 1
+            continue
+
             # Параграф
             paragraph_lines = [line]
             i += 1
@@ -450,12 +516,15 @@ class MarkdownParser:
                 i < len(lines)
                 and lines[i].strip()
                 and not lines[i].strip().startswith(">")
+                and not lines[i].strip().startswith("$$")
+                and not lines[i].strip().startswith("#")
+                and not lines[i].strip().startswith("|")
+                and not lines[i].strip().startswith("```")
+                and not lines[i].strip().startswith("-")
             ):
                 paragraph_lines.append(lines[i])
                 i += 1
             joined = "\n".join(line.strip() for line in paragraph_lines)
             elements.append(Paragraph(joined))
-
-        Footnote.to_default()
 
         return elements

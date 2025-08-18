@@ -13,7 +13,7 @@ def main():
 
     # Settings.check()
 
-    # doc.check()
+    doc.check()
     doc.to_latex_porject()
 
 

@@ -33,5 +33,10 @@
   },
   "quote": {
     "max_quote_recursion": 5
+  },
+  "fragment": {
+    "splitline": {
+      "width": "0.5pt"
+    }
   }
 }

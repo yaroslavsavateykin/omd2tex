@@ -79,6 +79,20 @@ class Settings(ConfigBase):
             super().__init__()
 
 
+    class Fragment(ConfigBase):
+        class Splitline(ConfigBase):
+            width = '0.5pt'
+
+            def __init__(self):
+                self.width = self.__class__.width
+                super().__init__()
+
+
+        def __init__(self):
+            self.splitline = self.__class__.Splitline()
+            super().__init__()
+
+
     def __init__(self):
         self.export = self.__class__.Export()
         self.paragraph = self.__class__.Paragraph()
@@ -87,5 +101,6 @@ class Settings(ConfigBase):
         self.headline = self.__class__.Headline()
         self.image = self.__class__.Image()
         self.quote = self.__class__.Quote()
+        self.fragment = self.__class__.Fragment()
         super().__init__()
 

@@ -2,6 +2,7 @@ import re
 import json
 import random
 
+from objects.citation import Citation
 from objects.footnote import Footnote
 from tools.globals import Global
 from tools.settings import Settings
@@ -81,7 +82,20 @@ class Paragraph:
         return text, inline_equations
 
     @staticmethod
-    def _restore_placeholders(text: str, inline_equations=[], inline_codes=[]) -> str:
+    def _replace_outline_equation(text: str) -> tuple[str, list]:
+        outline_equations = []
+
+        def replace_inline(match):
+            outline_equations.append(match.group(1))
+            return f"@@OUTLINE-EQUATION-{len(outline_equations)}@@"
+
+        text = re.sub(r"\$\$([\\s\\S]*?)\$\$", replace_inline, text)
+        return text, outline_equations
+
+    @staticmethod
+    def _restore_placeholders(
+        text: str, inline_equations=[], inline_codes=[], outline_equations=[]
+    ) -> str:
         if inline_codes:
             for i, inline_code in enumerate(inline_codes):
                 inline_code = (
@@ -99,6 +113,13 @@ class Paragraph:
                 text = text.replace(
                     f"@@INLINE-EQUATION-{i + 1}@@",
                     f"${inline_equation}$",
+                )
+
+        if outline_equations:
+            for i, outline_equation in enumerate(outline_equations):
+                text = text.replace(
+                    f"@@OUTLINE-EQUATION-{i + 1}@@",
+                    f"${outline_equation}$",
                 )
 
         return text
@@ -174,7 +195,11 @@ class Paragraph:
 
     @staticmethod
     def _text_errors_workaround(text: str) -> str:
-        pass
+        change_dict = {"й": "й"}
+        for key in change_dict:
+            text = text.replace(key, change_dict[key])
+
+        return text
 
     @staticmethod
     def _process_references(text: str) -> str:
@@ -214,12 +239,67 @@ class Paragraph:
 
         return text
 
+    @staticmethod
+    def _process_citations(text):
+        """
+        Обрабатывает различные форматы цитирований и приводит их к формату: text \cite{cite}
+
+        Поддерживаемые форматы:
+        ![[@cite|text]] -> text \cite{cite}
+        ![[@cite]] -> \cite{cite}
+        [[@cite|text]] -> text \cite{cite}
+        [[@cite]] -> \cite{cite}
+        \cite{@cite} -> \cite{cite}
+        \cite{cite} -> \cite{cite}
+        """
+        result = text
+
+        pattern1 = r"(!?)\[\[@([^|\]]+)(?:\|([^\]]+))?\]\]"
+
+        def replace_pattern1(match):
+            has_exclamation = match.group(1) == "!"
+            cite = match.group(2).strip()
+            text_part = match.group(3)
+
+            if text_part:
+                cit = Citation(key=f"@{cite}")
+                if cit.text:
+                    return f"{text_part.strip()} \\cite{{{cite}}}"
+                else:
+                    return ""
+            else:
+                cit = Citation(key=f"@{cite}")
+                if cit.text:
+                    return f"\\cite{{{cite}}}"
+                else:
+                    return ""
+
+        result = re.sub(pattern1, replace_pattern1, result)
+
+        pattern2 = r"\\cite\{@([^}]+)\}"
+
+        def replace_pattern2(match):
+            cite = match.group(1).strip()
+            cit = Citation(key=f"@{cite}")
+            if cit.text:
+                return f"\\cite{{{cite}}}"
+            else:
+                return ""
+
+        result = re.sub(pattern2, replace_pattern2, result)
+
+        return result
+
     def _parse_text(self) -> str:
         if self.parse:
+            text = self.text
+
+            text, outline_equations = self._replace_outline_equation(text)
+
             text = re.sub(
                 r"\$(?:[^$\\]|\\\$|\\[^$])*?\$",
                 lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=Settings.Paragraph.formulas_json)}$",
-                self.text,
+                text,
             )
             text = self._change_letters_for_equations(
                 text, surround_func=lambda x: f"${x}$"
@@ -229,6 +309,10 @@ class Paragraph:
 
             text, inline_equations = self._replace_inline_equation(text)
 
+            outline_equations = [
+                self._eq_ru_letter_workaround(x) for x in outline_equations
+            ]
+
             inline_equations = [
                 self._eq_ru_letter_workaround(x) for x in inline_equations
             ]
@@ -236,12 +320,19 @@ class Paragraph:
             text = self._highlight_text(text)
 
             text = self._restore_placeholders(
-                text, inline_codes=inline_codes, inline_equations=inline_equations
+                text,
+                inline_codes=inline_codes,
+                inline_equations=inline_equations,
+                outline_equations=outline_equations,
             )
 
             text = self._process_references(text)
 
             text = self._process_footnotes(text)
+
+            text = self._process_citations(text)
+
+            text = self._text_errors_workaround(text)
 
             if Settings.Paragraph.latinify:
                 text = self._latinify_lines(
