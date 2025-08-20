@@ -2,7 +2,7 @@ from .paragraph import Paragraph
 
 
 class CodeBlock:
-    def __init__(self, blocktype: str, blocklines: list, settings={}) -> None:
+    def __init__(self, blocktype: str, blocklines: list) -> None:
         self.blocktype = blocktype
         self.blocklines = blocklines
 
@@ -11,8 +11,8 @@ class CodeBlock:
     @staticmethod
     def _minted_python(blocklines: list):
         block = f"""
-\\usemintedstyle{{default}}")
-\\begin{{minted}}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{{python}}") 
+\\usemintedstyle{{default}}
+\\begin{{minted}}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{{python}} 
 {"\n".join(blocklines)}
 \\end{{minted}}
 """

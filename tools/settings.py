@@ -40,19 +40,23 @@ class Settings(ConfigBase):
 
 
     class File(ConfigBase):
+        parse = True
         max_file_recursion = 5
 
         def __init__(self):
+            self.parse = self.__class__.parse
             self.max_file_recursion = self.__class__.max_file_recursion
             super().__init__()
 
 
     class Headline(ConfigBase):
+        parse = True
         global_level_align = True
         numeration = True
-        clean_markdown_numeration = True
+        clean_markdown_numeration = False
 
         def __init__(self):
+            self.parse = self.__class__.parse
             self.global_level_align = self.__class__.global_level_align
             self.numeration = self.__class__.numeration
             self.clean_markdown_numeration = self.__class__.clean_markdown_numeration
@@ -60,11 +64,13 @@ class Settings(ConfigBase):
 
 
     class Image(ConfigBase):
+        parse = True
         wh_aspect_borders = [0.6, 1.8]
         default_width = '8cm'
         default_height = '8cm'
 
         def __init__(self):
+            self.parse = self.__class__.parse
             self.wh_aspect_borders = self.__class__.wh_aspect_borders
             self.default_width = self.__class__.default_width
             self.default_height = self.__class__.default_height
@@ -72,18 +78,22 @@ class Settings(ConfigBase):
 
 
     class Quote(ConfigBase):
+        parse = True
         max_quote_recursion = 5
 
         def __init__(self):
+            self.parse = self.__class__.parse
             self.max_quote_recursion = self.__class__.max_quote_recursion
             super().__init__()
 
 
     class Fragment(ConfigBase):
         class Splitline(ConfigBase):
+            parse = True
             width = '0.5pt'
 
             def __init__(self):
+                self.parse = self.__class__.parse
                 self.width = self.__class__.width
                 super().__init__()
 

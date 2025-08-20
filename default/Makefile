@@ -23,6 +23,5 @@ open:
 
 clean:
 	rm -f main.pdf *.aux *.log *.out *.toc *.ps
-	rm -f support/*.png
 	rm -rf _minted*
 	rm -f *.bib *.bcf *.run.xml *.bbl *.blg

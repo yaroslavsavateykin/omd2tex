@@ -7,7 +7,7 @@ class Equation:
 
         self.reference = None
 
-        self._is_initialized = False
+        self._is_initialized = True
 
     def _identify_reference(self):
         self._is_initialized = True

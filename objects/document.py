@@ -2,10 +2,12 @@ import json
 import os
 import shutil
 from typing import Any, Dict, Union
+import uuid
 
 
 from objects import citation
 from objects.citation import Citation
+from objects.makefile import Makefile
 from objects.paragraph import Paragraph
 from objects.preamble import Preamble
 from objects.file import File
@@ -16,46 +18,68 @@ from tools.settings import Settings
 class Document:
     def __init__(
         self,
-        filename: str,
+        filename: str = "",
         settings: Union[Dict[str, Any], str] = None,
         preamble="default/preamble.json",
     ):
-        self.filename = filename
-
         if settings:
             Settings.update(settings)
 
         dir = Settings.Export.export_dir
-        dir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
-        self.dir = dir
+        self.dir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
+
+        self.filename = filename
+        self.file = None
 
         if Settings.Preamble.create_preamble:
-            with open(preamble, "r") as f:
-                self.preamble = Preamble()
+            self.preamble = Preamble()
         else:
             self.preamble = Paragraph("")
 
-    def check(self):
-        File(
-            self.filename,
-            parrentdir=self.dir,
-            parrentfilename=self.filename,
-        ).check()
+    def from_file(self, filename: str):
+        self.filename = filename
+        file = File(
+            filename=self.filename,
+            parrentdir=self.dir + "/" + self.filename.strip(".md"),
+        )
+        file.from_file(filename)
+        self.file = file
 
-        Global.check()
-        Global.to_default()
+    def from_text(self, text: str):
+        self.filename = str(uuid.uuid4())[0:7]
+        file = File(
+            filename=self.filename,
+            parrentdir=self.dir + "/" + self.filename.strip(".md"),
+        )
+        file.from_text(text)
+        self.file = file
+
+    def from_elements(self, list: list):
+        self.filename = str(uuid.uuid4())[0:7]
+        file = File(
+            filename=self.filename,
+            parrentdir=self.dir + "/" + self.filename.strip(".md"),
+        )
+        file.from_elements(list)
+        self.file = file
 
     def _process_settings_logics(self):
         pass
+
+    def check(self):
+        if self.file:
+            self.file.check()
+        else:
+            print("Document is not initialized")
+
+        Global.check()
+        Global.to_default()
 
     def to_latex(self):
         preamble = self.preamble.to_latex()
 
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
-        file = File(
-            self.filename,
-            parrentdir=self.dir,
-        ).to_latex()
+        file = self.file.to_latex()
 
         if Global.CITATION_INITIALIZED:
             citations = Citation.to_latex_preamble()
@@ -92,17 +116,20 @@ class Document:
             f.write(file)
 
         if Settings.Export.makefile:
-            shutil.copy2("default/Makefile", dir)
+            Makefile.to_file(dir)
 
         Global.to_default()
 
     def to_latex_porject(self, filename="") -> None:
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
 
-        main = File(
-            self.filename,
-            parrentdir=self.dir + "/" + self.filename.strip(".md"),
-        )
+        if not self.filename or not self.file:
+            raise ValueError("Document must be initialized")
+
+        if self.file:
+            main = self.file
+        else:
+            raise ValueError("Document is not initialized")
 
         try:
             os.makedirs(self.dir + "/" + self.filename.strip(".md"))
@@ -110,10 +137,10 @@ class Document:
             # print("Не удалось создать директорию проекта или она уже создана")
             pass
 
+        main = main.to_latex_project()
+
         if Settings.Export.makefile:
-            shutil.copy2(
-                "default/Makefile", self.dir + "/" + self.filename.strip(".md")
-            )
+            Makefile.to_file(self.dir + "/" + self.filename.strip(".md"))
 
         if Global.CITATION_INITIALIZED:
             citations = Citation.to_latex_preamble()
@@ -129,7 +156,7 @@ class Document:
 
 \\begin{{document}}
 
-{main.to_latex_project()}
+{main}
 
 {bibliography}
 

@@ -14,29 +14,18 @@ class Quote:
     ):
         self.lines = quotelines
 
-        self.type = None
-        self.heading = None
-        self._parse_quote_lines()
-
-        self.reference = None
-
         self.parrentfilename = parrentfilename
         self.parrentdir = parrentdir
         self.filename = filename
         self.quotedepth = quotedepth
         self.filedepth = filedepth
 
-        from objects.file import File
-        from tools.markdown_parser import MarkdownParser
+        self.type = None
+        self.heading = None
+        self.elements = []
+        self._parse_quote_lines()
 
-        self.elements = File._process_elements_list(
-            MarkdownParser(
-                filename=filename,
-                parrentdir=parrentdir,
-                filedepth=filedepth,
-                quotedepth=quotedepth,
-            ).parse(self.lines)
-        )
+        self.reference = None
 
     @staticmethod
     def _tabulate_string(string: str, level: int):
@@ -77,7 +66,20 @@ class Quote:
 
             new_lines.append(line[1:])
 
+        from tools.markdown_parser import MarkdownParser
+
         self.lines = new_lines
+
+        parser = MarkdownParser(
+            filename=self.filename,
+            parrentdir=self.parrentdir,
+            filedepth=self.filedepth,
+            quotedepth=self.quotedepth,
+        )
+
+        parser.from_text(new_lines)
+
+        self.elements = parser.elements
 
     def _parse_nested_quote(self):
         pass

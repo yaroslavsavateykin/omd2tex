@@ -1,4 +1,5 @@
 import re
+from typing import Union
 import yaml
 
 from objects.fragment import SplitLine
@@ -12,7 +13,7 @@ from objects.table import Table
 from objects.image import Image, ImageFrame
 from objects.quote import Quote
 from objects.footnote import Footnote
-from objects.list import Enumerate, Bullet, Check
+from objects.list import Enumerate, Bullet, Check, List
 from tools.settings import Settings
 
 
@@ -30,10 +31,11 @@ class MarkdownParser:
     re_reference = re.compile(r"\^([a-zA-Z0-9_-]+)")
 
     re_markdown_image = re.compile(
-        r"!\[([^|\]]*?)(?:\|([^|\]]*?))?\]\(([^)]+)\)(?:\s*\^([a-zA-Z0-9_-]+))?"
+        r"!?\[([^|\]]*?)(?:\|([^|\]]*?))?\]\(([^)]+)\)(?:\s*\^([a-zA-Z0-9_-]+))?"
     )
+
     re_wiki_image = re.compile(
-        r"!\[\[([^|\]]+?)(?:\|([^|\]]*?))?(?:\|([^|\]]*?))?\]\](?:\s*\^([a-zA-Z0-9_-]+))?"
+        r"!?\[\[([^|\]]+?)(?:\|([^|\]]*?))?(?:\|([^|\]]*?))?\]\](?:\s*\^([a-zA-Z0-9_-]+))?"
     )
 
     re_heading = re.compile(r"^(#{1,6})\s+(.*)")
@@ -62,9 +64,22 @@ class MarkdownParser:
         self.filedepth = filedepth
         self.quotedepth = quotedepth
 
-        self.dir_filename = find_file(filename, search_path=Settings.Export.search_dir)
-
         self.yaml = None
+
+        self.elements = []
+
+    def check(self):
+        elements = self.elements
+        if not elements:
+            print("No elements found")
+        for el in elements:
+            print(f"\n{el}\n{el.to_latex()}")
+
+    def to_latex(self):
+        raise TypeError("Cant apply to_latex() method to class MarkdownParser")
+
+    def to_latex_project(self):
+        raise TypeError("Cant apply to_latex_project() method to class MarkdownParser")
 
     @staticmethod
     def __parse_size_parameter(size_str):
@@ -80,7 +95,32 @@ class MarkdownParser:
         height = int(size_parts[1]) if len(size_parts) > 1 else None
         return width, height
 
-    def parse(self, lines=[]):
+    def from_file(self, filename: str):
+        self.dir_filename = find_file(filename, search_path=Settings.Export.search_dir)
+        self.filename = filename
+        with open(self.dir_filename, "r", encoding="utf-8") as f:
+            lines = f.read().splitlines()
+        self.__parse(lines)
+
+    def from_text(self, text: Union[str, list]):
+        if isinstance(text, str):
+            self.__parse(text.splitlines())
+        else:
+            self.__parse(text)
+
+    def from_elements(self, list: list):
+        self.elements = list
+
+    @staticmethod
+    def _process_elements_list(elements: list) -> list:
+        elements = Reference.attach_reference(elements)
+        elements = Reference.identify_elements_reference(elements)
+        elements = List.append_items(elements)
+        elements = List.merge_items(elements)
+
+        return elements
+
+    def __parse(self, lines: list):
         from objects.file import File
 
         non_md_extensions = [
@@ -113,10 +153,6 @@ class MarkdownParser:
             ".svg",
         ]
 
-        if not lines:
-            with open(self.dir_filename, "r", encoding="utf-8") as f:
-                lines = f.read().splitlines()
-
         i = 0
         in_yaml = False
         in_code_block = False
@@ -137,8 +173,14 @@ class MarkdownParser:
                 continue
 
             # CHANGING FOOTNOTE KEYS
-
             line = footnote.change_footnote_keys(line)
+            m = self.re_footnote.match(line)
+            if m:
+                footnote_key, footnote_text = m.groups()
+
+                Footnote.append(footnote_key, footnote_text)
+                i += 1
+                continue
 
             # READING YAML
             if i == 0 and line.startswith("---"):
@@ -159,10 +201,11 @@ class MarkdownParser:
                     i += 1
                     continue
 
-            if line.strip().startswith("---"):
-                elements.append(SplitLine())
-                i += 1
-                continue
+            if Settings.Fragment.Splitline.parse:
+                if line.strip().startswith("---"):
+                    elements.append(SplitLine())
+                    i += 1
+                    continue
 
             depth = 0
             stripped_line = line
@@ -210,164 +253,163 @@ class MarkdownParser:
                 i += 1
                 continue
 
-            m = self.re_footnote.match(line)
-            if m:
-                footnote_key, footnote_text = m.groups()
+            if Settings.Image.parse:
+                m = self.re_markdown_image.match(line)
+                if m:
+                    alt_text, size_param, filename, ref_link = m.groups()
 
-                Footnote.append(footnote_key, footnote_text)
-                i += 1
-                continue
+                    if not any(
+                        filename.lower().endswith(ext) for ext in image_extensions
+                    ):
+                        i += 1
+                        continue
 
-            m = self.re_markdown_image.match(line)
-            if m:
-                alt_text, size_param, filename, ref_link = m.groups()
+                    if filename.startswith("#^"):
+                        i += 1
+                        continue
 
-                if not any(filename.lower().endswith(ext) for ext in image_extensions):
+                    width, height = self.__parse_size_parameter(size_param)
+                    caption = alt_text if alt_text else None
+
+                    image_obj = Image(
+                        filename=filename,
+                        parrentdir=self.parrentdir,
+                        caption=caption,
+                        width=width,
+                        height=height,
+                    )
+                    if ref_link:
+                        image_obj.reference = ref_link
+
+                    elements.append(image_obj)
                     i += 1
                     continue
 
-                if filename.startswith("#^"):
-                    i += 1
-                    continue
+                n = self.re_wiki_image.match(line)
+                if n:
+                    filename, param1, param2, ref_link = n.groups()
 
-                width, height = self.__parse_size_parameter(size_param)
-                caption = alt_text if alt_text else None
+                    if not any(
+                        filename.lower().endswith(ext) for ext in image_extensions
+                    ):
+                        i += 1
+                        continue
 
-                image_obj = Image(
-                    filename=filename,
-                    parrentdir=self.parrentdir,
-                    caption=caption,
-                    width=width,
-                    height=height,
-                )
-                if ref_link:
-                    image_obj.reference = ref_link
+                    if filename.startswith("#^"):
+                        i += 1
+                        continue
 
-                elements.append(image_obj)
-                i += 1
-                continue
+                    width = None
+                    height = None
+                    caption = None
+                    reference = None
 
-            n = self.re_wiki_image.match(line)
-            if n:
-                filename, param1, param2, ref_link = n.groups()
-
-                if not any(filename.lower().endswith(ext) for ext in image_extensions):
-                    i += 1
-                    continue
-
-                if filename.startswith("#^"):
-                    i += 1
-                    continue
-
-                width = None
-                height = None
-                caption = None
-                reference = None
-
-                if param2:
-                    width, height = self.__parse_size_parameter(param2)
-                    if width is not None:
-                        reference = param1 if param1 else None
-                    else:
-                        width, height = self.__parse_size_parameter(param1)
-                        if width is None:
+                    if param2:
+                        width, height = self.__parse_size_parameter(param2)
+                        if width is not None:
                             reference = param1 if param1 else None
-                            caption = param2 if param2 else None
                         else:
-                            caption = param2 if param2 else None
-                else:
-                    if param1:
-                        width, height = self.__parse_size_parameter(param1)
-                        if width is None:
-                            reference = param1
+                            width, height = self.__parse_size_parameter(param1)
+                            if width is None:
+                                reference = param1 if param1 else None
+                                caption = param2 if param2 else None
+                            else:
+                                caption = param2 if param2 else None
+                    else:
+                        if param1:
+                            width, height = self.__parse_size_parameter(param1)
+                            if width is None:
+                                reference = param1
 
-                image_obj = Image(
-                    filename=filename,
-                    parrentdir=self.parrentdir,
-                    caption=caption,
-                    width=width,
-                    height=height,
-                )
-
-                if reference:
-                    image_obj.reference = reference
-
-                if ref_link:
-                    image_obj.reference = ref_link
-
-                elements.append(image_obj)
-                i += 1
-                continue
-
-            # Extracting text files
-            m = self.re_text_files1.match(line)
-            if m:
-                if self.filedepth >= Settings.File.max_file_recursion:
-                    raise RecursionError(
-                        f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"
-                    )
-                filename, _ = m.groups()
-
-                if any(filename.lower().endswith(ext) for ext in image_extensions):
-                    i += 1
-                    continue
-
-                if any(filename.endswith(ext) for ext in non_md_extensions):
-                    i += 1
-                    continue
-
-                if filename.startswith("#^"):
-                    i += 1
-                    continue
-
-                elements.append(
-                    File(
-                        filename=filename + ".md"
-                        if not filename.endswith(".md")
-                        else filename,
-                        parrentfilename=self.filename,
+                    image_obj = Image(
+                        filename=filename,
                         parrentdir=self.parrentdir,
-                        filedepth=self.filedepth + 1,
+                        caption=caption,
+                        width=width,
+                        height=height,
                     )
-                )
-                i += 1
-                continue
 
-            n = self.re_text_files2.match(line)
-            if n:
-                if self.filedepth >= Settings.File.max_file_recursion:
-                    raise RecursionError(
-                        f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"
-                    )
-                _, filename, extension = n.groups()
-                if any(filename.lower().endswith(ext) for ext in image_extensions):
+                    if reference:
+                        image_obj.reference = reference
+
+                    if ref_link:
+                        image_obj.reference = ref_link
+
+                    elements.append(image_obj)
                     i += 1
                     continue
 
-                if filename.startswith("#^"):
-                    i += 1
-                    continue
-                if any(filename.endswith(ext) for ext in non_md_extensions):
+            if Settings.File.parse:
+                m = self.re_text_files1.match(line)
+                if m:
+                    if self.filedepth >= Settings.File.max_file_recursion:
+                        raise RecursionError(
+                            f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"
+                        )
+                    filename, _ = m.groups()
+
+                    if any(filename.lower().endswith(ext) for ext in image_extensions):
+                        i += 1
+                        continue
+
+                    if any(filename.endswith(ext) for ext in non_md_extensions):
+                        i += 1
+                        continue
+
+                    if filename.startswith("#^"):
+                        i += 1
+                        continue
+
+                    elements.append(
+                        File(
+                            filename=filename + ".md"
+                            if not filename.endswith(".md")
+                            else filename,
+                            parrentfilename=self.filename,
+                            parrentdir=self.parrentdir,
+                            filedepth=self.filedepth + 1,
+                        )
+                    )
                     i += 1
                     continue
 
-                if extension:
-                    full_filename = f"{filename}.{extension}"
-                else:
-                    full_filename = (
-                        filename + ".md" if not filename.endswith(".md") else filename
-                    )
+                n = self.re_text_files2.match(line)
+                if n:
+                    if self.filedepth >= Settings.File.max_file_recursion:
+                        raise RecursionError(
+                            f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"
+                        )
+                    _, filename, extension = n.groups()
+                    if any(filename.lower().endswith(ext) for ext in image_extensions):
+                        i += 1
+                        continue
 
-                elements.append(
-                    File(
-                        full_filename,
-                        parrentfilename=self.filename,
-                        parrentdir=self.parrentdir,
-                        filedepth=self.filedepth + 1,
+                    if filename.startswith("#^"):
+                        i += 1
+                        continue
+                    if any(filename.endswith(ext) for ext in non_md_extensions):
+                        i += 1
+                        continue
+
+                    if extension:
+                        full_filename = f"{filename}.{extension}"
+                    else:
+                        full_filename = (
+                            filename + ".md"
+                            if not filename.endswith(".md")
+                            else filename
+                        )
+
+                    elements.append(
+                        File(
+                            full_filename,
+                            parrentfilename=self.filename,
+                            parrentdir=self.parrentdir,
+                            filedepth=self.filedepth + 1,
+                        )
                     )
-                )
-                i += 1
-                continue
+                    i += 1
+                    continue
 
             # БЛОКИ КОДА
             if line.startswith("```") and not in_code_block:
@@ -409,7 +451,9 @@ class MarkdownParser:
                     in_equation = True
                 else:
                     if equationlines:
-                        elements.append(Equation("\n".join(equationlines)))
+                        eq = Equation("\n".join(equationlines))
+                        eq._is_initialized = False
+                        elements.append(eq)
                     in_equation = False
                 i += 1
                 continue
@@ -498,12 +542,14 @@ class MarkdownParser:
                     continue
 
                 # ЗАГОЛОВКИ
-            n = self.re_heading.match(line)
-            if n:
-                level, line = n.groups()
-                elements.append(Headline(len(level) - 1, line))
-                i += 1
-                continue
+
+            if Settings.Headline.parse:
+                n = self.re_heading.match(line)
+                if n:
+                    level, line = n.groups()
+                    elements.append(Headline(len(level) - 1, line))
+                    i += 1
+                    continue
 
             elements.append(Paragraph(line))
             i += 1
@@ -527,4 +573,4 @@ class MarkdownParser:
             joined = "\n".join(line.strip() for line in paragraph_lines)
             elements.append(Paragraph(joined))
 
-        return elements
+        self.elements = self._process_elements_list(elements)

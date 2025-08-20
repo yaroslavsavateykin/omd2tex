@@ -36,18 +36,17 @@ class Paragraph:
 
     @staticmethod
     def _highlight_text(text: str) -> str:
-        # regular expressions: function
         change_dict = {
             r"\*\*(.*?)\*\*": lambda x: f"\\textbf{{{x.group(1)}}}",
-            r"\_\_(.*?)\_\_": lambda x: f"\\textbf{{{x.group(1)}}}",
+            r"__(.*?)__": lambda x: f"\\textbf{{{x.group(1)}}}",
             r"\*(.*?)\*": lambda x: f"\\textit{{{x.group(1)}}}",
-            r"\_(.*?)\_": lambda x: f"\\textit{{{x.group(1)}}}",
-            r"\=\=(.*?)\=\=": lambda x: f"\\sethlcolor{{mintgreen}}\\hl{{{x.group(1)}}}",
-            r"\~\~(.*?)\~\~": lambda x: f"\\sout{{{x.group(1)}}}",
-            r"\#(.*?)": lambda x: f"{x.group(1)}",
-            r"\<u>(.*?)<\/u>": lambda x: f"\\ul{{{x.group(1)}}}",
-            r"\<sup>(.*?)<\/sup>": lambda x: f"$_\\text{{{x.group(1)}}}$",
-            r"\<sub>(.*?)<\/sub>": lambda x: f"$^\\text{{{x.group(1)}}}$",
+            r"_(.*?)_": lambda x: f"\\textit{{{x.group(1)}}}",
+            r"==(.*?)==": lambda x: f"\\sethlcolor{{mintgreen}}\\hl{{{x.group(1)}}}",
+            r"~~(.*?)~~": lambda x: f"\\sout{{{x.group(1)}}}",
+            r"#(.*?)(?=\s|$)": lambda x: f"\\#{x.group(1)}",  # Только до пробела или конца строки
+            r"<u>(.*?)</u>": lambda x: f"\\ul{{{x.group(1)}}}",
+            r"<sup>(.*?)</sup>": lambda x: f"$^{{{x.group(1)}}}$",  # Исправлено
+            r"<sub>(.*?)</sub>": lambda x: f"$_{{{x.group(1)}}}$",  # Исправлено
         }
 
         for regular in change_dict:
@@ -241,7 +240,7 @@ class Paragraph:
 
     @staticmethod
     def _process_citations(text):
-        """
+        r"""
         Обрабатывает различные форматы цитирований и приводит их к формату: text \cite{cite}
 
         Поддерживаемые форматы:

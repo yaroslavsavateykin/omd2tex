@@ -16,14 +16,17 @@
     "settings_json": "default/preamble.json"
   },
   "file": {
+    "parse": true,
     "max_file_recursion": 5
   },
   "headline": {
+    "parse": true,
     "global_level_align": true,
     "numeration": true,
-    "clean_markdown_numeration": true
+    "clean_markdown_numeration": false
   },
   "image": {
+    "parse": true,
     "wh_aspect_borders": [
       0.6,
       1.8
@@ -32,10 +35,12 @@
     "default_height": "8cm"
   },
   "quote": {
+    "parse": true,
     "max_quote_recursion": 5
   },
   "fragment": {
     "splitline": {
+      "parse": true,
       "width": "0.5pt"
     }
   }

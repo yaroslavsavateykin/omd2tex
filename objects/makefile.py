@@ -1,37 +1,43 @@
+from tools.globals import Global
+import os
+
+
 class Makefile:
-    def __init__(self, settings) -> None:
-        self.settings = settings
+    @classmethod
+    def to_string(cls):
+        if Global.CITATION_INITIALIZED:
+            biber = "\n\tbiber main # Используем имя файла БЕЗ расширения .tex!\n\tpdflatex -shell-escape main.tex\n\tpdflatex -shell-escape main.tex"
+        else:
+            biber = ""
 
-    def to_string(self):
-        string = """
-all: compile  
-
-backup:
-	rm -r ~/.mdconvert_backup/
-	cp -r ../.mdconvert/ ~/.mdconvert_backup/
+        string = f"""all: compile
 
 python:
-	rm -f main.tex 
-	python main.py  # Генерирует main.tex
+\trm -f main.tex
+\tpython main.py
 
-compile:  
-	rm -f main.pdf
-	rm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml
-	pdflatex -shell-escape main.tex 
-	biber main      # Используем имя файла БЕЗ расширения .tex!
-	pdflatex -shell-escape main.tex
-	pdflatex -shell-escape main.tex
-	rm -rf _minted*
-	rm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml
+compile:
+\trm -f main.pdf
+\trm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml
+\tpdflatex -shell-escape main.tex{biber}
+\trm -rf _minted*
+\trm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml
 
 open:
-	xdg-open main.pdf
+\txdg-open main.pdf
 
 clean:
-	rm -f main.pdf *.aux *.log *.out *.toc *.ps
-	rm -f support/*.png
-	rm -rf _minted*
-	rm -f *.bib *.bcf *.run.xml *.bbl *.blg
+\trm -f main.pdf *.aux *.log *.out *.toc *.ps
+\trm -f support/*.png
+\trm -rf _minted*
+\trm -f *.bib *.bcf *.run.xml *.bbl *.blg
 """
+        return string
 
-    return string
+    @classmethod
+    def to_file(cls, directory="."):
+        """Записывает Makefile в указанную директорию"""
+        filepath = os.path.join(directory, "Makefile")
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(cls.to_string())
+        return filepath

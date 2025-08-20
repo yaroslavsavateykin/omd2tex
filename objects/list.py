@@ -22,21 +22,18 @@ class List:
 
     def to_latex(self):
         if self.merged:
-            # Если есть вложенные элементы
             main_content = "\n".join([x.to_latex_item() for x in self.items])
             merged_content = "\n".join([x.to_latex() for x in self.merged])
             return (
                 main_content + "\n" + merged_content if merged_content else main_content
             )
         else:
-            # Только основные элементы
             return "\n".join([x.to_latex_item() for x in self.items])
 
     def to_latex_project(self):
         return self.to_latex()
 
     def append(self, item):
-        """Добавляет элемент того же типа и глубины в список items"""
         if isinstance(item, self.__class__) and item.depth == self.depth:
             self.items.append(item)
         elif isinstance(item, self.__class__):
@@ -48,7 +45,6 @@ class List:
 
     @staticmethod
     def append_items(items: list):
-        """Группирует подряд идущие элементы одного типа и глубины"""
         if not items:
             return []
 
@@ -59,7 +55,6 @@ class List:
             current_item = items[i]
             current_type = type(current_item)
 
-            # Проверяем, является ли элемент наследником List
             if not isinstance(current_item, List):
                 grouped.append(current_item)
                 i += 1
@@ -67,7 +62,6 @@ class List:
 
             current_depth = current_item.depth
 
-            # Ищем подряд идущие элементы того же типа и глубины
             j = i + 1
             while j < len(items):
                 next_item = items[j]
@@ -85,7 +79,6 @@ class List:
         return grouped
 
     def merge(self, item):
-        """Добавляет элемент с большей глубиной в список merged"""
         if item.depth > self.depth:
             self.merged.append(item)
         else:
@@ -95,7 +88,6 @@ class List:
 
     @staticmethod
     def merge_items(items: list):
-        """Объединяет элементы по принципу вложенности (depth)"""
         if not items:
             return []
 
@@ -105,13 +97,11 @@ class List:
         while i < len(items):
             current_item = items[i]
 
-            # Проверяем, является ли элемент наследником List
             if not isinstance(current_item, List):
                 result.append(current_item)
                 i += 1
                 continue
 
-            # Ищем вложенные элементы
             j = i + 1
             while j < len(items):
                 next_item = items[j]
@@ -143,14 +133,14 @@ class Enumerate(List):
     def to_latex_item(self):
         return List.indent(
             f"\\setcounter{{enumi}}{{{self.number}}}\n\\item {super().to_latex_item()}",
-            self.depth,
+            1,
         )
 
     def to_latex(self):
         content = super().to_latex()
         return List.indent(
             f"\\begin{{enumerate}}\\keepwithnext\n{content}\n\\end{{enumerate}}",
-            self.depth,
+            0,
         )
 
 
@@ -159,12 +149,12 @@ class Check(List):
         if self.complete:
             return List.indent(
                 f"\\item[$\\boxtimes$] \\sout{{{super().to_latex_item()}}}",
-                self.depth,
+                1,
             )
         else:
             return List.indent(
                 f"\\item[$\\square$] {super().to_latex_item()}",
-                self.depth,
+                1,
             )
 
     def to_latex(self):
@@ -177,7 +167,7 @@ class Check(List):
 
 class Bullet(List):
     def to_latex_item(self):
-        return List.indent(f"\\item {super().to_latex_item()}", self.depth)
+        return List.indent(f"\\item {super().to_latex_item()}", 1)
 
     def to_latex(self):
         content = super().to_latex()

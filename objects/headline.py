@@ -135,11 +135,11 @@ class Headline:
         # Удаляем нумерацию и возвращаем результат
         return heading
 
-    def _parse_text(self, text):
+    @staticmethod
+    def _parse_text(text):
         if Settings.Headline.clean_markdown_numeration:
-            text = self._clean_markdown_numeration(text)
-        par = Paragraph(text=text)
-        text = par._parse_text()
+            text = Headline._clean_markdown_numeration(text)
+        text = Paragraph(text).to_latex()
 
         return text
 
@@ -149,7 +149,7 @@ class Headline:
                 "Headline is not initialized! Firstly call _identify_reference()"
             )
 
-        return self._pick_surround()(self.text)
+        return self._pick_surround()(self._parse_text(self.text))
 
     def to_latex_project(self):
         return self.to_latex()
