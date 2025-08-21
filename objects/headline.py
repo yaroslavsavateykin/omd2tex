@@ -151,5 +151,5 @@ class Headline:
 
         return self._pick_surround()(self._parse_text(self.text))
 
-    def to_latex_project(self):
+    def _to_latex_project(self):
         return self.to_latex()

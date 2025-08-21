@@ -48,16 +48,16 @@ class Image:
 
     def to_latex(self, setting={}):
         if self.caption:
-            self.caption = f"\\caption{{{Paragraph(self.caption, settings=self.settings).to_latex()}}}"
+            caption = f"\\caption{{{Paragraph(self.caption).to_latex()}}}"
         else:
-            self.caption = ""
+            caption = ""
 
         if self.reference:
-            self.reference = f"\\label{{fig:{self.reference}}}"
+            reference = f"\\label{{fig:{self.reference}}}"
             if not self.caption:
-                self.caption = "\\caption{}"
+                caption = ""
         else:
-            self.reference = ""
+            reference = ""
 
         dir = self.dir
 
@@ -90,8 +90,8 @@ class Image:
         latex_lines = f"""\\begin{{figure}}[H] 
 \\centering
 {image_include}
-{self.caption}
-{self.reference}
+{caption}
+{reference}
 \\end{{figure}}
 """
         return latex_lines
@@ -109,7 +109,7 @@ class Image:
         self.parrentdir = "."
         self.dir = "."
 
-    def to_latex_project(self):
+    def _to_latex_project(self):
         self._copy_to_folder()
 
         self._ralative_paths()

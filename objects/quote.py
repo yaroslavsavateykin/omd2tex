@@ -43,7 +43,7 @@ class Quote:
 
         return self._tabulate_string(text, self.quotedepth - 1)
 
-    def to_latex_project(self):
+    def _to_latex_project(self):
         return self.to_latex()
 
     def _parse_quote_lines(self):

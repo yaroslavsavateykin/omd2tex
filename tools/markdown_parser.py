@@ -1,8 +1,9 @@
 import re
 from typing import Union
 import yaml
+import uuid
 
-from objects.fragment import SplitLine
+from objects.fragment import Caption, SplitLine
 from tools.search import find_file
 from objects.equation import Equation
 from objects.paragraph import Paragraph
@@ -18,11 +19,6 @@ from tools.settings import Settings
 
 
 class MarkdownParser:
-    re_table_row = re.compile(r"^\|(.+)\|$")
-    re_image = re.compile(r"^!\[(.*?)\]\((.*?)\)")
-    re_link = re.compile(r"^\[(.*?)\]\((.*?)\)")
-    re_comment = re.compile(r"^<!--(.*?)-->$")
-
     re_text_files1 = re.compile(
         r"!?\[\[([^|\[\]]+?(?:\.(?:md|tex|txt))?)(?:\|([^\[\]]+))?\]\]"
     )
@@ -30,12 +26,15 @@ class MarkdownParser:
 
     re_reference = re.compile(r"\^([a-zA-Z0-9_-]+)")
 
+    image_extensions_pattern = r"\.(?:png|jpg|jpeg|gif|bmp|svg|webp)(?=\s*|$|\|)"
+
     re_markdown_image = re.compile(
-        r"!?\[([^|\]]*?)(?:\|([^|\]]*?))?\]\(([^)]+)\)(?:\s*\^([a-zA-Z0-9_-]+))?"
+        r'!\[([^\]]*?)\]\(([^\)]+?)(?:\s+"([^"]*)")?\)(?:\s*\^([a-zA-Z0-9_-]+))?',
+        re.IGNORECASE,
     )
 
     re_wiki_image = re.compile(
-        r"!?\[\[([^|\]]+?)(?:\|([^|\]]*?))?(?:\|([^|\]]*?))?\]\](?:\s*\^([a-zA-Z0-9_-]+))?"
+        r"!?\[\[([^\]\n]+?)\]\]?(?:\s*\^([a-zA-Z0-9_-]+))?", re.IGNORECASE
     )
 
     re_heading = re.compile(r"^(#{1,6})\s+(.*)")
@@ -75,24 +74,16 @@ class MarkdownParser:
         for el in elements:
             print(f"\n{el}\n{el.to_latex()}")
 
-    def to_latex(self):
-        raise TypeError("Cant apply to_latex() method to class MarkdownParser")
-
-    def to_latex_project(self):
-        raise TypeError("Cant apply to_latex_project() method to class MarkdownParser")
-
     @staticmethod
     def __parse_size_parameter(size_str):
-        """
-        Парсит строку размера в формате "300" или "300x200"
-        Возвращает (width, height) или (None, None)
-        """
+        """Парсит строку размера в формате '300' или '300x200'"""
         if not size_str or not re.match(r"^\d+(x\d+)?$", size_str.strip()):
             return None, None
 
         size_parts = size_str.strip().split("x")
         width = int(size_parts[0])
         height = int(size_parts[1]) if len(size_parts) > 1 else None
+
         return width, height
 
     def from_file(self, filename: str):
@@ -101,6 +92,7 @@ class MarkdownParser:
         with open(self.dir_filename, "r", encoding="utf-8") as f:
             lines = f.read().splitlines()
         self.__parse(lines)
+        return self
 
     def from_text(self, text: Union[str, list]):
         if isinstance(text, str):
@@ -108,13 +100,28 @@ class MarkdownParser:
         else:
             self.__parse(text)
 
+        return self
+
     def from_elements(self, list: list):
-        self.elements = list
+        from objects.document import Document
+
+        not_pass = [Document, MarkdownParser]
+
+        for i, el in enumerate(list):
+            for nel in not_pass:
+                if isinstance(el, nel):
+                    raise TypeError(
+                        f"Can't pass {nel} to MarkdownParser.from_elements() function"
+                    )
+
+        self.elements = self._process_elements_list(list)
+        return self
 
     @staticmethod
     def _process_elements_list(elements: list) -> list:
         elements = Reference.attach_reference(elements)
         elements = Reference.identify_elements_reference(elements)
+        elements = Caption.attach_caption(elements)
         elements = List.append_items(elements)
         elements = List.merge_items(elements)
 
@@ -154,6 +161,7 @@ class MarkdownParser:
         ]
 
         i = 0
+        not_file = True
         in_yaml = False
         in_code_block = False
         in_equation = False
@@ -254,30 +262,43 @@ class MarkdownParser:
                 continue
 
             if Settings.Image.parse:
-                m = self.re_markdown_image.match(line)
-                if m:
-                    alt_text, size_param, filename, ref_link = m.groups()
+                # Обновленные регулярные выражения с проверкой расширений
 
-                    if not any(
-                        filename.lower().endswith(ext) for ext in image_extensions
+                # Обработка Markdown изображений
+                m = self.re_markdown_image.match(line)
+                if m and not_file:
+                    alt_text, filename, title, ref_link = m.groups()
+
+                    # Проверяем расширение файла
+                    if not re.search(
+                        self.image_extensions_pattern, filename, re.IGNORECASE
                     ):
-                        i += 1
+                        not_file = False
                         continue
 
                     if filename.startswith("#^"):
                         i += 1
                         continue
 
+                    # Парсим параметры размера из alt text или title
+                    size_param = None
+                    if "|" in alt_text:
+                        alt_parts = alt_text.split("|", 1)
+                        alt_text, size_param = alt_parts[0], alt_parts[1]
+                    elif title and "x" in title:
+                        size_param = title
+
                     width, height = self.__parse_size_parameter(size_param)
                     caption = alt_text if alt_text else None
 
                     image_obj = Image(
-                        filename=filename,
+                        filename=filename.strip(),
                         parrentdir=self.parrentdir,
                         caption=caption,
                         width=width,
                         height=height,
                     )
+
                     if ref_link:
                         image_obj.reference = ref_link
 
@@ -285,52 +306,50 @@ class MarkdownParser:
                     i += 1
                     continue
 
+                # Обработка Wiki изображений (Obsidian)
                 n = self.re_wiki_image.match(line)
-                if n:
-                    filename, param1, param2, ref_link = n.groups()
+                if n and not_file:
+                    content, ref_link = n.groups()
 
-                    if not any(
-                        filename.lower().endswith(ext) for ext in image_extensions
+                    # Разделяем содержимое на части
+                    parts = content.split("|")
+                    filename = parts[0]
+
+                    # Проверяем расширение файла
+                    if not re.search(
+                        self.image_extensions_pattern, filename, re.IGNORECASE
                     ):
-                        i += 1
+                        not_file = False
                         continue
 
                     if filename.startswith("#^"):
                         i += 1
                         continue
 
-                    width = None
-                    height = None
+                    # Обрабатываем дополнительные параметры
+                    width, height = None, None
                     caption = None
-                    reference = None
+                    size_param = None
 
-                    if param2:
-                        width, height = self.__parse_size_parameter(param2)
-                        if width is not None:
-                            reference = param1 if param1 else None
-                        else:
-                            width, height = self.__parse_size_parameter(param1)
-                            if width is None:
-                                reference = param1 if param1 else None
-                                caption = param2 if param2 else None
-                            else:
-                                caption = param2 if param2 else None
-                    else:
-                        if param1:
-                            width, height = self.__parse_size_parameter(param1)
-                            if width is None:
-                                reference = param1
+                    if len(parts) > 1:
+                        # Проверяем каждый параметр
+                        for param in parts[1:]:
+                            # Если параметр похож на размер
+                            if re.match(r"^\d+(x\d+)?$", param):
+                                size_param = param
+                            # Иначе считаем это подписью
+                            elif caption is None:
+                                caption = param
+
+                    width, height = self.__parse_size_parameter(size_param)
 
                     image_obj = Image(
-                        filename=filename,
+                        filename=filename.strip(),
                         parrentdir=self.parrentdir,
                         caption=caption,
                         width=width,
                         height=height,
                     )
-
-                    if reference:
-                        image_obj.reference = reference
 
                     if ref_link:
                         image_obj.reference = ref_link
@@ -423,7 +442,7 @@ class MarkdownParser:
                 if line.startswith("```"):
                     if blocklines:
                         elements.append(
-                            CodeBlock(
+                            CodeBlock.create(
                                 blocktype,
                                 blocklines,
                             )
@@ -476,7 +495,9 @@ class MarkdownParser:
                 # Если текущая строка последняя ИЛИ следующая строка НЕ таблица
                 if i == len(lines) - 1 or not next_is_table:
                     if len(tablelines) >= 2:  # Проверяем минимальный формат
-                        elements.append(Table(tablelines))
+                        tab = Table(tablelines)
+                        tab._is_initialized = False
+                        elements.append(tab)
                         in_table = False
                         tablelines = []
                 i += 1
@@ -485,7 +506,9 @@ class MarkdownParser:
             else:
                 if in_table:
                     if len(tablelines) >= 2:
-                        elements.append(Table(tablelines))
+                        tab = Table(tablelines)
+                        tab._is_initialized = False
+                        elements.append(tab)
                     in_table = False
                     tablelines = []
                     i += 1

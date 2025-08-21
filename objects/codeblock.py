@@ -1,3 +1,4 @@
+from objects.fragment import Caption
 from .paragraph import Paragraph
 
 
@@ -5,7 +6,6 @@ class CodeBlock:
     def __init__(self, blocktype: str, blocklines: list) -> None:
         self.blocktype = blocktype
         self.blocklines = blocklines
-
         self.reference = None
 
     @staticmethod
@@ -36,6 +36,7 @@ class CodeBlock:
             ),
             "hidden": lambda content: Paragraph("", parse=False),
             "text": lambda content: Paragraph("\n".join(content)),
+            "caption": lambda content: Caption(" ".join(content)),
             "python": self._minted_python,
             "c": self._minted_python,
             "cpp": self._minted_python,
@@ -48,8 +49,17 @@ class CodeBlock:
         else:
             return self._default_codeblock(self.blocklines)
 
+    @classmethod
+    def create(cls, blocktype: str, blocklines: list):
+        """Фабричный метод, возвращающий результат применения типа блока"""
+        instance = cls.__new__(cls)
+        instance.blocktype = blocktype
+        instance.blocklines = blocklines
+        instance.reference = None
+        return instance._apply_blocktype()
+
     def to_latex(self):
         return self._apply_blocktype().to_latex()
 
-    def to_latex_project(self):
+    def _to_latex_project(self):
         return self.to_latex()

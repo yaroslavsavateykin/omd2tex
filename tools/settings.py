@@ -98,8 +98,17 @@ class Settings(ConfigBase):
                 super().__init__()
 
 
+        class Caption(ConfigBase):
+            parse = True
+
+            def __init__(self):
+                self.parse = self.__class__.parse
+                super().__init__()
+
+
         def __init__(self):
             self.splitline = self.__class__.Splitline()
+            self.caption = self.__class__.Caption()
             super().__init__()
 
 

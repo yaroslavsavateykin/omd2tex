@@ -19,7 +19,7 @@ class Table:
         self.reference = None
         self.caption = None
 
-        self._is_initialized = False
+        self._is_initialized = True
 
     def _identify_reference(self):
         self._is_initialized = True
@@ -33,7 +33,7 @@ class Table:
 
         return self._to_longtblr()
 
-    def to_latex_project(self):
+    def _to_latex_project(self):
         return self.to_latex()
 
     def _parse_lines(self) -> str:

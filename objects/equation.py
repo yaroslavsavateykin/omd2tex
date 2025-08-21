@@ -34,5 +34,5 @@ class Equation:
 """
         return equation
 
-    def to_latex_project(self):
+    def _to_latex_project(self):
         return self.to_latex()

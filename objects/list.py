@@ -30,7 +30,7 @@ class List:
         else:
             return "\n".join([x.to_latex_item() for x in self.items])
 
-    def to_latex_project(self):
+    def _to_latex_project(self):
         return self.to_latex()
 
     def append(self, item):

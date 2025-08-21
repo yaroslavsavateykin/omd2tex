@@ -216,7 +216,7 @@ class Preamble:
 """
         return string
 
-    def to_latex_project(self, settings={}):
+    def _to_latex_project(self, settings={}):
         """
         with open(self.parrentdir + "/" + "preamble.tex", "w") as f:
 

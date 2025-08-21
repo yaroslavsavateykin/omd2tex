@@ -11,7 +11,7 @@ class Reference:
     def to_latex(self):
         return ""
 
-    def to_latex_project(self):
+    def _to_latex_project(self):
         return self.to_latex()
 
     @staticmethod

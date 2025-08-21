@@ -11,6 +11,7 @@ from objects.makefile import Makefile
 from objects.paragraph import Paragraph
 from objects.preamble import Preamble
 from objects.file import File
+from objects.quote import Quote
 from tools.globals import Global
 from tools.settings import Settings
 
@@ -56,10 +57,32 @@ class Document:
 
     def from_elements(self, list: list):
         self.filename = str(uuid.uuid4())[0:7]
+
         file = File(
             filename=self.filename,
             parrentdir=self.dir + "/" + self.filename.strip(".md"),
         )
+
+        dir_depended_classes = [File, Quote]
+
+        for i, el in enumerate(list):
+            if isinstance(el, Document):
+                raise TypeError(
+                    "Can't Document class to Document.from_elements() function"
+                )
+            """
+            new_filename = str(uuid.uuid4())[0:7]
+
+            if type(el) in dir_depended_classes:
+                if not list[i].filename:
+                    list[i].filename = new_filename
+                if not list[i].parrentfilename:
+                    list[i].parrentfilename = self.filename
+                if not list[i].parrentdir:
+                    list[i].parrentdir = self.dir + "/" + self.filename.strip(".md")
+                list[i].filedepth += 1
+            """
+
         file.from_elements(list)
         self.file = file
 
@@ -120,7 +143,7 @@ class Document:
 
         Global.to_default()
 
-    def to_latex_porject(self, filename="") -> None:
+    def to_latex_project(self, filename="") -> None:
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
 
         if not self.filename or not self.file:
@@ -137,7 +160,7 @@ class Document:
             # print("Не удалось создать директорию проекта или она уже создана")
             pass
 
-        main = main.to_latex_project()
+        main = main._to_latex_project()
 
         if Settings.Export.makefile:
             Makefile.to_file(self.dir + "/" + self.filename.strip(".md"))
@@ -150,7 +173,7 @@ class Document:
             bibliography = ""
 
         document = f"""
-{self.preamble.to_latex_project()}
+{self.preamble._to_latex_project()}
 
 {citations}
 

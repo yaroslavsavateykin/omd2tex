@@ -27,8 +27,8 @@ def main():
 
     Settings.Export.check()
 
-    # doc.check()
-    doc.to_latex_porject()
+    doc.check()
+    doc.to_latex_project()
 
 
 if __name__ == "__main__":
