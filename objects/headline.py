@@ -137,6 +137,8 @@ class Headline:
 
     @staticmethod
     def _parse_text(text):
+        if Settings.Headline.clean_all_highlight:
+            text = Paragraph._remove_all_highlight(text)
         if Settings.Headline.clean_markdown_numeration:
             text = Headline._clean_markdown_numeration(text)
         text = Paragraph(text).to_latex()

@@ -88,11 +88,16 @@ class MarkdownParser:
 
     def from_file(self, filename: str):
         self.dir_filename = find_file(filename, search_path=Settings.Export.search_dir)
-        self.filename = filename
-        with open(self.dir_filename, "r", encoding="utf-8") as f:
-            lines = f.read().splitlines()
-        self.__parse(lines)
-        return self
+
+        if not self.dir_filename:
+            return self
+
+        else:
+            self.filename = filename
+            with open(self.dir_filename, "r", encoding="utf-8") as f:
+                lines = f.read().splitlines()
+                self.__parse(lines)
+            return self
 
     def from_text(self, text: Union[str, list]):
         if isinstance(text, str):
@@ -384,7 +389,6 @@ class MarkdownParser:
                             filename=filename + ".md"
                             if not filename.endswith(".md")
                             else filename,
-                            parrentfilename=self.filename,
                             parrentdir=self.parrentdir,
                             filedepth=self.filedepth + 1,
                         )
@@ -422,7 +426,6 @@ class MarkdownParser:
                     elements.append(
                         File(
                             full_filename,
-                            parrentfilename=self.filename,
                             parrentdir=self.parrentdir,
                             filedepth=self.filedepth + 1,
                         )
@@ -534,7 +537,6 @@ class MarkdownParser:
                         Quote(
                             quotelines=quotelines,
                             filename=self.filename,
-                            parrentfilename=self.filename,
                             parrentdir=self.parrentdir,
                             quotedepth=self.quotedepth + 1,
                         )
@@ -554,7 +556,6 @@ class MarkdownParser:
                         Quote(
                             quotelines=quotelines,
                             filename=self.filename,
-                            parrentfilename=self.filename,
                             parrentdir=self.parrentdir,
                             quotedepth=self.quotedepth + 1,
                         )

@@ -7,14 +7,12 @@ class Quote:
         self,
         quotelines: List[str],
         filename: str = "",
-        parrentfilename: str = "",
         parrentdir="",
         filedepth=0,
         quotedepth=0,
     ):
         self.lines = quotelines
 
-        self.parrentfilename = parrentfilename
         self.parrentdir = parrentdir
         self.filename = filename
         self.quotedepth = quotedepth

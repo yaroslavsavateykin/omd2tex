@@ -1,3 +1,6 @@
+from objects.headline import Headline
+
+
 def time(func):
     def wrapper(*args, **kwargs):
         import time
@@ -19,15 +22,15 @@ def main():
     with open("default/current", "r") as f:
         filename = f.read().strip()
 
-    # Settings.Export.search_dir = "~/Vzlet/"
+    Settings.Export.search_dir = "~/Vzlet/"
     Settings.Export.export_dir = "~/omd2tex/test/"
 
     doc = Document()
     doc.from_file(filename)
 
-    Settings.Export.check()
+    # Settings.Export.check()
 
-    doc.check()
+    # doc.check()
     doc.to_latex_project()
 
 

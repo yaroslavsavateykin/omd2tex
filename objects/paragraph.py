@@ -194,7 +194,7 @@ class Paragraph:
 
     @staticmethod
     def _text_errors_workaround(text: str) -> str:
-        change_dict = {"й": "й"}
+        change_dict = {"й": "й", "–": "-"}
         for key in change_dict:
             text = text.replace(key, change_dict[key])
 
@@ -342,4 +342,29 @@ class Paragraph:
         else:
             text = self.text
 
+        return text
+
+    @staticmethod
+    def _remove_all_highlight(text: str) -> str:
+        change_dict = {
+            r"\*\*(.*?)\*\*": lambda x: x.group(1),
+            r"__(.*?)__": lambda x: x.group(1),
+            r"\*(.*?)\*": lambda x: x.group(1),
+            r"_(.*?)_": lambda x: x.group(1),
+            r"==(.*?)==": lambda x: x.group(1),
+            r"~~(.*?)~~": lambda x: x.group(1),
+            r"#(.*?)(?=\s|$)": lambda x: x.group(
+                1
+            ),  # Только до пробела или конца строки
+            r"<u>(.*?)</u>": lambda x: x.group(1),
+            r"<sup>(.*?)</sup>": lambda x: x.group(1),  # Исправлено
+            r"<sub>(.*?)</sub>": lambda x: x.group(1),  # Исправлено
+        }
+
+        for regular in change_dict:
+            text = re.sub(
+                regular,
+                change_dict[regular],
+                text,
+            )
         return text

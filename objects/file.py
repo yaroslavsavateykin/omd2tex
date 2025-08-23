@@ -1,4 +1,5 @@
 import uuid
+import os
 
 from objects.list import List
 from tools.markdown_parser import MarkdownParser
@@ -10,12 +11,10 @@ class File:
     def __init__(
         self,
         filename: str = None,
-        parrentfilename: str = None,
         parrentdir: str = None,
         filedepth: int = 0,
     ) -> None:
         self.filename = filename
-        self.parrentfilename = parrentfilename
         self.parrentdir = parrentdir
         self.filedepth = filedepth
 
@@ -30,18 +29,30 @@ class File:
             self.elements = []
 
     def from_file(self, filename: str):
+        if not self.parrentdir:
+            dir = Settings.Export.export_dir
+            self.parrentdir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
+
         parser = MarkdownParser(
             filename=filename,
             parrentdir=self.parrentdir,
             filedepth=self.filedepth,
         )
         parser.from_file(filename)
-        self.elements = parser.elements
+        if parser.elements:
+            self.elements = parser.elements
 
         return self
 
     def from_elements(self, list):
         from objects.document import Document
+
+        if not self.filename:
+            self.filename = str(uuid.uuid4())[:7]
+
+        if not self.parrentdir:
+            dir = Settings.Export.export_dir
+            self.parrentdir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
 
         parser = MarkdownParser(
             filename=self.filename,
@@ -58,15 +69,13 @@ class File:
             new_filename = str(uuid.uuid4())[0:7]
 
             if type(el) in dir_depended_classes:
+                print(list[i].parrentdir)
+
                 if not list[i].filename:
                     list[i].filename = new_filename
-                if not list[i].parrentfilename:
-                    list[i].parrentfilename = self.filename
-                if not list[i].parrentdir:
-                    list[i].parrentdir = (
-                        self.parrentdir + "/" + self.filename.strip(".md")
-                    )
+                list[i].parrentdir += "/" + self.filename.strip(".md")
                 list[i].filedepth += 1
+                print(list[i].parrentdir)
 
         parser.from_elements(list)
         self.elements = parser.elements
@@ -74,6 +83,13 @@ class File:
         return self
 
     def from_text(self, text: str):
+        if not self.filename:
+            self.filename = str(uuid.uuid4())[:7]
+
+        if not self.parrentdir:
+            dir = Settings.Export.export_dir
+            self.parrentdir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
+
         parser = MarkdownParser(
             filename=self.filename,
             parrentdir=self.parrentdir,

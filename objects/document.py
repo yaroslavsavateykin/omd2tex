@@ -45,6 +45,7 @@ class Document:
         )
         file.from_file(filename)
         self.file = file
+        return self
 
     def from_text(self, text: str):
         self.filename = str(uuid.uuid4())[0:7]
@@ -54,9 +55,17 @@ class Document:
         )
         file.from_text(text)
         self.file = file
+        return self
 
     def from_elements(self, list: list):
         self.filename = str(uuid.uuid4())[0:7]
+
+        if not self.filename:
+            self.filename = str(uuid.uuid4())[:7]
+
+        if not self.dir:
+            dir = Settings.Export.export_dir
+            self.dir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
 
         file = File(
             filename=self.filename,
@@ -70,21 +79,15 @@ class Document:
                 raise TypeError(
                     "Can't Document class to Document.from_elements() function"
                 )
-            """
-            new_filename = str(uuid.uuid4())[0:7]
-
             if type(el) in dir_depended_classes:
-                if not list[i].filename:
-                    list[i].filename = new_filename
-                if not list[i].parrentfilename:
-                    list[i].parrentfilename = self.filename
                 if not list[i].parrentdir:
-                    list[i].parrentdir = self.dir + "/" + self.filename.strip(".md")
+                    list[i].parrentdir += "/" + self.filename.strip(".md")
                 list[i].filedepth += 1
-            """
 
         file.from_elements(list)
         self.file = file
+
+        return self
 
     def _process_settings_logics(self):
         pass

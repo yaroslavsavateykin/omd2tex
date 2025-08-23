@@ -132,7 +132,7 @@ class List:
 class Enumerate(List):
     def to_latex_item(self):
         return List.indent(
-            f"\\setcounter{{enumi}}{{{self.number}}}\n\\item {super().to_latex_item()}",
+            f"\\setcounter{{enumi}}{{{self.number - 1}}}\n\\item {super().to_latex_item()}",
             1,
         )
 

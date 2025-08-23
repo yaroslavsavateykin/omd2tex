@@ -42,10 +42,12 @@ class Settings(ConfigBase):
     class File(ConfigBase):
         parse = True
         max_file_recursion = 5
+        pass_if_not_found = True
 
         def __init__(self):
             self.parse = self.__class__.parse
             self.max_file_recursion = self.__class__.max_file_recursion
+            self.pass_if_not_found = self.__class__.pass_if_not_found
             super().__init__()
 
 
@@ -54,12 +56,14 @@ class Settings(ConfigBase):
         global_level_align = True
         numeration = True
         clean_markdown_numeration = False
+        clean_all_highlight = True
 
         def __init__(self):
             self.parse = self.__class__.parse
             self.global_level_align = self.__class__.global_level_align
             self.numeration = self.__class__.numeration
             self.clean_markdown_numeration = self.__class__.clean_markdown_numeration
+            self.clean_all_highlight = self.__class__.clean_all_highlight
             super().__init__()
 
 

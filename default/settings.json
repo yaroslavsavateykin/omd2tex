@@ -17,13 +17,15 @@
   },
   "file": {
     "parse": true,
-    "max_file_recursion": 5
+    "max_file_recursion": 5,
+    "pass_if_not_found": true
   },
   "headline": {
     "parse": true,
     "global_level_align": true,
     "numeration": true,
-    "clean_markdown_numeration": false
+    "clean_markdown_numeration": false,
+    "clean_all_highlight": true
   },
   "image": {
     "parse": true,
