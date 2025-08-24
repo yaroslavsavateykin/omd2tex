@@ -7,7 +7,7 @@ class Footnote:
 
     @classmethod
     def append(cls, key: str, text: str):
-        from objects.paragraph import Paragraph
+        from .paragraph import Paragraph
 
         cls.collection[key] = Paragraph(text).to_latex()
 

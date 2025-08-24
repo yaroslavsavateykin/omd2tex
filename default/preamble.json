@@ -1,9 +1,9 @@
 {
   "documentclass": "article",
   "fontsize": "12pt",
-  "linespread": 1.15,
+  "linespread": 1.5,
   "left": "2cm",
-  "right": "2cm", 
+  "right": "2cm",
   "top": "2cm",
   "bottom": "2cm"
 }

@@ -3,7 +3,7 @@ from pylatexenc.latex2text import LatexNodes2Text
 import numpy as np
 
 from tools.globals import Global
-from objects.paragraph import Paragraph
+from .paragraph import Paragraph
 
 
 class Table:
@@ -21,11 +21,11 @@ class Table:
 
         self._is_initialized = True
 
-    def _identify_reference(self):
+    def _identify_reference(self) -> None:
         self._is_initialized = True
         Global.REFERENCE_DICT[self.reference] = "tab"
 
-    def to_latex(self):
+    def to_latex(self) -> str:
         if not self._is_initialized:
             raise RuntimeError(
                 "Table is not initialized! Firstly call _identify_reference()"
@@ -33,7 +33,7 @@ class Table:
 
         return self._to_longtblr()
 
-    def _to_latex_project(self):
+    def _to_latex_project(self) -> str:
         return self.to_latex()
 
     def _parse_lines(self) -> str:
@@ -57,7 +57,7 @@ class Table:
         return new_lines
 
     @staticmethod
-    def _convert_to_latex_symbols(line: str):
+    def _convert_to_latex_symbols(line: str) -> str:
         latex_line = (
             LatexNodes2Text()
             .latex_to_text(line)
@@ -116,7 +116,9 @@ class Table:
 
         new_lines = ""
         for line in lines:
-            line = " & ".join(line) + "\\\\"
+            line = (
+                " & ".join(line) + " \\\\"
+            )  # Временное решение проблемы outline уравнения в ячейке
             new_lines += line + "\n"
 
         string = f"""

@@ -1,10 +1,10 @@
 import uuid
 import os
 
-from objects.list import List
+from .list import List
 from tools.markdown_parser import MarkdownParser
 from tools.settings import Settings
-from objects.quote import Quote
+from .quote import Quote
 
 
 class File:
@@ -45,7 +45,7 @@ class File:
         return self
 
     def from_elements(self, list):
-        from objects.document import Document
+        from .document import Document
 
         if not self.filename:
             self.filename = str(uuid.uuid4())[:7]

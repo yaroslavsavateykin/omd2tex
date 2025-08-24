@@ -1,14 +1,16 @@
-from tools.config_base import ConfigBase
+from .config_base import ConfigBase
 
 class Settings(ConfigBase):
     class Export(ConfigBase):
         search_dir = '~/Obsidian/'
+        search_ignore_dirs = ['.trash', '.obsidian', '.plugins', '.smart-env', '.reference-map']
         makefile = True
         export_dir = './test/'
         branching_project = False
 
         def __init__(self):
             self.search_dir = self.__class__.search_dir
+            self.search_ignore_dirs = self.__class__.search_ignore_dirs
             self.makefile = self.__class__.makefile
             self.export_dir = self.__class__.export_dir
             self.branching_project = self.__class__.branching_project
@@ -18,8 +20,8 @@ class Settings(ConfigBase):
     class Paragraph(ConfigBase):
         latinify = True
         latinify_probability = 0.05
-        latinify_json = 'default/latinify.json'
-        formulas_json = 'default/formulas.json'
+        latinify_json = '~/omd2tex/default/latinify.json'
+        formulas_json = '~/omd2tex/default/formulas.json'
 
         def __init__(self):
             self.latinify = self.__class__.latinify
@@ -31,7 +33,7 @@ class Settings(ConfigBase):
 
     class Preamble(ConfigBase):
         create_preamble = True
-        settings_json = 'default/preamble.json'
+        settings_json = '~/omd2tex/default/preamble.json'
 
         def __init__(self):
             self.create_preamble = self.__class__.create_preamble

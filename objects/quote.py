@@ -37,7 +37,7 @@ class Quote:
     def to_latex(self):
         text = f"""\\begin{{quote}}\\slshape\\noindent
 {"\n".join([el.to_latex() for el in self.elements])}
-\\end{{quote}}\\vspace{{-\\baselineskip}}"""
+\\end{{quote}}"""
 
         return self._tabulate_string(text, self.quotedepth - 1)
 

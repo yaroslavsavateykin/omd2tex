@@ -1,9 +1,10 @@
+import os
 import re
 import json
 import random
 
-from objects.citation import Citation
-from objects.footnote import Footnote
+from .citation import Citation
+from .footnote import Footnote
 from tools.globals import Global
 from tools.settings import Settings
 
@@ -27,7 +28,8 @@ class Paragraph:
     def _change_letters_for_equations(
         text, dict_file="default/formulas.json", surround_func=lambda x: x
     ):
-        with open(dict_file, "r") as f:
+        dict_file = Settings.Paragraph.formulas_json
+        with open(os.path.expanduser(dict_file), "r") as f:
             change_dict = json.load(f)
         for key in change_dict:
             text = text.replace(key, surround_func(change_dict[key]))
@@ -35,7 +37,22 @@ class Paragraph:
         return text
 
     @staticmethod
-    def _highlight_text(text: str) -> str:
+    def _highlight_text1(text: str) -> str:
+        change_dict = {
+            r"<sup>(.*?)</sup>": lambda x: f"$^{{{x.group(1)}}}$",  # Исправлено
+            r"<sub>(.*?)</sub>": lambda x: f"$_{{{x.group(1)}}}$",  # Исправлено
+        }
+
+        for regular in change_dict:
+            text = re.sub(
+                regular,
+                change_dict[regular],
+                text,
+            )
+        return text
+
+    @staticmethod
+    def _highlight_text2(text: str) -> str:
         change_dict = {
             r"\*\*(.*?)\*\*": lambda x: f"\\textbf{{{x.group(1)}}}",
             r"__(.*?)__": lambda x: f"\\textbf{{{x.group(1)}}}",
@@ -45,8 +62,6 @@ class Paragraph:
             r"~~(.*?)~~": lambda x: f"\\sout{{{x.group(1)}}}",
             r"#(.*?)(?=\s|$)": lambda x: f"\\#{x.group(1)}",  # Только до пробела или конца строки
             r"<u>(.*?)</u>": lambda x: f"\\ul{{{x.group(1)}}}",
-            r"<sup>(.*?)</sup>": lambda x: f"$^{{{x.group(1)}}}$",  # Исправлено
-            r"<sub>(.*?)</sub>": lambda x: f"$_{{{x.group(1)}}}$",  # Исправлено
         }
 
         for regular in change_dict:
@@ -88,7 +103,7 @@ class Paragraph:
             outline_equations.append(match.group(1))
             return f"@@OUTLINE-EQUATION-{len(outline_equations)}@@"
 
-        text = re.sub(r"\$\$([\\s\\S]*?)\$\$", replace_inline, text)
+        text = re.sub(r"\$\$(.*?)\$\$", replace_inline, text)
         return text, outline_equations
 
     @staticmethod
@@ -133,7 +148,7 @@ class Paragraph:
         if seed is not None:
             random.seed(seed)
 
-        with open(change_dict, "r") as f:
+        with open(os.path.expanduser(change_dict), "r") as f:
             repl_map = json.load(f)
 
         def replace_in_string(s: str) -> str:
@@ -194,7 +209,7 @@ class Paragraph:
 
     @staticmethod
     def _text_errors_workaround(text: str) -> str:
-        change_dict = {"й": "й", "–": "-"}
+        change_dict = {"й": "й", "–": "-", "ο": "o"}
         for key in change_dict:
             text = text.replace(key, change_dict[key])
 
@@ -295,11 +310,25 @@ class Paragraph:
 
             text, outline_equations = self._replace_outline_equation(text)
 
+            text = self._highlight_text1(text)
+
+            for i in range(len(outline_equations)):
+                outline_equations[i] = self._change_letters_for_equations(
+                    outline_equations[i]
+                )
+
+            text = re.sub(
+                r"\$\$(.*?)\$\$",
+                lambda x: f"$${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=Settings.Paragraph.formulas_json)}$$",
+                text,
+            )
+
             text = re.sub(
                 r"\$(?:[^$\\]|\\\$|\\[^$])*?\$",
                 lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=Settings.Paragraph.formulas_json)}$",
                 text,
             )
+
             text = self._change_letters_for_equations(
                 text, surround_func=lambda x: f"${x}$"
             )
@@ -316,7 +345,7 @@ class Paragraph:
                 self._eq_ru_letter_workaround(x) for x in inline_equations
             ]
 
-            text = self._highlight_text(text)
+            text = self._highlight_text2(text)
 
             text = self._restore_placeholders(
                 text,
@@ -368,3 +397,40 @@ class Paragraph:
                 text,
             )
         return text
+
+    @staticmethod
+    def merge_items(items: list):
+        if not items:
+            return []
+
+        result = []
+        i = 0
+
+        while i < len(items):
+            current_item = items[i]
+
+            if not isinstance(current_item, Paragraph):
+                result.append(current_item)
+                i += 1
+                continue
+
+            j = i + 1
+            while j < len(items):
+                next_item = items[j]
+
+                if not isinstance(next_item, Paragraph):
+                    break
+
+                if (
+                    next_item.parse == current_item.parse
+                    and next_item.reference == current_item.reference
+                ):
+                    current_item.text += " " + current_item.text
+                    j += 1
+                else:
+                    break
+
+            result.append(current_item)
+            i = j if j > i + 1 else i + 1
+
+        return result

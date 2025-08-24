@@ -5,13 +5,12 @@ from typing import Any, Dict, Union
 import uuid
 
 
-from objects import citation
-from objects.citation import Citation
-from objects.makefile import Makefile
-from objects.paragraph import Paragraph
-from objects.preamble import Preamble
-from objects.file import File
-from objects.quote import Quote
+from .citation import Citation
+from .makefile import Makefile
+from .paragraph import Paragraph
+from .preamble import Preamble
+from .file import File
+from .quote import Quote
 from tools.globals import Global
 from tools.settings import Settings
 

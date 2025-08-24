@@ -1,7 +1,7 @@
 from functools import wraps
 import re
 from typing import Union
-from objects.paragraph import Paragraph
+from .paragraph import Paragraph
 
 
 class List:

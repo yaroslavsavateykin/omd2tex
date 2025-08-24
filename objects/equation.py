@@ -1,4 +1,6 @@
+from .paragraph import Paragraph
 from tools.globals import Global
+from tools.settings import Settings
 
 
 class Equation:
@@ -19,17 +21,22 @@ class Equation:
                 "Equation is not initialized! Firstly call _identify_reference()"
             )
 
+        equation = Paragraph._change_letters_for_equations(
+            self.equation.strip("\n"),
+            dict_file=Settings.Paragraph.formulas_json,
+        )
+        equation = Paragraph._eq_ru_letter_workaround(equation)
         if self.reference:
             equation = rf"""
 \begin{{equation}}
-{self.equation.strip("\n")}
+{equation}
 \label{{eq:{self.reference}}}
 \end{{equation}}
 """
         else:
             equation = rf"""
 \begin{{equation*}}
-{self.equation.strip("\n")}
+{equation}
 \end{{equation*}}
 """
         return equation

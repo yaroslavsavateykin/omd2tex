@@ -1,6 +1,6 @@
 import re
 
-from objects.equation import Equation
+from .equation import Equation
 from tools.settings import Settings
 
 from .paragraph import Paragraph
@@ -92,7 +92,6 @@ class Headline:
     @staticmethod
     def _clean_markdown_numeration(heading: str) -> str:
         """
-        Дипсикнуто)
         Удаляет все форматы нумерации из начала строки заголовка Markdown.
         Поддерживает:
         - Арабские цифры (1, 1.1, 1.1.1)
@@ -104,36 +103,45 @@ class Headline:
 
         Параметры:
             heading (str): Строка заголовка Markdown
-
         Возвращает:
             str: Очищенная строка без нумерации
         """
-        # Компилируем комплексное регулярное выражение
-        pattern = re.compile(
-            r"^\s*"  # Начальные пробелы
-            r"[\[({]?"  # Необязательная открывающая скобка
-            r"(?:"  # Группа элементов:
-            r"(?:\d+|"  # Арабские цифры
-            r"[a-zа-я]|"  # Одиночные буквы (латиница/кириллица)
-            r"[ivxlcdm]+|"  # Римские цифры (строчные)
-            r"[IVXLCDM]+|"  # Римские цифры (заглавные)
-            r"[IVXLCDMivxlcdmа-яА-Я]+"  # Комбинированные наборы
-            r")"
-            r"(?:"  # Группа разделителей:
-            r"[\.\s)\]}•◦›]|"  # Стандартные разделители
-            r"\)\s*|"  # Закрывающая скобка с пробелом
-            r"\]\s*|"  # Закрывающая квадратная скобка
-            r"\}\s*"  # Закрывающая фигурная скобка
-            r")?"  # Разделитель не обязателен
-            r")+"  # Один или более элементов
-            r"[\]})]?"  # Необязательная закрывающая скобка
-            r"\s*"  # Конечные пробелы
-            r"(?=[^\w\s]|$)",  # Lookahead для границы
-            re.IGNORECASE | re.UNICODE,
-        )
-        heading = pattern.sub("", heading, count=1).strip()
-        # Удаляем нумерацию и возвращаем результат
-        return heading
+        if not heading:
+            return heading
+
+        # Более консервативное регулярное выражение - удаляет только явную нумерацию
+        patterns = [
+            # Арабские цифры с точкой и пробелом: "1. ", "1.1. ", "1.1.1. "
+            r"^\s*\d+(?:\.\d+)*\.\s+",
+            # Арабские цифры со скобкой: "1) ", "1.1) "
+            r"^\s*\d+(?:\.\d+)*\)\s+",
+            # Римские цифры с точкой: "IV. ", "vii. "
+            r"^\s*[ivxlcdmIVXLCDM]+\.\s+",
+            # Римские цифры со скобкой: "IV) ", "vii) "
+            r"^\s*[ivxlcdmIVXLCDM]+\)\s+",
+            # Буквы с точкой: "a. ", "A. ", "б. ", "Б. "
+            r"^\s*[a-zA-Zа-яА-ЯёЁ]\.\s+",
+            # Буквы со скобкой: "a) ", "A) ", "б) ", "Б) "
+            r"^\s*[a-zA-Zа-яА-ЯёЁ]\)\s+",
+            # В скобках: "[1] ", "(1) ", "[a] ", "(a) "
+            r"^\s*[\[({][a-zA-Zа-яА-ЯёЁ0-9ivxlcdmIVXLCDM]+[\])}]\s+",
+            # Маркеры списков: "• ", "◦ ", "› "
+            r"^\s*[•◦›]\s+",
+            # Сложные комбинации в скобках: "[1.A.iii] ", "(2.б) "
+            r"^\s*[\[({]\w+(?:[\.\-]\w+)*[\])}]\s+",
+        ]
+
+        result = heading
+
+        # Применяем паттерны по очереди, останавливаемся на первом совпадении
+        for pattern_str in patterns:
+            pattern = re.compile(pattern_str, re.IGNORECASE | re.UNICODE)
+            new_result = pattern.sub("", result, count=1)
+            if new_result != result:
+                result = new_result
+                break
+
+        return result.strip()
 
     @staticmethod
     def _parse_text(text):

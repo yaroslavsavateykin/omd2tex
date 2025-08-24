@@ -1,7 +1,7 @@
-from objects.equation import Equation
-from objects.headline import Headline
-from objects.image import Image
-from objects.table import Table
+from .equation import Equation
+from .headline import Headline
+from .image import Image
+from .table import Table
 
 
 class Reference:

@@ -2,17 +2,24 @@ import os
 import sys
 
 
+import os
+from .settings import Settings
+
+
 def find_file(filename, search_path=None):
     """
-    Ищет файл в текущей директории и её поддиректориях.
+    Ищет файл в текущей директории и её поддиректориях, исключая указанные папки.
 
     Параметры:
         filename (str): Имя файла для поиска (например "file.txt")
         search_path (str, optional): Стартовая директория. По умолчанию - текущая.
+        exclude_dirs (list, optional): Список папок для исключения из поиска.
 
     Возвращает:
         str: Абсолютный путь к файлу если найден, иначе None.
     """
+    exclude_dirs = Settings.Export.search_ignore_dirs
+
     if search_path is None:
         search_path = os.getcwd()
     else:
@@ -25,9 +32,33 @@ def find_file(filename, search_path=None):
     target_filename = filename.strip()
     target_filename_lower = target_filename.lower()
 
+    # Нормализуем список исключаемых папок
+    if exclude_dirs is None:
+        exclude_dirs = []
+
+    # Приводим все исключаемые папки к нижнему регистру для сравнения
+    exclude_dirs_lower = [d.lower().strip() for d in exclude_dirs if d]
+
     # print(f"Ищу файл: '{target_filename}' в директории: {search_path}")
+    # print(f"Исключаемые папки: {exclude_dirs}")
 
     for root, dirs, files in os.walk(search_path):
+        # Получаем имя текущей директории из пути
+        current_dir = os.path.basename(root)
+
+        # Проверяем, не находится ли текущая директория в списке исключений
+        if current_dir.lower() in exclude_dirs_lower:
+            # print(f"Пропускаем директорию: {root}")
+            dirs[:] = []  # Очищаем список поддиректорий для os.walk
+            continue
+
+        # Также проверяем полный путь на исключения (на случай, если нужно исключить по полному пути)
+        for excluded_dir in exclude_dirs:
+            if excluded_dir and excluded_dir in root:
+                # print(f"Пропускаем путь: {root} (содержит исключенную папку)")
+                dirs[:] = []
+                continue
+
         for f in files:
             try:
                 # Прямое сравнение

@@ -1,4 +1,4 @@
-from objects.fragment import Caption
+from .fragment import Caption
 from .paragraph import Paragraph
 
 

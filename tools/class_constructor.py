@@ -142,7 +142,7 @@ class ClassConstructor:
 
         # Если это корневой класс, добавляем импорты
         if indent_level == 0:
-            code = "from tools.config_base import ConfigBase\n\n"
+            code = "from .config_base import ConfigBase\n\n"
 
         # Начинаем определение класса
         code += f"{indent}class {class_name}(ConfigBase):\n"

@@ -1,6 +1,13 @@
 {
   "export": {
     "search_dir": "~/Obsidian/",
+    "search_ignore_dirs": [
+      ".trash",
+      ".obsidian",
+      ".plugins",
+      ".smart-env",
+      ".reference-map"
+    ],
     "makefile": true,
     "export_dir": "./test/",
     "branching_project": false
@@ -8,12 +15,12 @@
   "paragraph": {
     "latinify": true,
     "latinify_probability": 0.05,
-    "latinify_json": "default/latinify.json",
-    "formulas_json": "default/formulas.json"
+    "latinify_json": "~/omd2tex/default/latinify.json",
+    "formulas_json": "~/omd2tex/default/formulas.json"
   },
   "preamble": {
     "create_preamble": true,
-    "settings_json": "default/preamble.json"
+    "settings_json": "~/omd2tex/default/preamble.json"
   },
   "file": {
     "parse": true,

@@ -4,7 +4,7 @@ import yaml
 import uuid
 
 from objects.fragment import Caption, SplitLine
-from tools.search import find_file
+from .search import find_file
 from objects.equation import Equation
 from objects.paragraph import Paragraph
 from objects.codeblock import CodeBlock
@@ -15,7 +15,7 @@ from objects.image import Image, ImageFrame
 from objects.quote import Quote
 from objects.footnote import Footnote
 from objects.list import Enumerate, Bullet, Check, List
-from tools.settings import Settings
+from .settings import Settings
 
 
 class MarkdownParser:
@@ -206,7 +206,10 @@ class MarkdownParser:
                 if line.startswith("---"):
                     in_yaml = False
                     if yaml_lines:
-                        self.yaml = yaml.safe_load("\n".join(yaml_lines))
+                        yamles = yaml.safe_load("\n".join(yaml_lines))
+                        for key in yamles:
+                            Global.YAML_DICT[key] = yamles[key]
+                        self.yaml = yamles
                     i += 1
                     continue
                 else:
@@ -467,6 +470,17 @@ class MarkdownParser:
                 continue
 
             # УРАВНЕНИЯ
+            if (
+                line.strip().startswith("$$")
+                and line.strip().endswith("$$")
+                and line.strip("$$").strip()
+            ):
+                eq = Equation(line.strip().strip("$$"))
+                eq._is_initialized = False
+                elements.append(eq)
+                i += 1
+                continue
+
             if line.strip().startswith("$$") or line.strip().endswith("$$"):
                 if not in_equation:
                     equationlines = [line.strip("$$")]
@@ -481,7 +495,7 @@ class MarkdownParser:
                 continue
 
             if in_equation:
-                equationlines.append(line)
+                equationlines.append(line.strip("$$"))
                 i += 1
                 continue
 

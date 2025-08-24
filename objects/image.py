@@ -2,8 +2,7 @@ import shutil
 from PIL import Image as PillowImage
 import os
 
-from objects import reference
-from objects.paragraph import Paragraph
+from .paragraph import Paragraph
 from tools.search import find_file
 from tools.globals import Global
 from tools.settings import Settings

@@ -6,3 +6,5 @@ class Global(ConfigBase):
     MIN_HEADLINE_LEVEL = 100
     CITATION_INITIALIZED = False
     CREATE_PROJECT = False
+
+    YAML_DICT = {}

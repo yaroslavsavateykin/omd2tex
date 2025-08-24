@@ -1,4 +1,4 @@
-from objects.headline import Headline
+from tools.globals import Global
 
 
 def time(func):
@@ -24,6 +24,8 @@ def main():
 
     Settings.Export.search_dir = "~/Vzlet/"
     Settings.Export.export_dir = "~/omd2tex/test/"
+    Settings.Paragraph.latinify = False
+    Settings.Headline.clean_markdown_numeration = True
 
     doc = Document()
     doc.from_file(filename)
@@ -31,6 +33,7 @@ def main():
     # Settings.Export.check()
 
     # doc.check()
+    Global.check()
     doc.to_latex_project()
 
 

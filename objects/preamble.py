@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Dict
 
 from tools.settings import Settings
@@ -9,7 +10,8 @@ class Preamble:
         pass
 
     def to_latex(self):
-        preamble = Settings.Preamble.settings_json
+        preamble = os.path.expanduser(Settings.Preamble.settings_json)
+
         with open(preamble) as f:
             preamble = json.load(f)
 
