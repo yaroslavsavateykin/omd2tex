@@ -12,3 +12,4 @@ test/
 .ipynb_checkpoints/
 tools/.ipynb_checkpoints/
 
+omd2tex.egg-info/

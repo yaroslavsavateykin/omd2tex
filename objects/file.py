@@ -2,7 +2,6 @@ import uuid
 import os
 
 from .list import List
-from tools.markdown_parser import MarkdownParser
 from tools.settings import Settings
 from .quote import Quote
 
@@ -14,6 +13,8 @@ class File:
         parrentdir: str = None,
         filedepth: int = 0,
     ) -> None:
+        from tools.markdown_parser import MarkdownParser
+
         self.filename = filename
         self.parrentdir = parrentdir
         self.filedepth = filedepth
@@ -29,6 +30,8 @@ class File:
             self.elements = []
 
     def from_file(self, filename: str):
+        from tools.markdown_parser import MarkdownParser
+
         if not self.parrentdir:
             dir = Settings.Export.export_dir
             self.parrentdir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
@@ -45,6 +48,7 @@ class File:
         return self
 
     def from_elements(self, list):
+        from tools.markdown_parser import MarkdownParser
         from .document import Document
 
         if not self.filename:
@@ -83,6 +87,8 @@ class File:
         return self
 
     def from_text(self, text: str):
+        from tools.markdown_parser import MarkdownParser
+
         if not self.filename:
             self.filename = str(uuid.uuid4())[:7]
 
