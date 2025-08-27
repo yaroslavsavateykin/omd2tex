@@ -1,8 +1,8 @@
 import re
 
-from tools.globals import Global
-from tools.search import find_file
-from tools.settings import Settings
+from ..tools import Global
+from ..tools import find_file
+from ..tools import Settings
 
 
 class Citation:

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omd2tex"
+version = "0.1.0"
+description = "Convert Obsidian notes into full LaTeX project"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    {name = "Yaroslav Savateykin", email = "yaroslavsavateykin@yandex.ru"}
+]
+license = {text = "MIT"}
+classifiers = [
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/my_library"

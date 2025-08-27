@@ -3,9 +3,9 @@ from PIL import Image as PillowImage
 import os
 
 from .paragraph import Paragraph
-from tools.search import find_file
-from tools.globals import Global
-from tools.settings import Settings
+from ..tools import find_file
+from ..tools import Global
+from ..tools import Settings
 
 
 class Image:

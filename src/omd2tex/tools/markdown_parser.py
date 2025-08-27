@@ -3,19 +3,10 @@ from typing import Union
 import yaml
 import uuid
 
-from objects.fragment import Caption, SplitLine
-from .search import find_file
-from objects.equation import Equation
-from objects.paragraph import Paragraph
-from objects.codeblock import CodeBlock
-from objects.reference import Reference
-from objects.headline import Headline
-from objects.table import Table
-from objects.image import Image, ImageFrame
-from objects.quote import Quote
-from objects.footnote import Footnote
-from objects.list import Enumerate, Bullet, Check, List
+
 from .settings import Settings
+from .search import find_file
+from .globals import Global
 
 
 class MarkdownParser:
@@ -108,7 +99,7 @@ class MarkdownParser:
         return self
 
     def from_elements(self, list: list):
-        from objects.document import Document
+        from objects import Document
 
         not_pass = [Document, MarkdownParser]
 
@@ -124,6 +115,8 @@ class MarkdownParser:
 
     @staticmethod
     def _process_elements_list(elements: list) -> list:
+        from ..objects import Caption, Reference, List
+
         elements = Reference.attach_reference(elements)
         elements = Reference.identify_elements_reference(elements)
         elements = Caption.attach_caption(elements)
@@ -133,7 +126,22 @@ class MarkdownParser:
         return elements
 
     def __parse(self, lines: list):
-        from objects.file import File
+        from ..objects import (
+            SplitLine,
+            Equation,
+            Paragraph,
+            CodeBlock,
+            Reference,
+            Headline,
+            Table,
+            Image,
+            Quote,
+            Footnote,
+            Enumerate,
+            Bullet,
+            Check,
+            File,
+        )
 
         non_md_extensions = [
             ".jpg",

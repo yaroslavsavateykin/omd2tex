@@ -1,6 +1,6 @@
 from .paragraph import Paragraph
-from tools.globals import Global
-from tools.settings import Settings
+from ..tools import Global
+from ..tools import Settings
 
 
 class Equation:

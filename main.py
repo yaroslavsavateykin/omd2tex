@@ -6,6 +6,7 @@ def time(func):
         import time
 
         start = time.time()
+
         r = func(*args, **kwargs)
         end = time.time()
         print(f"Time used: {(end - start):.2f} seconds")

@@ -1,4 +1,6 @@
-from tools.settings import Settings
+from ..tools import Settings
+
+
 from typing import Union
 
 

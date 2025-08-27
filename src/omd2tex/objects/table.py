@@ -2,7 +2,7 @@ from typing import List
 from pylatexenc.latex2text import LatexNodes2Text
 import numpy as np
 
-from tools.globals import Global
+from ..tools import Global
 from .paragraph import Paragraph
 
 

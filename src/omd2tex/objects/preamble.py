@@ -2,7 +2,7 @@ import json
 import os
 from typing import Dict
 
-from tools.settings import Settings
+from ..tools import Settings
 
 
 class Preamble:

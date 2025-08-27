@@ -5,8 +5,8 @@ import random
 
 from .citation import Citation
 from .footnote import Footnote
-from tools.globals import Global
-from tools.settings import Settings
+from ..tools import Global
+from ..tools import Settings
 
 
 class Paragraph:
@@ -25,10 +25,14 @@ class Paragraph:
         return self.to_latex()
 
     @staticmethod
-    def _change_letters_for_equations(
-        text, dict_file="default/formulas.json", surround_func=lambda x: x
-    ):
-        dict_file = Settings.Paragraph.formulas_json
+    def _change_letters_for_equations(text, dict_file="", surround_func=lambda x: x):
+        if dict_file:
+            dict_file = Settings.Paragraph.formulas_json
+        else:
+            dict_file = os.path.join(
+                os.path.dirname((__file__)), "..", "default/formulas.json"
+            )
+
         with open(os.path.expanduser(dict_file), "r") as f:
             change_dict = json.load(f)
         for key in change_dict:
@@ -143,12 +147,19 @@ class Paragraph:
         lines: str,
         probability=0.05,
         seed=None,
-        change_dict="default/latinify_line.json",
+        change_dict="",
     ) -> str:
         if seed is not None:
             random.seed(seed)
 
-        with open(os.path.expanduser(change_dict), "r") as f:
+        if change_dict:
+            change_dict = Settings.Paragraph.latinify_json
+        else:
+            change_dict = os.path.join(
+                os.path.dirname((__file__)), "..", "default/latinify.json"
+            )
+
+        with open(change_dict, "r") as f:
             repl_map = json.load(f)
 
         def replace_in_string(s: str) -> str:

@@ -2,7 +2,7 @@ import uuid
 import os
 
 from .list import List
-from tools.settings import Settings
+from ..tools import Settings
 from .quote import Quote
 
 
@@ -13,7 +13,7 @@ class File:
         parrentdir: str = None,
         filedepth: int = 0,
     ) -> None:
-        from tools.markdown_parser import MarkdownParser
+        from ..tools import MarkdownParser
 
         self.filename = filename
         self.parrentdir = parrentdir
@@ -30,7 +30,7 @@ class File:
             self.elements = []
 
     def from_file(self, filename: str):
-        from tools.markdown_parser import MarkdownParser
+        from ..tools import MarkdownParser
 
         if not self.parrentdir:
             dir = Settings.Export.export_dir
@@ -48,7 +48,7 @@ class File:
         return self
 
     def from_elements(self, list):
-        from tools.markdown_parser import MarkdownParser
+        from ..tools import MarkdownParser
         from .document import Document
 
         if not self.filename:
@@ -87,7 +87,7 @@ class File:
         return self
 
     def from_text(self, text: str):
-        from tools.markdown_parser import MarkdownParser
+        from ..tools import MarkdownParser
 
         if not self.filename:
             self.filename = str(uuid.uuid4())[:7]

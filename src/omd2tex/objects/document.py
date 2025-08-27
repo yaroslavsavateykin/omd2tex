@@ -11,8 +11,8 @@ from .paragraph import Paragraph
 from .preamble import Preamble
 from .file import File
 from .quote import Quote
-from tools.globals import Global
-from tools.settings import Settings
+from ..tools import Global
+from ..tools import Settings
 
 
 class Document:

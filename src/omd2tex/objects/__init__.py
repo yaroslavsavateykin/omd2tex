@@ -8,9 +8,9 @@ from .table import Table
 from .image import Image
 from .quote import Quote
 from .footnote import Footnote
-from .list import Enumerate, Bullet, Check
+from .list import Enumerate, Bullet, Check, List
 from .preamble import Preamble
 from .citation import Citation
 from .file import File
-from document import Document
+from .document import Document
 from .makefile import Makefile

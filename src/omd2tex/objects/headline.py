@@ -1,10 +1,10 @@
 import re
 
 from .equation import Equation
-from tools.settings import Settings
-
 from .paragraph import Paragraph
-from tools.globals import Global
+
+from ..tools import Settings
+from ..tools import Global
 
 
 class Headline:

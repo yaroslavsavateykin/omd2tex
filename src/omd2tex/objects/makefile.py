@@ -1,4 +1,4 @@
-from tools.globals import Global
+from ..tools import Global
 import os
 
 

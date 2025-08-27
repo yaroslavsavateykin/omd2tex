@@ -15,12 +15,12 @@
   "paragraph": {
     "latinify": true,
     "latinify_probability": 0.05,
-    "latinify_json": "~/omd2tex/default/latinify.json",
-    "formulas_json": "~/omd2tex/default/formulas.json"
+    "latinify_json": "",
+    "formulas_json": ""
   },
   "preamble": {
     "create_preamble": true,
-    "settings_json": "~/omd2tex/default/preamble.json"
+    "settings_json": "/default/preamble.json"
   },
   "file": {
     "parse": true,

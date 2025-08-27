@@ -20,8 +20,8 @@ class Settings(ConfigBase):
     class Paragraph(ConfigBase):
         latinify = True
         latinify_probability = 0.05
-        latinify_json = '~/omd2tex/default/latinify.json'
-        formulas_json = '~/omd2tex/default/formulas.json'
+        latinify_json = ''
+        formulas_json = ''
 
         def __init__(self):
             self.latinify = self.__class__.latinify
@@ -33,7 +33,7 @@ class Settings(ConfigBase):
 
     class Preamble(ConfigBase):
         create_preamble = True
-        settings_json = '~/omd2tex/default/preamble.json'
+        settings_json = '/default/preamble.json'
 
         def __init__(self):
             self.create_preamble = self.__class__.create_preamble
