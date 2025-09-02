@@ -48,7 +48,7 @@ class Citation:
 
         text = re.sub(
             r"(?<=\S),(?=\S)", " and ", text
-        )  # фикс бага плагина Obsidian, который почему то убирает " and " и заменяет на запятую
+        )  # фикс бага плагина Bibtex manager, который почему то убирает " and " и заменяет на запятую
 
         text = text.replace("_", "\\_").replace("–", "--").replace(" &", " \\&")
 

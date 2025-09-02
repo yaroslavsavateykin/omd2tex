@@ -16,11 +16,9 @@ class Image:
         caption="",
         width=None,
         height=None,
-        settings={},
     ) -> None:
         self.filename = filename
         self.parrentdir = parrentdir
-        # self.settings = settings
 
         self.dir = find_file(filename, Settings.Export.search_dir)
 
@@ -36,7 +34,7 @@ class Image:
         if self.reference:
             Global.REFERENCE_DICT[self.reference] = "fig"
         else:
-            Global.REFERENCE_DICT[self.reference] = "not_found_headline"
+            Global.REFERENCE_DICT[self.reference] = "not_found_fig"
 
     def _get_image_dimensions(self):
         try:
@@ -45,7 +43,7 @@ class Image:
         except FileNotFoundError:
             return None, None
 
-    def to_latex(self, setting={}):
+    def to_latex(self):
         if self.caption:
             caption = f"\\caption{{{Paragraph(self.caption).to_latex()}}}"
         else:
@@ -91,8 +89,8 @@ class Image:
 {image_include}
 {caption}
 {reference}
-\\end{{figure}}
-"""
+\\end{{figure}}"""
+
         return latex_lines
 
     def _copy_to_folder(self) -> None:

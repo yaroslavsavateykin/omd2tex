@@ -27,18 +27,14 @@ class Equation:
         )
         equation = Paragraph._eq_ru_letter_workaround(equation)
         if self.reference:
-            equation = rf"""
-\begin{{equation}}
+            equation = rf"""\begin{{equation}}
 {equation}
 \label{{eq:{self.reference}}}
-\end{{equation}}
-"""
+\end{{equation}}"""
         else:
-            equation = rf"""
-\begin{{equation*}}
+            equation = rf"""\begin{{equation*}}
 {equation}
-\end{{equation*}}
-"""
+\end{{equation*}}"""
         return equation
 
     def _to_latex_project(self):

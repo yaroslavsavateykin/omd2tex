@@ -27,7 +27,7 @@ class ConfigBase:
                     class_value, ConfigBase
                 ):
                     # Для вложенных классов создаем экземпляр
-                    setattr(self, attr_name, class_value())
+                    setattr(self, attr_name.lower(), class_value())
                 else:
                     setattr(self, attr_name, class_value)
 
@@ -104,8 +104,15 @@ class ConfigBase:
     def _update_class_recursive(cls, target, data: Dict[str, Any]):
         """Рекурсивно обновляет классовые атрибуты"""
         for key, value in data.items():
+            # Ищем атрибут как есть или с заглавной буквы
+            attr_name = None
             if hasattr(target, key):
-                current_value = getattr(target, key)
+                attr_name = key
+            elif hasattr(target, key.capitalize()):
+                attr_name = key.capitalize()
+
+            if attr_name:
+                current_value = getattr(target, attr_name)
                 if (
                     isinstance(current_value, type)
                     and issubclass(current_value, ConfigBase)
@@ -115,19 +122,26 @@ class ConfigBase:
                     cls._update_class_recursive(current_value, value)
                 else:
                     # Обновляем простое значение
-                    setattr(target, key, value)
+                    setattr(target, attr_name, value)
 
     def _update_instance_recursive(self, target, data: Dict[str, Any]):
         """Рекурсивно обновляет атрибуты экземпляра"""
         for key, value in data.items():
-            if hasattr(target, key):
-                current_value = getattr(target, key)
+            # Ищем атрибут в нижнем регистре (для экземпляров) или как есть
+            attr_name = None
+            if hasattr(target, key.lower()):
+                attr_name = key.lower()
+            elif hasattr(target, key):
+                attr_name = key
+
+            if attr_name:
+                current_value = getattr(target, attr_name)
                 if isinstance(current_value, ConfigBase) and isinstance(value, dict):
                     # Рекурсивно обновляем вложенный объект
                     current_value._update_instance_recursive(current_value, value)
                 else:
                     # Обновляем простое значение
-                    setattr(target, key, value)
+                    setattr(target, attr_name, value)
 
     @classmethod
     def to_default(cls):

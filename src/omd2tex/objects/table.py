@@ -36,10 +36,11 @@ class Table:
     def _to_latex_project(self) -> str:
         return self.to_latex()
 
-    def _parse_lines(self) -> str:
+    def _parse_lines(self) -> List[str]:
         new_lines = []
         for i, line in enumerate(self.lines):
-            line = [Paragraph(x).to_latex() for x in line.strip("|").strip().split("|")]
+            line = [Paragraph(x).to_latex() for x in line.strip("|").split("|")]
+            # line = [Paragraph(x).to_latex() for x in line.strip("|").strip().split("|")]
             if i == 1:
                 for box in line:
                     box = box.strip()
@@ -116,17 +117,13 @@ class Table:
 
         new_lines = ""
         for line in lines:
-            line = (
-                " & ".join(line) + " \\\\"
-            )  # Временное решение проблемы outline уравнения в ячейке
+            line = " & ".join(line) + " \\\\"
             new_lines += line + "\n"
 
-        string = f"""
-\\begingroup
+        string = f"""\\begingroup
 \\centering
 \\begin{{longtblr}}[{reference} {caption}]{{colspec={{{self.colspec}}}, hlines,vlines}}
 {new_lines}
 \\end{{longtblr}}
-\\endgroup
-"""
+\\endgroup"""
         return string

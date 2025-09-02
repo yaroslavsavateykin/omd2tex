@@ -20,7 +20,7 @@
   },
   "preamble": {
     "create_preamble": true,
-    "settings_json": "/default/preamble.json"
+    "settings_json": "default/preamble.json"
   },
   "file": {
     "parse": true,

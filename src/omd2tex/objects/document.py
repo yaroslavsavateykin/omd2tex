@@ -20,7 +20,7 @@ class Document:
         self,
         filename: str = "",
         settings: Union[Dict[str, Any], str] = None,
-        preamble="default/preamble.json",
+        preamble=os.path.join(os.getcwd(), "../default/preamble.json"),
     ):
         if settings:
             Settings.update(settings)
@@ -76,7 +76,7 @@ class Document:
         for i, el in enumerate(list):
             if isinstance(el, Document):
                 raise TypeError(
-                    "Can't Document class to Document.from_elements() function"
+                    "Can't pass Document to Document.from_elements() function"
                 )
             if type(el) in dir_depended_classes:
                 if not list[i].parrentdir:

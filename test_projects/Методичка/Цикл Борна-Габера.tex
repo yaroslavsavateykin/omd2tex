@@ -1,0 +1,84 @@
+\subsubsection{Цикл Борна-Габера}
+
+Существует способ для расчета энергии образования кристаллической решетки, основанный на законе Гесса. Это цикл Борна-Габера, который мы рассмотрим более подробно на примере реакции Na (тв) + 0,5Cl$_{2}$ (г) = NaCl (тв). Представим его на схеме - \cref{fig:2d9ec8}.  
+
+Рассмотрим все представленные на схеме реакции детальнее:  
+
+Для начала натрий переводится из твердого состояния в газовую фазу, минуя жидкое. Данному процессу соответствует энтальпия сублимации:  
+
+\begin{equation*}
+{Na}_{(\text{т}\text{в})} \rightarrow {Na}_{(\text{г})} + {\Delta}H_{\text{с}\text{у}\text{б}\text{л}}
+\end{equation*}
+
+\begin{figure}[H] 
+\centering
+\includegraphics[width = \textwidth, keepaspectratio]{./images/image5v.png}
+\caption{Схематическая иллюстрация примера цикла Борна-Габера.}
+\label{fig:2d9ec8}
+\end{figure}
+
+Далее натрий отдает свой электрон, становясь ионом. Реакция проходит с выделением энтальпии ионизации:  
+
+\begin{equation*}
+{Na}_{(\text{г})}^{0} \rightarrow {Na}_{(\text{г})}^{+} + e^{-} + {\Delta}H_{\text{и}\text{о}\text{н}\text{и}\text{з}\text{а}\text{ц}}
+\end{equation*}
+
+Переходим к хлору. Молекула хлора диссоциирует на атомы, реакцию сопровождает энтальпия диссоциации хлора на атомы:  
+
+\begin{equation*}
+{Cl}_{2(\text{г})} \rightarrow 2{Cl}_{(\text{г})}^{.} + {\Delta}H_{\text{д}\text{и}\text{с}}
+\end{equation*}
+
+Затем атом хлора забирает на себя дополнительный электрон, переходя в ион. Данную реакцию характеризует энергия сродства к электрону:  
+
+\begin{equation*}
+{Cl}_{(\text{г})}^{.} + e^{-} \rightarrow {Cl}_{(\text{г})}^{-} + A_{+ e^{-}}
+\end{equation*}
+
+Далее ионы натрия и хлора, взаимодействуя между собой, образуют кристаллическую решетку хлорида натрия. Данному процессу соответствует энергия образования кристаллической решетки:  
+
+\begin{equation*}
+{Na}_{(\text{г})}^{+} + {Cl}_{(\text{г})}^{-} \rightarrow {NaCl}_{(\text{т}\text{в})} + E_{\text{к}\text{р}\text{и}\text{с}\text{т}}
+\end{equation*}
+
+Запишем еще одну реакцию, необходимую для создания полной картины. Ее характеризует энтальпия образования хлорида натрия:  
+
+\begin{equation*}
+{Na}_{(\text{т}\text{в})} + 0,5{Cl}_{2\ (\text{г})} \rightarrow {NaCl}_{(\text{т}\text{в})} + {\Delta}_{f}^{{^\circ}}{H(NaCl)}
+\end{equation*}
+
+Приравнивая в соответствии с законом Гесса энтальпии и энергии всех упомянутых выше реакций, получаем выражение для расчёта энтальпии ${\Delta}_{f}^{{^\circ}}{H(NaCl)}$:  
+
+\begin{equation*}
+{\Delta}_{f}^{{^\circ}}{H(NaCl)} = {\Delta}H_{\text{с}\text{у}\text{б}\text{л}} + {\Delta}H_{\text{и}\text{о}\text{н}\text{и}\text{з}\text{а}\text{ц}} + 0,5{\Delta}H_{\text{д}\text{и}\text{с}} + A_{+ e^{-}} + E_{\text{к}\text{р}\text{и}\text{с}\text{т}}
+\end{equation*}
+
+При этом важно отметить, что экспериментально энергию кристаллической решетки нельзя определить, просто измерив тепловой эффект реакции взаимодействия твердого натрия и газообразного хлора. Для этого необходимо провести серию экспериментов и измерить тепловой эффект в каждом из них согласно схеме, представленной выше. Аналогичные эксперименты были проведены для большого числа соединений, кристаллическая решетка которых считается ионной.  
+
+Резюмируя, запишем формулу для расчета энтальпии образования кристаллической решетки в общем виде:  
+
+\begin{equation*}
+A_{(\text{т}\text{в})} + B_{(\text{г})} \rightarrow {AB}_{(\text{т}\text{в})}
+\end{equation*}
+
+\begin{equation*}
+{\Delta}_{f}^{{^\circ}}{H(AB)} = {\Delta}H_{\text{с}\text{у}\text{б}\text{л}(A)} + {\Delta}H_{\text{и}\text{о}\text{н}\text{и}\text{з}\text{а}\text{ц}(A)} + {\Delta}H_{\text{д}\text{и}\text{с}(B - B)} + A_{+ e^{-}(B)} + E_{\text{к}\text{р}\text{и}\text{с}\text{т}(AB)}
+\end{equation*}
+
+Представим все описанные процессы и соответствующие им энергии в виде таблицы:  
+
+\begingroup
+\centering
+\begin{longtblr}[ caption={Типы энтальпий различных процессов}]{colspec={Q[c]Q[c]Q[c]}, hlines,vlines}
+ Вид превращения          &  Процесс                                             &  Обозначение                        \\
+ Плавление                &  $\text{т}\text{в} \rightarrow \text{ж}$                                &  ${\Delta}_{fus}H$                \\
+ Испарение                &  $\text{ж} \rightarrow \text{г}$                                 &  ${\Delta}_{vap}H$                \\
+ Сублимация (возгонка)    &  $\text{т}\text{в} \rightarrow \text{г}$                                &  ${\Delta}_{sub}H$                \\
+ Растворение              &  $\text{р}\text{а}\text{с}\text{т}\text{в}\text{о}\text{р}.\ \text{в}\text{е}\text{щ} - \text{в}\text{о} \rightarrow \text{р}\text{а}\text{с}\text{т}\text{в}\text{о}\text{р}$          &  ${\Delta}_{sol}H$                \\
+ Гидратация               &  $X_{\text{г}}^{\pm} \rightarrow X_{\text{в}\text{о}\text{д}\text{н}}^{\pm}$          &  ${\Delta}_{hyd}H$                \\
+ Атомизация               &  $\text{ч}\text{а}\text{с}\text{т}\text{и}\text{ц}\text{ы}\ (\text{т}\text{в},\ \text{ж},\ \text{г}) \rightarrow \text{а}\text{т}\text{о}\text{м}\text{ы}\ (\text{г}\text{а}\text{з})$  &  ${\Delta}_{at}H$                 \\
+ Ионизация                &  $X_{\text{г}} \rightarrow X_{\text{г}}^{+} + e_{\text{г}}^{-}$         &  ${\Delta}_{ion}H$                \\
+ Присоединение электрона  &  $X_{\text{г}} + e_{\text{г}}^{-} \rightarrow X_{\text{г}}^{-}$         &  ${\Delta}_{eg}H\ (A_{+ e^{-}})$  \\
+
+\end{longtblr}
+\endgroup

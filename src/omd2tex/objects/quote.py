@@ -64,7 +64,7 @@ class Quote:
 
             new_lines.append(line[1:])
 
-        from tools.markdown_parser import MarkdownParser
+        from ..tools.markdown_parser import MarkdownParser
 
         self.lines = new_lines
 

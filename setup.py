@@ -8,7 +8,6 @@ def parse_requirements(filename):
         with open(filename, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                # Пропускаем пустые строки, комментарии и editable installs
                 if (
                     line
                     and not line.startswith("#")

@@ -1,13 +1,17 @@
 import uuid
 import re
+from typing import Union, List
 
 
 class Footnote:
     collection = {}
 
     @classmethod
-    def append(cls, key: str, text: str):
+    def append(cls, key: str, text: Union[str, List[str]]):
         from .paragraph import Paragraph
+
+        if isinstance(text, list):
+            text = "\n".join(text)
 
         cls.collection[key] = Paragraph(text).to_latex()
 

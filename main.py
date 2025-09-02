@@ -1,4 +1,4 @@
-from tools.globals import Global
+from src.omd2tex.tools.globals import Global
 
 
 def time(func):
@@ -17,16 +17,18 @@ def time(func):
 
 @time
 def main():
-    from objects.document import Document
-    from tools.settings import Settings
+    from src.omd2tex.objects.document import Document
+    from src.omd2tex.tools.settings import Settings
 
-    with open("default/current", "r") as f:
+    with open("src/omd2tex/default/current", "r") as f:
         filename = f.read().strip()
 
-    Settings.Export.search_dir = "~/Vzlet/"
-    Settings.Export.export_dir = "~/omd2tex/test/"
+    Settings.Export.search_dir = "~/vzlet_vault/"
+    Settings.Export.export_dir = "~/omd2tex/test_projects/"
     Settings.Paragraph.latinify = False
     Settings.Headline.clean_markdown_numeration = True
+
+    filename = "Методичка.md"
 
     doc = Document()
     doc.from_file(filename)

@@ -46,5 +46,4 @@ __all__ = [
     "MarkdownParser",
     "find_file",
     "Settings",
-    "ClassConstructor",
 ]

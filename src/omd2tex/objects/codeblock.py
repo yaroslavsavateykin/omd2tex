@@ -10,23 +10,21 @@ class CodeBlock:
 
     @staticmethod
     def _minted_python(blocklines: list):
-        block = f"""
-\\usemintedstyle{{default}}
+        block = f"""\\usemintedstyle{{default}}
 \\begin{{minted}}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{{python}} 
 {"\n".join(blocklines)}
-\\end{{minted}}
-"""
+\\end{{minted}}"""
+
         return Paragraph(block, parse=False)
 
     @staticmethod
     def _default_codeblock(blocklines: list):
-        block = f"""
-\\begin{{tcolorbox}}[colback=gray!20, colframe=gray!50, sharp corners, boxrule=1pt]
+        block = f"""\\begin{{tcolorbox}}[colback=gray!20, colframe=gray!50, sharp corners, boxrule=1pt]
 \\begin{{verbatim}}
 {"\n".join(blocklines)}
 \\end{{verbatim}}
-\\end{{tcolorbox}}
-"""
+\\end{{tcolorbox}}"""
+
         return Paragraph(block, parse=False)
 
     def _apply_blocktype(self):

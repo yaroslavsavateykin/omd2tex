@@ -1,0 +1,82 @@
+\subsection{Пересчет константы равновесия на новую температуру}
+
+Для того чтобы найти температурную зависимость константы равновесия, необходимо продиффернцировать уравнение \cref{eq:2eeaef} при постоянном давлении:
+
+\begin{equation*}
+\frac{\partial}{\partial T} \left(\Delta_r G^{\circ} \right)= \frac{\partial}{\partial T}(-RT \ln K_p)
+\end{equation*}
+
+Поскольку $K_p$  - зависит от температуры ($K_p  =f(T)$), то справа имеем сложную функцию, и по правилу дифференцирования сложной функции получаем:
+
+\begin{equation*}
+\left(\frac{\partial \Delta_r G^\circ}{\partial T} \right)_p = -R \ln K_p -RT \left(\frac{\partial \ln K_p}{\partial T} \right)_p 
+\end{equation*}
+
+Группируем и получаем:
+
+\begin{equation}
+\left(\frac{\partial \ln K_p}{\partial T} \right)_p= \frac{1}{R} \left( \frac{\Delta_r G^\circ}{T^2} - \frac{1}{T} \left(\frac{\partial \Delta_r G^\circ}{\partial T}\right)_p\right)
+\label{eq:8f58a6}
+\end{equation}
+
+Запишем уравнение Гиббса-Гельмгольца \cref{eq:6ae2b5} для $\Delta_r G^\circ$ и подставим его в \cref{eq:8f58a6}, считая, что энтальпия и энтропия не зависят от температуры:
+
+\begin{equation}
+\Delta_r G^\circ = \Delta_r H^\circ - T \Delta_r S^\circ
+\label{eq:6ae2b5}
+\end{equation}
+
+\begin{equation}
+\left(\frac{\partial \ln K_p}{\partial T} \right)_p= \frac{1}{R} \left( \frac{\Delta_r H^\circ - T \Delta_r S^\circ}{T^2} - \frac{1}{T} (-\Delta_r S^\circ )\right) = \frac{\Delta_r H^\circ}{RT^2}
+\label{eq:b71bb1}
+\end{equation}
+
+Аналогично для постоянного давления получаем:
+
+\begin{equation}
+\left(\frac{\partial \ln K_C}{\partial T} \right)_V= \frac{\Delta_r U^\circ}{RT^2}
+\label{eq:b58ef2}
+\end{equation}
+
+Уравнения \cref{eq:b71bb1} и \cref{eq:b58ef2} называют уравнениями изобары и изохоры реакции соответственно. Из этих уравнений следует, что влияние температуры на константу равновесия определяется знаком теплового эффекта.
+
+\begin{enumerate}\keepwithnext
+    \setcounter{enumi}{0}
+    \item Если реакция эндотермическая, т. е. $\Delta_r H^\circ > 0$, то $\left( \frac{\partial \ln K_p}{\partial T} \right)_p > 0$ и с повышением температуры константа равновесия будет расти, равновесие сместится в сторону продуктов реакции.
+    \setcounter{enumi}{1}
+    \item Если реакция экзотермическая, т. е. $\Delta_r H^\circ < 0$, то $\left( \frac{\partial \ln K_p}{\partial T} \right)_p < 0$ и с повышением температуры константа равновесия будет уменьшаться, равновесие сместится в сторону реагентов.
+\end{enumerate}
+
+Эти качественные выводы о влиянии температуры на химическое равновесие согласуются с общим принципом смещения равновесия (\textbf{принципом Ле Шателье-Брауна}): 
+
+\begin{quote}\slshape\noindent
+Если на систему, находящуюся в равновесии, оказать внешнее воздействие, то равновесие сместится так, чтобы уменьшить эффект произведенного воздействия.
+\end{quote}
+
+Иначе:
+
+\begin{itemize}\keepwithnext
+    \item Повышение (или понижение) температуры сдвигает равновесие в сторону реакции, протекающей с поглощением (выделением) теплоты.
+    \item Повышение давления сдвигает равновесие в сторону уменьшения количества молекул газа.
+    \item Добавление в равновесную смесь какого-либо компонента реакции сдвигает равновесие в сторону уменьшения количества этого компонента.
+\end{itemize}
+
+При интегрировании уравнений \cref{eq:b71bb1} и \cref{eq:b58ef2} нужно знать температурные зависимости $\Delta_r H^\circ(T)$ и $\Delta_r U^\circ(T)$. Если расчеты равновесий проводятся в небольшом температурном интервале, можно принять, что эти величины постоянны. Тогда:
+
+\begin{equation*}
+\ln K_p = -\frac{\Delta_r H^\circ}{RT} + \text{const} = \frac{A}{T} + B
+\end{equation*}
+
+\begin{equation*}
+\ln \frac{K_p(T_2)}{K_p(T_1)} = \frac{\Delta_r H^\circ}{R} \cdot \left( \frac{1}{T_1} - \frac{1}{T_2} \right)
+\end{equation*}
+
+\begin{equation*}
+\ln K_c = -\frac{\Delta_r U^\circ}{RT} + \text{const} = \frac{A_1}{T} + B_1
+\end{equation*}
+
+\begin{equation*}
+\ln \frac{K_c(T_2)}{K_c(T_1)} = \frac{\Delta_r U^\circ}{R} \cdot \left( \frac{1}{T_1} - \frac{1}{T_2} \right)
+\end{equation*}
+
+где $A_i$, $B_i$ — некоторые параметры, определяемые при статистической обработке экспериментальных данных.
