@@ -25,6 +25,15 @@ def parse_requirements(filename):
     return requirements
 
 
+# Функция для рекурсивного поиска файлов в директории
+def find_additional_files(directory):
+    result = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            result.append(os.path.join(root, file))
+    return result
+
+
 setup(
     name="omd2tex",
     version="0.1.0",
@@ -35,4 +44,6 @@ setup(
     packages=find_packages(),
     python_requires=">=3.8",
     install_requires=parse_requirements("requirements.txt"),
+    package_data={"default": ["*.json"]},
+    include_package_data=True,
 )
