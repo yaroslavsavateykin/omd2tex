@@ -20,7 +20,7 @@
   },
   "preamble": {
     "create_preamble": true,
-    "settings_json": "default/preamble.json"
+    "settings_json": ""
   },
   "file": {
     "parse": true,
@@ -36,10 +36,7 @@
   },
   "image": {
     "parse": true,
-    "wh_aspect_borders": [
-      0.6,
-      1.8
-    ],
+    "wh_aspect_borders": [0.6, 1.8],
     "default_width": "8cm",
     "default_height": "8cm"
   },
@@ -47,6 +44,11 @@
     "parse": true,
     "max_quote_recursion": 5
   },
+
+  "list": {
+    "itemsep": "0pt"
+  },
+
   "fragment": {
     "splitline": {
       "parse": true,

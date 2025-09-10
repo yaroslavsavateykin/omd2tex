@@ -225,6 +225,31 @@ class MarkdownParser:
                     i += 1
                     continue
 
+            # БЛОКИ КОДА
+            if line.startswith("```") and not in_code_block:
+                blocktype = line.strip("```").strip()
+                blocklines = []
+                in_code_block = True
+                i += 1
+                continue
+
+            if in_code_block:
+                if line.startswith("```"):
+                    if blocklines:
+                        elements.append(
+                            CodeBlock.create(
+                                blocktype,
+                                blocklines,
+                            )
+                        )
+                    in_code_block = False
+                    i += 1
+                    continue
+                else:
+                    blocklines.append(line)
+                    i += 1
+                    continue
+
             if Settings.Fragment.Splitline.parse:
                 if line.strip().startswith("---"):
                     elements.append(SplitLine())
@@ -441,31 +466,6 @@ class MarkdownParser:
                             filedepth=self.filedepth + 1,
                         )
                     )
-                    i += 1
-                    continue
-
-            # БЛОКИ КОДА
-            if line.startswith("```") and not in_code_block:
-                blocktype = line.strip("```").strip()
-                blocklines = []
-                in_code_block = True
-                i += 1
-                continue
-
-            if in_code_block:
-                if line.startswith("```"):
-                    if blocklines:
-                        elements.append(
-                            CodeBlock.create(
-                                blocktype,
-                                blocklines,
-                            )
-                        )
-                    in_code_block = False
-                    i += 1
-                    continue
-                else:
-                    blocklines.append(line)
                     i += 1
                     continue
 

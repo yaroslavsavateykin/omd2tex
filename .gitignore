@@ -8,8 +8,12 @@ venv/
 *.log
 *.ipynb
 
-test/
 .ipynb_checkpoints/
-tools/.ipynb_checkpoints/
+.pytest_cache/
 
+tools/.ipynb_checkpoints/
+test_projects/
+
+build/
+tests/
 omd2tex.egg-info/

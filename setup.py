@@ -31,7 +31,7 @@ setup(
     description="Markdown to LaTeX converter specicified on using in Obsidian",
     author="Savateykin Yaroslav",
     author_email="yaroslavsavateykin@yandex.ru",
-    package_dir={"": "src"},
+    package_dir={"omd2tex": "omd2tex"},
     packages=find_packages(),
     python_requires=">=3.8",
     install_requires=parse_requirements("requirements.txt"),

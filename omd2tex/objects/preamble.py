@@ -10,9 +10,13 @@ class Preamble:
         pass
 
     def to_latex(self):
-        # preamble = os.path.expanduser(Settings.Preamble.settings_json)
-
-        preamble = os.path.join(os.getcwd(), "src/omd2tex/default/preamble.json")
+        if Settings.Preamble.settings_json:
+            preamble = os.path.expanduser(Settings.Preamble.settings_json)
+        else:
+            preamble = (
+                os.path.abspath(os.path.dirname(__file__)) + "/../default/preamble.json"
+            )
+        # preamble = os.path.join(os.getcwd(), "src/omd2tex/default/preamble.json")
 
         with open(preamble) as f:
             preamble = json.load(f)

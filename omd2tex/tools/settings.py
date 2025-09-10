@@ -33,7 +33,7 @@ class Settings(ConfigBase):
 
     class Preamble(ConfigBase):
         create_preamble = True
-        settings_json = '/default/preamble.json'
+        settings_json = ''
 
         def __init__(self):
             self.create_preamble = self.__class__.create_preamble
@@ -93,6 +93,14 @@ class Settings(ConfigBase):
             super().__init__()
 
 
+    class List(ConfigBase):
+        itemsep = '0pt'
+
+        def __init__(self):
+            self.itemsep = self.__class__.itemsep
+            super().__init__()
+
+
     class Fragment(ConfigBase):
         class Splitline(ConfigBase):
             parse = True
@@ -126,6 +134,7 @@ class Settings(ConfigBase):
         self.headline = self.__class__.Headline()
         self.image = self.__class__.Image()
         self.quote = self.__class__.Quote()
+        self.list = self.__class__.List()
         self.fragment = self.__class__.Fragment()
         super().__init__()
 
