@@ -9,9 +9,9 @@ venv/
 *.ipynb
 
 .ipynb_checkpoints/
+tools/.ipynb_checkpoints/
 .pytest_cache/
 
-tools/.ipynb_checkpoints/
 test_projects/
 
 build/
