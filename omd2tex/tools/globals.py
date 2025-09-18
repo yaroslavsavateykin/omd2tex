@@ -8,3 +8,5 @@ class Global(ConfigBase):
     CREATE_PROJECT = False
 
     YAML_DICT = {}
+
+    DOCUMENT_CLASS = "article"

@@ -1,82 +1,84 @@
 import json
 import os
-from typing import Dict
+from typing import Dict, Any
 
 from ..tools import Settings
+from ..tools import SettingsPreamble
 
 
 class Preamble:
     def __init__(self) -> None:
-        pass
+        self.config = self._load_config()
+        SettingsPreamble.update(self.config)
 
-    def to_latex(self):
+    def _load_config(self) -> Dict[str, Any]:
         if Settings.Preamble.settings_json:
-            preamble = os.path.expanduser(Settings.Preamble.settings_json)
+            config_path = os.path.expanduser(Settings.Preamble.settings_json)
         else:
-            preamble = (
+            config_path = (
                 os.path.abspath(os.path.dirname(__file__)) + "/../default/preamble.json"
             )
-        # preamble = os.path.join(os.getcwd(), "src/omd2tex/default/preamble.json")
 
-        with open(preamble) as f:
-            preamble = json.load(f)
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Конфигурационный файл не найден: {config_path}")
+        except json.JSONDecodeError:
+            raise ValueError(f"Некорректный JSON файл: {config_path}")
+
+    def to_latex(self) -> str:
+        documentclass = SettingsPreamble.documentclass
+
+        if documentclass == "beamer":
+            return self._generate_beamer_preamble()
+        else:
+            return self._generate_article_preamble()
+
+    def _generate_article_preamble(self) -> str:
+        config = self.config
 
         string = rf"""
-\documentclass[{preamble["fontsize"]}]{{{preamble["documentclass"]}}} % Дополнительные размеры
-\linespread{{{preamble["linespread"]}}}
+\documentclass[{SettingsPreamble.Article.fontsize}]{{{SettingsPreamble.documentclass}}}
+\linespread{{{SettingsPreamble.Article.linespread}}}
 \usepackage{{mathtext}}
 
 % Шрифты и кодировка
 \usepackage[T2A]{{fontenc}}
 \usepackage[utf8]{{inputenc}}
-%\usepackage{{lmodern}} % Latin Modern (улучшенный Computer Modern)
-%\renewcommand{{\ttdefault}}{{lmtt}} % Для моноширинного
-%\usepackage[T1,T2A]{{fontenc}}
 \usepackage{{cmap}}
 \usepackage{{textcomp}}
 \usepackage[russian]{{babel}}
 \usepackage{{extsizes}}
 
-%% Fonts
-%\defaultfontfeatures{{Mapping=tex-text}}
-%\setmainfont{{CMU Serif}}
-%\setsansfont{{CMU Sans Serif}}
-%\setmonofont{{CMU Typewriter Text}}
+%------------------------------Packages---------------------------------
 
-%------------------------------Packages---------------------------------$
-
-\usepackage{{geometry}}    % Настрока отступов
-\usepackage[version = 4]{{mhchem}}      % Химические формулы черех \ce{{}}   
+\usepackage{{geometry}}    % Настройка отступов
+\usepackage[version = 4]{{mhchem}}      % Химические формулы через \ce{{}}   
 \usepackage{{chemgreek}}
-
-%\usepackage{{chemformula}}
-%\NewCommandCopy{{\ce}}{{\ch}}
-%\let\ch\relax
 
 \usepackage{{xcolor}}      % Выделение цветом
 \usepackage{{tcolorbox}}
 \usepackage{{soul}}        % Выделение цветов
 \usepackage{{pdflscape}}   % Для горизонтальной ориентации
-\usepackage{{cancel}}      % Для горизонтальной ориентации
+\usepackage{{cancel}}      % Зачеркивание
 \usepackage{{amsmath}}
 \usepackage{{ulem}}
 \usepackage{{amsmath}}
 \usepackage{{amssymb}}
 \usepackage{{gensymb}}
 \usepackage{{graphicx}}    % Вставка картинок 
-\usepackage{{subcaption}}    % Вставка картинок 
+\usepackage{{subcaption}}    % Подписи к картинкам 
 \counterwithin{{subfigure}}{{figure}}
 \usepackage{{caption}}
-\captionsetup[figure]{{skip=1pt}} % Уменьшает отступ (по умолчанию ~10pt)
-\captionsetup[subfigure]{{skip=1pt}} % Уменьшает отступ (по умолчанию ~10pt)
-\captionsetup[table]{{skip=1pt}} % Уменьшает отступ (по умолчанию ~10pt)
-\captionsetup[longtblr]{{skip=1pt}} % Уменьшает отступ (по умолчанию ~10pt)
+\captionsetup[figure]{{skip=1pt}}
+\captionsetup[subfigure]{{skip=1pt}}
+\captionsetup[table]{{skip=1pt}}
+\captionsetup[longtblr]{{skip=1pt}}
 \renewcommand{{\thesubfigure}}{{Рис \thefigure.\arabic{{figure}}.}} 
-\usepackage{{floatrow}}  % Чтобы подчеркивания нормально вставлялись вне окружения математики
-\usepackage{{underscore}}  % Чтобы подчеркивания нормально вставлялись вне окружения математики
-%\usepackage{{hyphenat}}  % улучшает алгоритм переносов
+\usepackage{{floatrow}}
+\usepackage{{underscore}}  % Чтобы подчеркивания нормально вставлялись
 \usepackage{{svg}}
-%\pagestyle{{empty}}
 \usepackage{{collectbox}}
 
 \usepackage[backend=biber, style=ieee]{{biblatex}}
@@ -101,7 +103,6 @@ class Preamble:
 
 % Пакет для настройки заголовков
 \usepackage{{titlesec}}
-% Настройка стилей заголовков как в стандартном article
 \titleformat{{\section}}
     {{\normalfont\Large\bfseries}}{{\thesection}}{{1em}}{{}}
 \titleformat{{\subsection}}
@@ -117,21 +118,8 @@ class Preamble:
 \DeclareFieldFormat{{author}}{{\textit{{#1}}}}
 \DeclareFieldFormat{{journaltitle}}{{#1}}
 \DeclareFieldFormat{{title}}{{#1}}
-%\DeclareFieldFormat{{url}}{{}}
-%\DeclareFieldFormat{{doi}}{{}}
-
-%\usepackage{{hyperref}}
 
 \usepackage{{indentfirst}}
-
-% Чтобы minted сохрагял все там, где нужно
-%\usepackage{{currfile-abspath}}
-%\usepackage{{ifthen}}
-%\getabspath{{\jobname.log}}
-%\ifthenelse{{\equal{{\theabsdir}}{{\thepwd}}}}% using ifthen package
-%\ifdefstrequal{{\theabsdir}}{{\thepwd}}% using etoolbox package
-%    {{}}{{\PassOptionsToPackage{{outputdir=../created_files}}{{minted}}}}
-
 \usepackage{{minted}} % Выделение кода   
 
 \usepackage{{tabularx,ragged2e}}
@@ -147,11 +135,9 @@ class Preamble:
 \DefTblrTemplate{{contfoot-text}}{{default}}{{Продолжение на следующей странице}}
 \DefTblrTemplate{{conthead-text}}{{default}}{{(Продолжение)}}
 
-%\usepackage{{fancyvrb}}
 \usepackage{{tocbibind}}
 
 % TIKZ
-
 \usepackage{{pgfplots}}
 \DeclareUnicodeCharacter{{2212}}{{−}}
 \usepgfplotslibrary{{groupplots,dateplot}}
@@ -161,24 +147,16 @@ class Preamble:
 \tikzstyle{{block}} = [rectangle, draw, text centered, text width=10.5cm, minimum height=1.5cm, align=center]
 \tikzstyle{{line}} = [draw, -latex']
 
-% Заголовки
-%\usepackage{{titlesec}}
-
-%\titleformat{{\section}}{{\normalfont\Large\bfseries}}{{\thesection}}{{1em}}{{}}
-%\titlespacing*{{\section}}{{0pt}}{{3.5ex plus 1ex minus .2ex}}{{2.3ex plus .2ex}}
-%\titlespacing*{{\subsection}}{{0pt}}{{3.5ex plus 1ex minus .2ex}}{{2.3ex plus .2ex}}
-%\titlespacing*{{\subsubsection}}{{0pt}}{{3.5ex plus 1ex minus .2ex}}{{2.3ex plus .2ex}}
-
-%-------------------------------Settings--------------------------------%
+%-------------------------------Settings--------------------------------
 
 % Настройки отступов
 \geometry{{
     a4paper, 
-    left={preamble["left"]}, 
-    right={preamble["right"]}, 
-    top={preamble["top"]}, 
-    bottom={preamble["bottom"]}
-    }}
+    left={SettingsPreamble.Article.left}, 
+    right={SettingsPreamble.Article.right}, 
+    top={SettingsPreamble.Article.top}, 
+    bottom={SettingsPreamble.Article.bottom}
+}}
 
 % Настройки нумерации уравнений. 
 % Честно, совсем не понимаю, как оно работает, и пусть.
@@ -197,40 +175,122 @@ class Preamble:
 %  \renewcommand{{\theequation}}{{\thesubsubsection.\arabic{{equation}}}}% Update equation number
 %  \oldsubsubsection}}% Regular \subsubsection 
 
+
 \tikzset{{>=latex}}
-
-\newtcolorbox{{box1}}{{
-  colframe=black, % Цвет рамки
-  colback=white, % Цвет фона
-  arc=3pt, % Закругление углов
-  boxrule=0.5pt, % Толщина основной линии рамки
-  boxsep=5pt, % Отступ внутри блока
-  left=10pt, % Отступ слева
-  right=10pt, % Отступ справа
-  top=5pt, % Отступ сверху
-  bottom=5pt, % Отступ снизу
-  %before upper={{\begin{{quote}}}}, % Начинаем окружение quote
-  %after upper={{\end{{quote}}}}, % Заканчиваем окружение quote
-  enlarge left by=0pt, % Убираем лишний отступ слева
-  enlarge right by=0pt, % Убираем лишний отступ справа
-  width=\linewidth-60pt, % Ширина коробки равна ширине строки
-  before=\vspace{{5pt}}, % Отступ перед коробкой
-  after=\vspace{{5pt}} % Отступ после коробки
-}}
-
 \definecolor{{mintgreen}}{{RGB}}{{220,255,220}}
-
 \DeclareUnicodeCharacter{{202F}}{{\,}}
 """
         return string
 
-    def _to_latex_project(self, settings={}):
-        """
-        with open(self.parrentdir + "/" + "preamble.tex", "w") as f:
+    def _generate_beamer_preamble(self) -> str:
+        title_line = (
+            f"\\title{{{SettingsPreamble.Beamer.title}}}"
+            if SettingsPreamble.Beamer.title
+            else ""
+        )
+        author_line = (
+            f"\\author{{{SettingsPreamble.Beamer.author}}}"
+            if SettingsPreamble.Beamer.author
+            else ""
+        )
+        institute_line = (
+            f"\\institute{{{SettingsPreamble.Beamer.institute}}}"
+            if SettingsPreamble.Beamer.institute
+            else ""
+        )
+        date_line = (
+            f"\\date{{{SettingsPreamble.Beamer.date}}}"
+            if SettingsPreamble.Beamer.date
+            else ""
+        )
 
-            f.write(self.to_latex())
+        string = rf"""
+\documentclass[{SettingsPreamble.Beamer.fontsize}]{{beamer}}
 
-        return f"\\include{{preabmble.tex}}"
-        """
+%-------------------------Basic Packages-----------------------------
+\usepackage[T2A]{{fontenc}}
+\usepackage[utf8]{{inputenc}}
+\usepackage[russian]{{babel}}
+\usepackage{{amsmath}}
+\usepackage{{amssymb}}
+\usepackage{{graphicx}}
 
+\geometry{{
+    left={SettingsPreamble.Beamer.left}, 
+    right={SettingsPreamble.Beamer.right}, 
+    top={SettingsPreamble.Beamer.top}, 
+    bottom={SettingsPreamble.Beamer.bottom}
+}}
+
+
+%----------------------Scientific Packages---------------------------
+
+\usepackage{{geometry}}    % Настройка отступов
+\usepackage[version = 4]{{mhchem}}      % Химические формулы через \ce{{}}   
+\usepackage{{chemgreek}}
+
+\usepackage{{xcolor}}      % Выделение цветом
+\usepackage{{tcolorbox}}
+\usepackage{{soul}}        % Выделение цветов
+\usepackage{{pdflscape}}   % Для горизонтальной ориентации
+\usepackage{{cancel}}      % Зачеркивание
+\usepackage{{ulem}}
+\usepackage{{gensymb}}
+\usepackage{{subcaption}}    % Подписи к картинкам 
+\counterwithin{{subfigure}}{{figure}}
+\usepackage{{caption}}
+\captionsetup[figure]{{skip=1pt}}
+\captionsetup[subfigure]{{skip=1pt}}
+\captionsetup[table]{{skip=1pt}}
+\captionsetup[longtblr]{{skip=1pt}}
+\renewcommand{{\thesubfigure}}{{Рис \thefigure.\arabic{{figure}}.}} 
+\usepackage{{floatrow}}
+\usepackage{{underscore}}  % Чтобы подчеркивания нормально вставлялись
+\usepackage{{svg}}
+\usepackage{{collectbox}}
+
+%\usepackage[backend=biber, style=ieee]{{biblatex}}
+%\usepackage[hidelinks]{{hyperref}}
+\usepackage[capitalize]{{cleveref}}
+\crefname{{figure}}{{рис.}}{{рис.}}
+\Crefname{{figure}}{{Рис.}}{{Рис.}}
+\crefname{{subfigure}}{{рис.}}{{рис.}}
+\Crefname{{subfigure}}{{Рис.}}{{Рис.}}
+\crefname{{equation}}{{}}{{}}
+\Crefname{{equation}}{{}}{{}}
+\crefname{{longtblr}}{{табл.}}{{табл.}}
+\Crefname{{longtblr}}{{Табл.}}{{Табл.}}
+\crefname{{table}}{{табл.}}{{табл.}}
+\Crefname{{table}}{{Табл.}}{{Табл.}}
+\crefname{{section}}{{раздел}}{{раздел}}
+\Crefname{{section}}{{Раздел}}{{Раздел}}
+\crefname{{subsection}}{{подраздел}}{{подраздел}}
+\Crefname{{subsection}}{{Подраздел}}{{Подраздел}}
+\crefname{{subsubsection}}{{пункт}}{{пункт}}
+\Crefname{{subsubsection}}{{Пункт}}{{Пункт}}
+
+% Пакет для настройки заголовков
+\usepackage{{titlesec}}
+
+\usepackage{{mathtext}}
+\usepackage[version=4]{{mhchem}}
+
+%----------------------Code Highlighting-----------------------------
+\usepackage{{minted}}
+
+%----------------------Style Settings--------------------------------
+\usetheme{{{SettingsPreamble.Beamer.theme}}}
+\usecolortheme{{{SettingsPreamble.Beamer.colortheme}}}
+\usefonttheme{{{SettingsPreamble.Beamer.fonttheme}}}
+
+\setbeamertemplate{{navigation symbols}}{{}} % Эта команда УДАЛЯЕТ все навигационные символы
+%----------------------Presentation Info-----------------------------
+{title_line}
+{author_line}
+{institute_line}
+{date_line}
+"""
+        return string
+
+    def _to_latex_project(self):
         return self.to_latex()

@@ -1,4 +1,4 @@
-from .fragment import Caption, SplitLine
+from .fragment import Caption, SplitLine, Frame
 from .equation import Equation
 from .paragraph import Paragraph
 from .codeblock import CodeBlock

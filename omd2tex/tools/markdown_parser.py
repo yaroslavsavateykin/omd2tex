@@ -7,6 +7,7 @@ import uuid
 from .settings import Settings
 from .search import find_file
 from .globals import Global
+from .settings_preamble import SettingsPreamble
 
 
 class MarkdownParser:
@@ -115,13 +116,15 @@ class MarkdownParser:
 
     @staticmethod
     def _process_elements_list(elements: list) -> list:
-        from ..objects import Caption, Reference, List
+        from ..objects import Caption, Reference, List, SplitLine
 
         elements = Reference.attach_reference(elements)
         elements = Reference.identify_elements_reference(elements)
         elements = Caption.attach_caption(elements)
         elements = List.append_items(elements)
         elements = List.merge_items(elements)
+        if SettingsPreamble.documentclass == "beamer":
+            elements = SplitLine.make_beamer(elements)
 
         return elements
 
@@ -215,6 +218,8 @@ class MarkdownParser:
                     in_yaml = False
                     if yaml_lines:
                         yamles = yaml.safe_load("\n".join(yaml_lines))
+                        Settings.update(yamles)
+                        SettingsPreamble.update(yamles)
                         for key in yamles:
                             Global.YAML_DICT[key] = yamles[key]
                         self.yaml = yamles
@@ -252,7 +257,7 @@ class MarkdownParser:
 
             if Settings.Fragment.Splitline.parse:
                 if line.strip().startswith("---"):
-                    elements.append(SplitLine())
+                    elements.append(SplitLine(line.strip().strip("---").strip("\n")))
                     i += 1
                     continue
 

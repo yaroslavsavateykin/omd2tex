@@ -4,6 +4,10 @@ import shutil
 from typing import Any, Dict, Union
 import uuid
 
+from numpy import copy
+
+from omd2tex.tools.settings_preamble import SettingsPreamble
+
 
 from .citation import Citation
 from .makefile import Makefile
@@ -33,8 +37,13 @@ class Document:
 
         if Settings.Preamble.create_preamble:
             self.preamble = Preamble()
+
         else:
             self.preamble = Paragraph("")
+
+        export = os.path.expanduser(Settings.Export.export_dir)
+        search = os.path.expanduser(Settings.Export.search_dir)
+        Settings.Export.search_ignore_dirs.append(os.path.relpath(export, search))
 
     def from_file(self, filename: str):
         self.filename = filename
@@ -188,8 +197,26 @@ class Document:
 \\end{{document}}"""
 
         with open(
-            self.dir + "/" + self.filename.strip(".md") + "/" + "main.tex", "w"
+            os.path.join(self.dir, self.filename.strip(".md"), "main.tex"), "w"
         ) as f:
             f.write(document)
+
+        if SettingsPreamble.documentclass == "beamer":
+            style_json = os.path.join(
+                os.path.dirname(__file__), "../default/beamer-themes.json"
+            )
+            with open(style_json, "r") as f:
+                style_dict = json.loads(f.read())
+            if SettingsPreamble.Beamer.theme in style_dict:
+                style_dir = os.path.join(
+                    os.path.dirname(__file__),
+                    "../default/beamer-themes/",
+                    style_dict[SettingsPreamble.Beamer.theme],
+                )
+                copy_dir = os.path.join(self.dir, self.filename.strip(".md"))
+
+                shutil.copy2(style_dir, copy_dir)
+            else:
+                print(f"{SettingsPreamble.Beamer.theme} not found in JSON file")
 
         Global.to_default()

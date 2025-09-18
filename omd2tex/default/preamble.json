@@ -1,9 +1,26 @@
 {
   "documentclass": "article",
-  "fontsize": "12pt",
-  "linespread": 1.5,
-  "left": "2cm",
-  "right": "2cm",
-  "top": "2cm",
-  "bottom": "2cm"
+  "article": {
+    "fontsize": "12pt",
+    "linespread": 1.5,
+    "left": "2cm",
+    "right": "2cm",
+    "top": "2cm",
+    "bottom": "2cm"
+  },
+  "beamer": {
+    "fontsize": "12pt",
+    "linespread": 1.5,
+    "left": "0.5cm",
+    "right": "0.5cm",
+    "top": "0.5cm",
+    "bottom": "0.5cm",
+    "theme": "blei",
+    "colortheme": "default",
+    "fonttheme": "professionalfonts",
+    "title": "My presentaion",
+    "author": "Yaroslav",
+    "institute": "MSU",
+    "date": "\today"
+  }
 }

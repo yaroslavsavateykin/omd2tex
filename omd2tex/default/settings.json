@@ -6,7 +6,8 @@
       ".obsidian",
       ".plugins",
       ".smart-env",
-      ".reference-map"
+      ".reference-map",
+      "LaTeX"
     ],
     "makefile": true,
     "export_dir": "./test/",

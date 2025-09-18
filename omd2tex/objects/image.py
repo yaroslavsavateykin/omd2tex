@@ -94,13 +94,21 @@ class Image:
         return latex_lines
 
     def _copy_to_folder(self) -> None:
-        dir = self.parrentdir + "/images/"
-        try:
-            os.makedirs(dir)
-        except:
-            pass
+        dir_path = os.path.join(self.parrentdir, "images")
+        os.makedirs(dir_path, exist_ok=True)
 
-        shutil.copy2(self.dir, dir)
+        filename = os.path.basename(self.dir)
+        destination = os.path.join(dir_path, filename)
+
+        if os.path.exists(destination):
+            os.remove(destination)
+
+        print(self.dir, destination)
+
+        if os.path.isfile(self.dir):
+            shutil.copy2(self.dir, destination)
+        else:
+            raise FileNotFoundError(f"Файл {self.dir} не найден")
 
     def _ralative_paths(self) -> None:
         self.parrentdir = "."
