@@ -114,8 +114,7 @@ class MarkdownParser:
         self.elements = self._process_elements_list(list)
         return self
 
-    @staticmethod
-    def _process_elements_list(elements: list) -> list:
+    def _process_elements_list(self, elements: list) -> list:
         from ..objects import Caption, Reference, List, SplitLine
 
         elements = Reference.attach_reference(elements)
@@ -123,7 +122,11 @@ class MarkdownParser:
         elements = Caption.attach_caption(elements)
         elements = List.append_items(elements)
         elements = List.merge_items(elements)
-        if SettingsPreamble.documentclass == "beamer":
+        if (
+            SettingsPreamble.documentclass == "beamer"
+            and self.quotedepth < 1
+            and self.filedepth < 1
+        ):
             elements = SplitLine.make_beamer(elements)
 
         return elements
@@ -254,6 +257,36 @@ class MarkdownParser:
                     blocklines.append(line)
                     i += 1
                     continue
+
+            # УРАВНЕНИЯ
+            if (
+                line.strip().startswith("$$")
+                and line.strip().endswith("$$")
+                and line.strip("$$").strip()
+            ):
+                eq = Equation(line.strip().strip("$$"))
+                eq._is_initialized = False
+                elements.append(eq)
+                i += 1
+                continue
+
+            if line.strip().startswith("$$") or line.strip().endswith("$$"):
+                if not in_equation:
+                    equationlines = [line.strip("$$")]
+                    in_equation = True
+                else:
+                    if equationlines:
+                        eq = Equation("\n".join(equationlines))
+                        eq._is_initialized = False
+                        elements.append(eq)
+                    in_equation = False
+                i += 1
+                continue
+
+            if in_equation:
+                equationlines.append(line.strip("$$"))
+                i += 1
+                continue
 
             if Settings.Fragment.Splitline.parse:
                 if line.strip().startswith("---"):
@@ -482,37 +515,7 @@ class MarkdownParser:
                 i += 1
                 continue
 
-            # УРАВНЕНИЯ
-            if (
-                line.strip().startswith("$$")
-                and line.strip().endswith("$$")
-                and line.strip("$$").strip()
-            ):
-                eq = Equation(line.strip().strip("$$"))
-                eq._is_initialized = False
-                elements.append(eq)
-                i += 1
-                continue
-
-            if line.strip().startswith("$$") or line.strip().endswith("$$"):
-                if not in_equation:
-                    equationlines = [line.strip("$$")]
-                    in_equation = True
-                else:
-                    if equationlines:
-                        eq = Equation("\n".join(equationlines))
-                        eq._is_initialized = False
-                        elements.append(eq)
-                    in_equation = False
-                i += 1
-                continue
-
-            if in_equation:
-                equationlines.append(line.strip("$$"))
-                i += 1
-                continue
-
-            # Проверяем, есть ли следующая строка и начинается ли она с "|"
+                # Проверяем, есть ли следующая строка и начинается ли она с "|"
             next_is_table = i + 1 < len(lines) and lines[i + 1].strip().startswith("|")
 
             if line.strip().startswith("|"):

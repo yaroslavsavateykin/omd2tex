@@ -18,9 +18,9 @@
     "theme": "blei",
     "colortheme": "default",
     "fonttheme": "professionalfonts",
-    "title": "My presentaion",
-    "author": "Yaroslav",
-    "institute": "MSU",
-    "date": "\today"
+    "title": "",
+    "author": "",
+    "institute": "",
+    "date": ""
   }
 }

@@ -319,6 +319,7 @@ class Paragraph:
         if self.parse:
             text = self.text
 
+            # text = self.escape_latex_special_chars(text)
             text, outline_equations = self._replace_outline_equation(text)
 
             text = self._highlight_text1(text)
@@ -379,10 +380,34 @@ class Paragraph:
                     probability=Settings.Paragraph.latinify_probability,
                     change_dict=Settings.Paragraph.latinify_json,
                 )
+
         else:
             text = self.text
 
         return text
+
+    @staticmethod
+    def escape_latex_special_chars(text):
+        """
+        Экранирует специальные символы LaTeX в строке, если они не экранированы
+
+        Args:
+            text (str): Входная строка с LaTeX-выражениями
+
+        Returns:
+            str: Строка с экранированными специальными символами LaTeX
+        """
+        # Список специальных символов LaTeX, которые нужно экранировать
+        special_chars = ["#", "$", "\%", "&", "_", "{", "}", "~", "^", "\\"]
+        special_chars = ["\%", "&"]
+
+        # Регулярное выражение для поиска неэкранированных специальных символов
+        pattern = r"(?<!\\)([" + re.escape("".join(special_chars)) + r"])"
+
+        # Экранируем найденные символы
+        escaped_text = re.sub(pattern, r"\\\1", text)
+
+        return escaped_text
 
     @staticmethod
     def _remove_all_highlight(text: str) -> str:

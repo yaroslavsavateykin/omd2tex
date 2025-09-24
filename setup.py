@@ -44,6 +44,6 @@ setup(
     packages=find_packages(),
     python_requires=">=3.8",
     install_requires=parse_requirements("requirements.txt"),
-    package_data={"default": ["*.json"]},
+    package_data={"omd2tex": ["default/*.json", "default/beamer-themes/*.sty"]},
     include_package_data=True,
 )

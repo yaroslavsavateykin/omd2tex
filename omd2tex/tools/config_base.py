@@ -256,3 +256,4 @@ class ConfigBase:
                     self._original_values[attr_name] = copy.deepcopy(value.__dict__)
                 else:
                     self._original_values[attr_name] = copy.deepcopy(value)
+

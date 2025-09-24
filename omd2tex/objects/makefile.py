@@ -23,6 +23,7 @@ compile:
 \tpdflatex -shell-escape main.tex{biber}
 \trm -rf _minted*
 \trm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml
+\tmv main.pdf {Global.DOCUMENT_NAME}.pdf
 
 open:
 \txdg-open main.pdf

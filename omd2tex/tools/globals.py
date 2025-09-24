@@ -10,3 +10,5 @@ class Global(ConfigBase):
     YAML_DICT = {}
 
     DOCUMENT_CLASS = "article"
+
+    DOCUMENT_NAME = ""

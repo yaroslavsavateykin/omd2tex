@@ -13,6 +13,9 @@
     "export_dir": "./test/",
     "branching_project": false
   },
+  "beamer": {
+    "divide_element": "splitline"
+  },
   "paragraph": {
     "latinify": true,
     "latinify_probability": 0.05,

@@ -35,8 +35,10 @@ class Quote:
         return "\n".join(new_string)
 
     def to_latex(self):
+        text = "\\\\\n".join([el.to_latex() for el in self.elements])
+
         text = f"""\\begin{{quote}}\\slshape\\noindent
-{"\n".join([el.to_latex() for el in self.elements])}
+{text}
 \\end{{quote}}"""
 
         return self._tabulate_string(text, self.quotedepth - 1)

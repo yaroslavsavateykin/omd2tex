@@ -47,6 +47,7 @@ class Document:
 
     def from_file(self, filename: str):
         self.filename = filename
+        Global.DOCUMENT_NAME = self.filename.strip(".md")
         file = File(
             filename=self.filename,
             parrentdir=self.dir + "/" + self.filename.strip(".md"),
@@ -57,6 +58,7 @@ class Document:
 
     def from_text(self, text: str):
         self.filename = str(uuid.uuid4())[0:7]
+        Global.DOCUMENT_NAME = self.filename
         file = File(
             filename=self.filename,
             parrentdir=self.dir + "/" + self.filename.strip(".md"),
@@ -67,6 +69,7 @@ class Document:
 
     def from_elements(self, list: list):
         self.filename = str(uuid.uuid4())[0:7]
+        Global.DOCUMENT_NAME = self.filename
 
         if not self.filename:
             self.filename = str(uuid.uuid4())[:7]
@@ -128,6 +131,7 @@ class Document:
 {citations}
 
 \begin{{document}}
+{"\\frame{\\titlepage}" if self.preamble.beamer_titlepage and self.preamble else ""}
 
 {file}
 
@@ -189,6 +193,7 @@ class Document:
 {citations}
 
 \\begin{{document}}
+{"\\frame{\\titlepage}" if self.preamble.beamer_titlepage and self.preamble else ""}
 
 {main}
 

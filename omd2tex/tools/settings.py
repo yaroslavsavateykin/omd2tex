@@ -3,7 +3,7 @@ from .config_base import ConfigBase
 class Settings(ConfigBase):
     class Export(ConfigBase):
         search_dir = '~/Obsidian/'
-        search_ignore_dirs = ['.trash', '.obsidian', '.plugins', '.smart-env', '.reference-map']
+        search_ignore_dirs = ['.trash', '.obsidian', '.plugins', '.smart-env', '.reference-map', 'LaTeX']
         makefile = True
         export_dir = './test/'
         branching_project = False
@@ -14,6 +14,14 @@ class Settings(ConfigBase):
             self.makefile = self.__class__.makefile
             self.export_dir = self.__class__.export_dir
             self.branching_project = self.__class__.branching_project
+            super().__init__()
+
+
+    class Beamer(ConfigBase):
+        divide_element = 'splitline'
+
+        def __init__(self):
+            self.divide_element = self.__class__.divide_element
             super().__init__()
 
 
@@ -128,6 +136,7 @@ class Settings(ConfigBase):
 
     def __init__(self):
         self.export = self.__class__.Export()
+        self.beamer = self.__class__.Beamer()
         self.paragraph = self.__class__.Paragraph()
         self.preamble = self.__class__.Preamble()
         self.file = self.__class__.File()

@@ -5,7 +5,7 @@ from ..tools import Settings
 
 class Equation:
     def __init__(self, equation: str) -> None:
-        self.equation = equation
+        self.equation = equation.strip("\n")
 
         self.reference = None
 

@@ -9,6 +9,7 @@ from ..tools import SettingsPreamble
 class Preamble:
     def __init__(self) -> None:
         self.config = self._load_config()
+        self.beamer_titlepage = False
         SettingsPreamble.update(self.config)
 
     def _load_config(self) -> Dict[str, Any]:
@@ -147,6 +148,17 @@ class Preamble:
 \tikzstyle{{block}} = [rectangle, draw, text centered, text width=10.5cm, minimum height=1.5cm, align=center]
 \tikzstyle{{line}} = [draw, -latex']
 
+\newcommand{{\dashboxed}}[1]{{%
+    \tikz[baseline=(X.base)]\node[draw,dashed,inner sep=5pt] (X) {{$#1$}};%
+}}
+
+\newcommand{{\dotboxed}}[1]{{%
+    \tikz[baseline=(X.base)]\node[draw,dotted,inner sep=5pt] (X) {{$#1$}};%
+}}
+
+
+
+
 %-------------------------------Settings--------------------------------
 
 % Настройки отступов
@@ -204,24 +216,34 @@ class Preamble:
             else ""
         )
 
+        if any([title_line, author_line, institute_line, date_line]):
+            self.beamer_titlepage = True
+
         string = rf"""
 \documentclass[{SettingsPreamble.Beamer.fontsize}]{{beamer}}
 
 %-------------------------Basic Packages-----------------------------
+%\usepackage{{mathtext}}
 \usepackage[T2A]{{fontenc}}
 \usepackage[utf8]{{inputenc}}
 \usepackage[russian]{{babel}}
 \usepackage{{amsmath}}
 \usepackage{{amssymb}}
 \usepackage{{graphicx}}
+\usepackage{{isomath}}
+\usepackage{{arevtext,arevmath}}
 
-\geometry{{
-    left={SettingsPreamble.Beamer.left}, 
-    right={SettingsPreamble.Beamer.right}, 
-    top={SettingsPreamble.Beamer.top}, 
-    bottom={SettingsPreamble.Beamer.bottom}
-}}
+%\geometry{{
+%    left={SettingsPreamble.Beamer.left}, 
+%    right={SettingsPreamble.Beamer.right}, 
+%    top={SettingsPreamble.Beamer.top}, 
+%    bottom={SettingsPreamble.Beamer.bottom}
+%}}
 
+\setlength{{\topmargin}}{{-2cm}}
+\setlength{{\headheight}}{{{SettingsPreamble.Beamer.top}}}
+%\setlength{{\topmargin}}{{{SettingsPreamble.Beamer.top}}}
+\setbeamersize{{text margin left={SettingsPreamble.Beamer.left}, text margin right={SettingsPreamble.Beamer.right}}}
 
 %----------------------Scientific Packages---------------------------
 
@@ -272,8 +294,31 @@ class Preamble:
 % Пакет для настройки заголовков
 \usepackage{{titlesec}}
 
-\usepackage{{mathtext}}
 \usepackage[version=4]{{mhchem}}
+
+\usepackage{{tabularray}}
+\UseTblrLibrary{{booktabs}}
+\DefTblrTemplate{{contfoot-text}}{{default}}{{Продолжение на следующей странице}}
+\DefTblrTemplate{{conthead-text}}{{default}}{{(Продолжение)}}
+
+
+
+\newcommand{{\dashboxed}}[1]{{%
+    \tikz[baseline=(X.base)]\node[draw,dashed,inner sep=5pt] (X) {{$#1$}};%
+}}
+
+\newcommand{{\dotboxed}}[1]{{%
+    \tikz[baseline=(X.base)]\node[draw,dotted,inner sep=5pt] (X) {{$#1$}};%
+}}
+
+\newcommand{{\waveboxed}}[1]{{%
+    \tikz[baseline=(X.base)]\node[
+        draw,
+        decorate,
+        decoration={{snake,amplitude=0.5mm}},
+        inner sep=5pt
+    ] (X) {{$#1$}};%
+}}
 
 %----------------------Code Highlighting-----------------------------
 \usepackage{{minted}}
@@ -281,14 +326,16 @@ class Preamble:
 %----------------------Style Settings--------------------------------
 \usetheme{{{SettingsPreamble.Beamer.theme}}}
 \usecolortheme{{{SettingsPreamble.Beamer.colortheme}}}
-\usefonttheme{{{SettingsPreamble.Beamer.fonttheme}}}
+%\usefonttheme{{{SettingsPreamble.Beamer.fonttheme}}}
 
 \setbeamertemplate{{navigation symbols}}{{}} % Эта команда УДАЛЯЕТ все навигационные символы
 %----------------------Presentation Info-----------------------------
+
 {title_line}
 {author_line}
 {institute_line}
 {date_line}
+
 """
         return string
 

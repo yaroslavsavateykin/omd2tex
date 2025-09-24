@@ -1,4 +1,4 @@
-from src.omd2tex.tools.globals import Global
+from omd2tex.tools.globals import Global
 
 
 def time(func):
@@ -17,10 +17,10 @@ def time(func):
 
 @time
 def main():
-    from src.omd2tex.objects.document import Document
-    from src.omd2tex.tools.settings import Settings
+    from omd2tex.objects.document import Document
+    from omd2tex.tools.settings import Settings
 
-    with open("src/omd2tex/default/current", "r") as f:
+    with open("omd2tex/default/current", "r") as f:
         filename = f.read().strip()
 
     Settings.Export.search_dir = "~/vzlet_vault/"
@@ -29,6 +29,7 @@ def main():
     Settings.Headline.clean_markdown_numeration = True
 
     filename = "Методичка.md"
+    filename = "2025-09-17.md"
 
     doc = Document()
     doc.from_file(filename)

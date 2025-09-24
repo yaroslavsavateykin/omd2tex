@@ -29,10 +29,10 @@ class SettingsPreamble(ConfigBase):
         theme = 'blei'
         colortheme = 'default'
         fonttheme = 'professionalfonts'
-        title = 'My presentaion'
-        author = 'Yaroslav'
-        institute = 'MSU'
-        date = '\today'
+        title = ''
+        author = ''
+        institute = ''
+        date = ''
 
         def __init__(self):
             self.fontsize = self.__class__.fontsize

@@ -140,7 +140,8 @@ class Enumerate(List):
     def to_latex(self):
         content = super().to_latex()
         return List.indent(
-            f"\\begin{{enumerate}}\\keepwithnext\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{enumerate}}",
+            f"\\begin{{enumerate}}\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{enumerate}}",
+            # f"\\begin{{enumerate}}\\keepwithnext\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{enumerate}}",
             0,
         )
 
@@ -161,7 +162,8 @@ class Check(List):
     def to_latex(self):
         content = super().to_latex()
         return List.indent(
-            f"\\begin{{itemize}}\\keepwithnext\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{itemize}}",
+            f"\\begin{{itemize}}\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{itemize}}",
+            # f"\\begin{{itemize}}\\keepwithnext\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{itemize}}",
             self.depth,
         )
 
@@ -173,6 +175,7 @@ class Bullet(List):
     def to_latex(self):
         content = super().to_latex()
         return List.indent(
-            f"\\begin{{itemize}}\\keepwithnext\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{itemize}}",
+            f"\\begin{{itemize}}\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{itemize}}",
+            # f"\\begin{{itemize}}\\keepwithnext\\itemsep{Settings.List.itemsep}\n{content}\n\\end{{itemize}}",
             self.depth,
         )
