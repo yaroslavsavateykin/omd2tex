@@ -26,7 +26,7 @@ compile:
 \tmv main.pdf {Global.DOCUMENT_NAME}.pdf
 
 open:
-\txdg-open main.pdf
+\txdg-open {Global.DOCUMENT_NAME}.pdf
 
 clean:
 \trm -f main.pdf *.aux *.log *.out *.toc *.ps

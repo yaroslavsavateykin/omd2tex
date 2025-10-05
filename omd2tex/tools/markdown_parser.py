@@ -264,9 +264,10 @@ class MarkdownParser:
                 and line.strip().endswith("$$")
                 and line.strip("$$").strip()
             ):
-                eq = Equation(line.strip().strip("$$"))
-                eq._is_initialized = False
-                elements.append(eq)
+                if line.strip().strip("\n"):
+                    eq = Equation(line.strip().strip("$$"))
+                    eq._is_initialized = False
+                    elements.append(eq)
                 i += 1
                 continue
 
@@ -276,9 +277,11 @@ class MarkdownParser:
                     in_equation = True
                 else:
                     if equationlines:
-                        eq = Equation("\n".join(equationlines))
-                        eq._is_initialized = False
-                        elements.append(eq)
+                        text = "\n".join(equationlines)
+                        if text.strip().strip("\n"):
+                            eq = Equation("\n".join(equationlines))
+                            eq._is_initialized = False
+                            elements.append(eq)
                     in_equation = False
                 i += 1
                 continue

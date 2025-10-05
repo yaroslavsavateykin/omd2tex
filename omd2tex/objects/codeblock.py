@@ -35,6 +35,7 @@ class CodeBlock:
             "hidden": lambda content: Paragraph("", parse=False),
             "text": lambda content: Paragraph("\n".join(content)),
             "caption": lambda content: Caption(" ".join(content)),
+            "pause": lambda content: Paragraph("\\pause", parse=False),
             "python": self._minted_python,
             "c": self._minted_python,
             "cpp": self._minted_python,

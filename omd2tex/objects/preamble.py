@@ -8,9 +8,9 @@ from ..tools import SettingsPreamble
 
 class Preamble:
     def __init__(self) -> None:
-        self.config = self._load_config()
+        # self.config = self._load_config()
         self.beamer_titlepage = False
-        SettingsPreamble.update(self.config)
+        # SettingsPreamble.update(self.config)
 
     def _load_config(self) -> Dict[str, Any]:
         if Settings.Preamble.settings_json:
@@ -37,8 +37,6 @@ class Preamble:
             return self._generate_article_preamble()
 
     def _generate_article_preamble(self) -> str:
-        config = self.config
-
         string = rf"""
 \documentclass[{SettingsPreamble.Article.fontsize}]{{{SettingsPreamble.documentclass}}}
 \linespread{{{SettingsPreamble.Article.linespread}}}
@@ -195,6 +193,9 @@ class Preamble:
         return string
 
     def _generate_beamer_preamble(self) -> str:
+        from ..tools import Settings
+        from ..tools import SettingsPreamble
+
         title_line = (
             f"\\title{{{SettingsPreamble.Beamer.title}}}"
             if SettingsPreamble.Beamer.title
@@ -213,11 +214,13 @@ class Preamble:
         date_line = (
             f"\\date{{{SettingsPreamble.Beamer.date}}}"
             if SettingsPreamble.Beamer.date
-            else ""
+            else "\\setbeamertemplate{date}{}"
         )
 
         if any([title_line, author_line, institute_line, date_line]):
             self.beamer_titlepage = True
+
+        SettingsPreamble.Beamer.check()
 
         string = rf"""
 \documentclass[{SettingsPreamble.Beamer.fontsize}]{{beamer}}
@@ -322,13 +325,14 @@ class Preamble:
 
 %----------------------Code Highlighting-----------------------------
 \usepackage{{minted}}
-
+\usepackage{{adjustbox}}
 %----------------------Style Settings--------------------------------
 \usetheme{{{SettingsPreamble.Beamer.theme}}}
 \usecolortheme{{{SettingsPreamble.Beamer.colortheme}}}
 %\usefonttheme{{{SettingsPreamble.Beamer.fonttheme}}}
 
 \setbeamertemplate{{navigation symbols}}{{}} % Эта команда УДАЛЯЕТ все навигационные символы
+\setbeamertemplate{{caption}}[numbered]
 %----------------------Presentation Info-----------------------------
 
 {title_line}

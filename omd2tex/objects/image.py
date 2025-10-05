@@ -2,6 +2,8 @@ import shutil
 from PIL import Image as PillowImage
 import os
 
+from omd2tex.tools.settings_preamble import SettingsPreamble
+
 from .paragraph import Paragraph
 from ..tools import find_file
 from ..tools import Global
@@ -57,32 +59,30 @@ class Image:
             reference = ""
 
         dir = self.dir
-
-        if self.width:
-            if self.height:
-                scale_width = self.width / self.original_width
-                scale_height = self.height / self.original_height
-
-                image_include = f"\\includegraphics[width = {{{scale_width}}}\\textwidth, height = {{{scale_height}}}\\textheight]{{{dir}}}"
-            else:
-                scale = self.width / self.original_width
-                image_include = (
-                    f"\\includegraphics[scale = {{{scale}}},keepaspectratio]{{{dir}}}"
-                )
+        if SettingsPreamble.documentclass == "beamer":
+            image_include = f"\\adjustbox{{max width=\\textwidth, max height=\\textheight, keepaspectratio}}{{\\includegraphics[height = \\textheight/(5/2), keepaspectratio]{{{dir}}}}}"
         else:
-            wh_ratio = self.original_width / self.original_height
+            if self.width:
+                if self.height:
+                    scale_width = self.width / self.original_width
+                    scale_height = self.height / self.original_height
 
-            if wh_ratio < Settings.Image.wh_aspect_borders[0]:
-                image_include = f"\\includegraphics[height = \\textheight, keepaspectratio]{{{dir}}}"
-            elif wh_ratio < Settings.Image.wh_aspect_borders[1]:
-                if self.original_width < self.original_height:
-                    image_include = f"\\includegraphics[width = {Settings.Image.default_width}, keepaspectratio]{{{dir}}}"
+                    image_include = f"\\includegraphics[width = {{{scale_width}}}\\textwidth, height = {{{scale_height}}}\\textheight]{{{dir}}}"
                 else:
-                    image_include = f"\\includegraphics[height = {Settings.Image.default_height}, keepaspectratio]{{{dir}}}"
+                    scale = self.width / self.original_width
+                    image_include = f"\\includegraphics[scale = {{{scale}}},keepaspectratio]{{{dir}}}"
             else:
-                image_include = (
-                    f"\\includegraphics[width = \\textwidth, keepaspectratio]{{{dir}}}"
-                )
+                wh_ratio = self.original_width / self.original_height
+
+                if wh_ratio < Settings.Image.wh_aspect_borders[0]:
+                    image_include = f"\\includegraphics[height = \\textheight, keepaspectratio]{{{dir}}}"
+                elif wh_ratio < Settings.Image.wh_aspect_borders[1]:
+                    if self.original_width < self.original_height:
+                        image_include = f"\\includegraphics[width = {Settings.Image.default_width}, keepaspectratio]{{{dir}}}"
+                    else:
+                        image_include = f"\\includegraphics[height = {Settings.Image.default_height}, keepaspectratio]{{{dir}}}"
+                else:
+                    image_include = f"\\includegraphics[width = \\textwidth, keepaspectratio]{{{dir}}}"
 
         latex_lines = f"""\\begin{{figure}}[H] 
 \\centering

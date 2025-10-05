@@ -111,7 +111,8 @@ class Table:
             reference = ""
 
         if self.caption:
-            caption = f"caption={{{self.caption}}}"
+            caption = f"caption={{\\parbox{{\\textwidth}}{{{self.caption}}}}}"
+            caption = f"caption={{{{{self.caption}}}}}"
         else:
             caption = ""
 
@@ -122,6 +123,7 @@ class Table:
 
         string = f"""\\begingroup
 \\centering
+%\\captionsetup{{width=\\linewidth}}
 \\begin{{longtblr}}[{reference} {caption}]{{colspec={{{self.colspec}}}, hlines,vlines}}
 {new_lines}
 \\end{{longtblr}}
