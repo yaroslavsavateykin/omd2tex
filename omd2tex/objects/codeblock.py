@@ -50,7 +50,6 @@ class CodeBlock:
 
     @classmethod
     def create(cls, blocktype: str, blocklines: list):
-        """Фабричный метод, возвращающий результат применения типа блока"""
         instance = cls.__new__(cls)
         instance.blocktype = blocktype
         instance.blocklines = blocklines

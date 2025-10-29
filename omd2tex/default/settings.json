@@ -13,6 +13,9 @@
     "export_dir": "./test/",
     "branching_project": false
   },
+  "frontmatter":{
+    "parse": false
+  },
   "beamer": {
     "divide_element": "splitline"
   },
@@ -52,7 +55,6 @@
   "list": {
     "itemsep": "0pt"
   },
-
   "fragment": {
     "splitline": {
       "parse": true,

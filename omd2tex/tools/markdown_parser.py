@@ -210,28 +210,29 @@ class MarkdownParser:
                 continue
 
             # READING YAML
-            if i == 0 and line.startswith("---"):
-                in_yaml = True
-                yaml_lines = []
-                i += 1
-                continue
+            if Settings.Frontmatter.parse:
+                if i == 0 and line.startswith("---"):
+                    in_yaml = True
+                    yaml_lines = []
+                    i += 1
+                    continue
 
-            if in_yaml:
-                if line.startswith("---"):
-                    in_yaml = False
-                    if yaml_lines:
-                        yamles = yaml.safe_load("\n".join(yaml_lines))
-                        Settings.update(yamles)
-                        SettingsPreamble.update(yamles)
-                        for key in yamles:
-                            Global.YAML_DICT[key] = yamles[key]
-                        self.yaml = yamles
-                    i += 1
-                    continue
-                else:
-                    yaml_lines.append(line)
-                    i += 1
-                    continue
+                if in_yaml:
+                    if line.startswith("---"):
+                        in_yaml = False
+                        if yaml_lines:
+                            yamles = yaml.safe_load("\n".join(yaml_lines))
+                            Settings.update(yamles)
+                            SettingsPreamble.update(yamles)
+                            for key in yamles:
+                                Global.YAML_DICT[key] = yamles[key]
+                            self.yaml = yamles
+                        i += 1
+                        continue
+                    else:
+                        yaml_lines.append(line)
+                        i += 1
+                        continue
 
             # БЛОКИ КОДА
             if line.startswith("```") and not in_code_block:
@@ -567,7 +568,7 @@ class MarkdownParser:
                             f"Maximum quote nesting quotedepth ({Settings.Quote.max_quote_recursion}) exceeded"
                         )
                     elements.append(
-                        Quote(
+                        Quote.create(
                             quotelines=quotelines,
                             filename=self.filename,
                             parrentdir=self.parrentdir,
@@ -586,7 +587,7 @@ class MarkdownParser:
                             f"Maximum quote nesting quotedepth ({Settings.Quote.max_quote_recursion}) exceeded"
                         )
                     elements.append(
-                        Quote(
+                        Quote.create(
                             quotelines=quotelines,
                             filename=self.filename,
                             parrentdir=self.parrentdir,

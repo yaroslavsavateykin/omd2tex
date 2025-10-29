@@ -24,20 +24,21 @@ def main():
         filename = f.read().strip()
 
     Settings.Export.search_dir = "~/vzlet_vault/"
-    Settings.Export.export_dir = "~/omd2tex/test_projects/"
+    Settings.Export.export_dir = "~/vzlet_vault/LaTeX/"
     Settings.Paragraph.latinify = False
     Settings.Headline.clean_markdown_numeration = True
 
+    filename = "2025-10-05.md"
     filename = "Методичка.md"
-    filename = "2025-09-17.md"
 
     doc = Document()
     doc.from_file(filename)
+    doc.check()
 
     # Settings.Export.check()
 
     # doc.check()
-    Global.check()
+    # Global.check()
     doc.to_latex_project()
 
 

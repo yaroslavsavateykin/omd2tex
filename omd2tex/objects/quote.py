@@ -1,6 +1,9 @@
 from typing import List
 import re
 
+from .paragraph import Paragraph
+from .fragment import Caption
+
 
 class Quote:
     def __init__(
@@ -11,14 +14,14 @@ class Quote:
         filedepth=0,
         quotedepth=0,
     ):
-        self.lines = quotelines
+        self.quotelines = quotelines
 
         self.parrentdir = parrentdir
         self.filename = filename
         self.quotedepth = quotedepth
         self.filedepth = filedepth
 
-        self.type = None
+        self.quotetype = None
         self.heading = None
         self.elements = []
         self._parse_quote_lines()
@@ -50,18 +53,20 @@ class Quote:
         pattern = re.compile(r"^>\s*!?\[([^\]]+)\]\s*(.*)$")
 
         new_lines = []
-        for i, line in enumerate(self.lines):
+        for i, line in enumerate(self.quotelines):
             match = pattern.match(line)
             if match and i == 0:
-                self.type, self.heading = match.groups()
+                self.quotetype, self.heading = match.groups()
+                self.quotetype = self.quotetype.strip("!")
 
                 if not self.heading:
-                    heading = self.type.strip("!")
-                    self.heading = heading[0].upper() + heading[1:]
-                elif not self.type:
-                    self.type = "!default"
+                    heading = self.quotetype
+                    self.heading = heading
+
+                elif not self.quotetype:
+                    self.quotetype = "default"
                     if not self.heading:
-                        self.heading = self.type
+                        self.heading = self.quotetype
                 continue
 
             new_lines.append(line[1:])
@@ -81,5 +86,54 @@ class Quote:
 
         self.elements = parser.elements
 
-    def _parse_nested_quote(self):
-        pass
+    @classmethod
+    def create(
+        cls,
+        quotelines: List[str],
+        filename: str = "",
+        parrentdir="",
+        filedepth=0,
+        quotedepth=0,
+    ):
+        instance = cls.__new__(cls)
+        instance.quotelines = quotelines
+
+        instance.parrentdir = parrentdir
+        instance.filename = filename
+        instance.quotedepth = quotedepth
+        instance.filedepth = filedepth
+
+        instance.quotetype = None
+        instance.heading = None
+        instance.elements = []
+        instance._parse_quote_lines()
+
+        instance.reference = None
+        return instance._apply_quote_type()
+
+    def _apply_quote_type(self):
+        text = "\\\\\n".join([el.to_latex() for el in self.elements])
+
+        functions = {
+            "example": lambda content: Paragraph(
+                f"\\begin{{example}}\n{'\n'.join(content)}\n\\end{{example}}"
+            ),
+            "hidden": lambda content: Paragraph("", parse=False),
+            "text": lambda content: Paragraph("\n".join(content)),
+            "caption": lambda content: Caption(" ".join(content)),
+            "pause": lambda content: Paragraph("\\pause", parse=False),
+            "default": lambda content: Paragraph(
+                rf"\begin{{quote}}\slshape\noindent\n{text}\n\end{{quote}}", parse=False
+            ),
+        }
+        if self.quotetype in functions:
+            return functions[self.quotetype](text)
+        else:
+            return self._default_quoteline(text)
+
+    @staticmethod
+    def _default_quoteline(text: str):
+        text = f"""\\begin{{quote}}\\slshape\\noindent
+{text}
+\\end{{quote}}"""
+        return Paragraph(text, parse=False)

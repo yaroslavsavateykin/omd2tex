@@ -172,6 +172,25 @@ class Preamble:
 % Честно, совсем не понимаю, как оно работает, и пусть.
 %\numberwithin{{equation}}{{subsubsection}}
 
+% В преамбуле
+
+
+\usepackage{{xpatch}}
+\xapptocmd\normalsize{{%
+ \abovedisplayskip=-10pt plus 15pt minus 5pt
+ \abovedisplayshortskip=-10pt plus 15pt minus 5pt
+ \belowdisplayskip=3pt plus 5pt minus 5pt
+ \belowdisplayshortskip=3pt plus 5pt minus 5pt
+}}{{}}{{}}
+
+
+% Adjust spacing for equation environment
+\usepackage{{etoolbox}}
+%\BeforeBeginEnvironment{{equation}}{{\vspace{{0pt}}}}
+%\AfterEndEnvironment{{itemize}}{{\vspace{{-10pt}}}}
+
+
+
 %\let\oldsection\section% Store \section
 %\renewcommand{{\section}}{{% Update \section
 %  \renewcommand{{\theequation}}{{\thesection.\arabic{{equation}}}}% Update equation number

@@ -6,11 +6,8 @@ from typing import Any, Dict, Union
 
 
 class ConfigBase:
-    """Базовый класс для конфигураций, работающий только с классовыми атрибутами"""
-
     _class_original_values: Dict[str, Any] = None
 
-    # --- Сохранение дефолтных значений ---
     @classmethod
     def _save_class_original_values(cls):
         if cls._class_original_values is None:
@@ -27,10 +24,8 @@ class ConfigBase:
                 else:
                     cls._class_original_values[name] = copy.deepcopy(value)
 
-    # --- Обновление значений ---
     @classmethod
     def update(cls, source: Union[Dict[str, Any], str]):
-        """Обновляет значения из словаря или JSON/YAML"""
         if cls._class_original_values is None:
             cls._save_class_original_values()
 
@@ -74,7 +69,6 @@ class ConfigBase:
             else:
                 setattr(target, attr_name, value)
 
-    # --- Сброс к дефолтным значениям ---
     @classmethod
     def to_default(cls):
         if cls._class_original_values is None:
@@ -97,7 +91,6 @@ class ConfigBase:
             else:
                 setattr(target, name, copy.deepcopy(original_value))
 
-    # --- Вывод значений ---
     @classmethod
     def check(cls, indent: int = 0):
         prefix = "    " * indent

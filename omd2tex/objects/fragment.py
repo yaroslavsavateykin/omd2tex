@@ -102,13 +102,10 @@ class Caption:
 
         for el in elements:
             if isinstance(el, Caption):
-                # Обновляем последний референс (перезаписываем если были подряд)
                 last_reference = el
-                # Прикрепляем к последнему элементу в результате (если есть)
                 if result:
                     result[-1].caption = last_reference.cap_text
             else:
-                # Сбрасываем референс для нового элемента
                 last_reference = None
                 result.append(el)
 
