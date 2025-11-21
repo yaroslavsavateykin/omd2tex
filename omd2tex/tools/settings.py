@@ -1,19 +1,11 @@
 from .config_base import ConfigBase
 
-
 class Settings(ConfigBase):
     class Export(ConfigBase):
-        search_dir = "~/Obsidian/"
-        search_ignore_dirs = [
-            ".trash",
-            ".obsidian",
-            ".plugins",
-            ".smart-env",
-            ".reference-map",
-            "LaTeX",
-        ]
+        search_dir = '~/Obsidian/'
+        search_ignore_dirs = ['.trash', '.obsidian', '.plugins', '.smart-env', '.reference-map', 'LaTeX']
         makefile = True
-        export_dir = "./test/"
+        export_dir = './test/'
         branching_project = False
 
         def __init__(self):
@@ -24,25 +16,28 @@ class Settings(ConfigBase):
             self.branching_project = self.__class__.branching_project
             super().__init__()
 
+
     class Frontmatter(ConfigBase):
-        parse = False
+        parse = True
 
         def __init__(self):
             self.parse = self.__class__.parse
             super().__init__()
 
+
     class Beamer(ConfigBase):
-        divide_element = "splitline"
+        divide_element = ['splitline', 'headline']
 
         def __init__(self):
             self.divide_element = self.__class__.divide_element
             super().__init__()
 
+
     class Paragraph(ConfigBase):
         latinify = True
         latinify_probability = 0.05
-        latinify_json = ""
-        formulas_json = ""
+        latinify_json = ''
+        formulas_json = ''
 
         def __init__(self):
             self.latinify = self.__class__.latinify
@@ -51,14 +46,16 @@ class Settings(ConfigBase):
             self.formulas_json = self.__class__.formulas_json
             super().__init__()
 
+
     class Preamble(ConfigBase):
         create_preamble = True
-        settings_json = ""
+        settings_json = ''
 
         def __init__(self):
             self.create_preamble = self.__class__.create_preamble
             self.settings_json = self.__class__.settings_json
             super().__init__()
+
 
     class File(ConfigBase):
         parse = True
@@ -70,6 +67,7 @@ class Settings(ConfigBase):
             self.max_file_recursion = self.__class__.max_file_recursion
             self.pass_if_not_found = self.__class__.pass_if_not_found
             super().__init__()
+
 
     class Headline(ConfigBase):
         parse = True
@@ -86,18 +84,24 @@ class Settings(ConfigBase):
             self.clean_all_highlight = self.__class__.clean_all_highlight
             super().__init__()
 
+
     class Image(ConfigBase):
         parse = True
+        absolute_path_in_project_export = False
+        copy_to_folder_in_project_export = True
         wh_aspect_borders = [0.6, 1.8]
-        default_width = "8cm"
-        default_height = "8cm"
+        default_width = '8cm'
+        default_height = '8cm'
 
         def __init__(self):
             self.parse = self.__class__.parse
+            self.absolute_path_in_project_export = self.__class__.absolute_path_in_project_export
+            self.copy_to_folder_in_project_export = self.__class__.copy_to_folder_in_project_export
             self.wh_aspect_borders = self.__class__.wh_aspect_borders
             self.default_width = self.__class__.default_width
             self.default_height = self.__class__.default_height
             super().__init__()
+
 
     class Quote(ConfigBase):
         parse = True
@@ -108,22 +112,33 @@ class Settings(ConfigBase):
             self.max_quote_recursion = self.__class__.max_quote_recursion
             super().__init__()
 
+
     class List(ConfigBase):
-        itemsep = "0pt"
+        itemsep = '0pt'
 
         def __init__(self):
             self.itemsep = self.__class__.itemsep
             super().__init__()
 
+
+    class Codeblock(ConfigBase):
+        parse = True
+
+        def __init__(self):
+            self.parse = self.__class__.parse
+            super().__init__()
+
+
     class Fragment(ConfigBase):
         class Splitline(ConfigBase):
             parse = True
-            width = "0.5pt"
+            width = '0.5pt'
 
             def __init__(self):
                 self.parse = self.__class__.parse
                 self.width = self.__class__.width
                 super().__init__()
+
 
         class Caption(ConfigBase):
             parse = True
@@ -132,10 +147,12 @@ class Settings(ConfigBase):
                 self.parse = self.__class__.parse
                 super().__init__()
 
+
         def __init__(self):
             self.splitline = self.__class__.Splitline()
             self.caption = self.__class__.Caption()
             super().__init__()
+
 
     def __init__(self):
         self.export = self.__class__.Export()
@@ -148,5 +165,7 @@ class Settings(ConfigBase):
         self.image = self.__class__.Image()
         self.quote = self.__class__.Quote()
         self.list = self.__class__.List()
+        self.codeblock = self.__class__.Codeblock()
         self.fragment = self.__class__.Fragment()
         super().__init__()
+

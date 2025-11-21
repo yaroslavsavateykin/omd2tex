@@ -2,8 +2,10 @@ import uuid
 import re
 from typing import Union, List
 
+from .base import BaseClass
 
-class Footnote:
+
+class Footnote(BaseClass):
     collection = {}
 
     @classmethod
@@ -19,6 +21,7 @@ class Footnote:
         cls.collection = {}
 
     def __init__(self):
+        super().__init__()
         self.exchange_dict = {}
 
     def change_footnote_keys(self, text: str) -> str:

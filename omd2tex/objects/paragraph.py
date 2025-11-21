@@ -3,14 +3,15 @@ import re
 import json
 import random
 
+from .base import BaseClass
+
 from .citation import Citation
 from .footnote import Footnote
-from ..tools import Global
-from ..tools import Settings
 
 
-class Paragraph:
+class Paragraph(BaseClass):
     def __init__(self, text: str, parse=True) -> None:
+        super().__init__()
         self.text = text
         self.parse = parse
 
@@ -26,6 +27,7 @@ class Paragraph:
 
     @staticmethod
     def _change_letters_for_equations(text, dict_file="", surround_func=lambda x: x):
+        from ..tools import Global, Settings
         if dict_file:
             dict_file = Settings.Paragraph.formulas_json
         else:
@@ -220,7 +222,7 @@ class Paragraph:
 
     @staticmethod
     def _text_errors_workaround(text: str) -> str:
-        change_dict = {"й": "й", "–": "-", "ο": "o"}
+        change_dict = {"й": "й", "–": "-", "ο": "o", "ё": "ё", "−": "-"}
         for key in change_dict:
             text = text.replace(key, change_dict[key])
 
@@ -228,6 +230,7 @@ class Paragraph:
 
     @staticmethod
     def _process_references(text: str) -> str:
+        from ..tools import Global, Settings
         ref_pattern = re.compile(
             r"\[\[(?:([^\|\]#]+)?#)?\^([^\|\]]+)(?:\|([^\]]+))?\]\]"
         )
@@ -241,7 +244,7 @@ class Paragraph:
                 latex_ref = f"\\cref{{{Global.REFERENCE_DICT[ref_id]}:{ref_id}}}"
             else:
                 latex_ref = ""
-                print(f"Reference {ref_id} not found in Global.REFERENCE_DICT")
+                #print(f"Reference {ref_id} not found in Global.REFERENCE_DICT")
 
             if text:
                 return text + " " + latex_ref
@@ -316,6 +319,7 @@ class Paragraph:
         return result
 
     def _parse_text(self) -> str:
+        from ..tools import Global, Settings
         if self.parse:
             text = self.text
 

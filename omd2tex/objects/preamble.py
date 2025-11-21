@@ -2,17 +2,21 @@ import json
 import os
 from typing import Dict, Any
 
-from ..tools import Settings
-from ..tools import SettingsPreamble
+from .base import BaseClass
 
 
-class Preamble:
+
+
+class Preamble(BaseClass):
     def __init__(self) -> None:
+        super().__init__()
         # self.config = self._load_config()
         self.beamer_titlepage = False
         # SettingsPreamble.update(self.config)
 
     def _load_config(self) -> Dict[str, Any]:
+        from ..tools import Settings
+        from ..tools import SettingsPreamble
         if Settings.Preamble.settings_json:
             config_path = os.path.expanduser(Settings.Preamble.settings_json)
         else:
@@ -29,6 +33,8 @@ class Preamble:
             raise ValueError(f"Некорректный JSON файл: {config_path}")
 
     def to_latex(self) -> str:
+        from ..tools import Settings
+        from ..tools import SettingsPreamble
         documentclass = SettingsPreamble.documentclass
 
         if documentclass == "beamer":
@@ -37,6 +43,8 @@ class Preamble:
             return self._generate_article_preamble()
 
     def _generate_article_preamble(self) -> str:
+        from ..tools import Settings
+        from ..tools import SettingsPreamble
         string = rf"""
 \documentclass[{SettingsPreamble.Article.fontsize}]{{{SettingsPreamble.documentclass}}}
 \linespread{{{SettingsPreamble.Article.linespread}}}
@@ -239,7 +247,7 @@ class Preamble:
         if any([title_line, author_line, institute_line, date_line]):
             self.beamer_titlepage = True
 
-        SettingsPreamble.Beamer.check()
+        #SettingsPreamble.Beamer.check()
 
         string = rf"""
 \documentclass[{SettingsPreamble.Beamer.fontsize}]{{beamer}}

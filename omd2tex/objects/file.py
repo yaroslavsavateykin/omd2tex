@@ -1,12 +1,14 @@
 import uuid
 import os
 
+from .base import BaseClass
+
 from .list import List
 from ..tools import Settings
 from .quote import Quote
 
 
-class File:
+class File(BaseClass):
     def __init__(
         self,
         filename: str = None,
@@ -15,6 +17,7 @@ class File:
     ) -> None:
         from ..tools import MarkdownParser
 
+        super().__init__()
         self.filename = filename
         self.parrentdir = parrentdir
         self.filedepth = filedepth
@@ -73,13 +76,13 @@ class File:
             new_filename = str(uuid.uuid4())[0:7]
 
             if type(el) in dir_depended_classes:
-                print(list[i].parrentdir)
+                # print(list[i].parrentdir)
 
                 if not list[i].filename:
                     list[i].filename = new_filename
-                list[i].parrentdir += "/" + self.filename.strip(".md")
+                list[i].parrentdir += "/" + self.filename.replace(".md","")
                 list[i].filedepth += 1
-                print(list[i].parrentdir)
+                # print(list[i].parrentdir)
 
         parser.from_elements(list)
         self.elements = parser.elements
@@ -124,7 +127,7 @@ class File:
             text = "\n\n".join([elem._to_latex_project() for elem in self.elements])
 
             if self.filename:
-                filename_tex = self.filename.strip(".md") + ".tex"
+                filename_tex = self.filename.replace(".md","") + ".tex"
             else:
                 filename_tex = "main.tex"
 

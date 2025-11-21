@@ -3,6 +3,8 @@ from typing import Union
 import yaml
 import uuid
 
+from omd2tex.objects.base import BaseClass
+
 
 from .settings import Settings
 from .search import find_file
@@ -10,7 +12,7 @@ from .globals import Global
 from .settings_preamble import SettingsPreamble
 
 
-class MarkdownParser:
+class MarkdownParser(BaseClass):
     re_text_files1 = re.compile(
         r"!?\[\[([^|\[\]]+?(?:\.(?:md|tex|txt))?)(?:\|([^\[\]]+))?\]\]"
     )
@@ -42,6 +44,7 @@ class MarkdownParser:
         filedepth: int = 0,
         quotedepth=0,
     ) -> None:
+        super().__init__()
         self.filename = filename
 
         if self.filename and (
@@ -100,7 +103,7 @@ class MarkdownParser:
         return self
 
     def from_elements(self, list: list):
-        from objects import Document
+        from ..objects import Document
 
         not_pass = [Document, MarkdownParser]
 
@@ -116,12 +119,14 @@ class MarkdownParser:
 
     def _process_elements_list(self, elements: list) -> list:
         from ..objects import Caption, Reference, List, SplitLine
+        from .globals import Global
 
         elements = Reference.attach_reference(elements)
         elements = Reference.identify_elements_reference(elements)
         elements = Caption.attach_caption(elements)
-        elements = List.append_items(elements)
-        elements = List.merge_items(elements)
+        if not Global.ERROR_CATCHER:
+            elements = List.append_items(elements)
+            elements = List.merge_items(elements)
         if (
             SettingsPreamble.documentclass == "beamer"
             and self.quotedepth < 1
@@ -236,6 +241,7 @@ class MarkdownParser:
 
             # БЛОКИ КОДА
             if line.startswith("```") and not in_code_block:
+                START = i
                 blocktype = line.strip("```").strip()
                 blocklines = []
                 in_code_block = True
@@ -245,12 +251,9 @@ class MarkdownParser:
             if in_code_block:
                 if line.startswith("```"):
                     if blocklines:
-                        elements.append(
-                            CodeBlock.create(
-                                blocktype,
-                                blocklines,
-                            )
-                        )
+                        el = CodeBlock.create(blocktype,blocklines)
+                        el._start_line = START 
+                        elements.append(el)
                     in_code_block = False
                     i += 1
                     continue
@@ -266,27 +269,52 @@ class MarkdownParser:
                 and line.strip("$$").strip()
             ):
                 if line.strip().strip("\n"):
+                    START = i
                     eq = Equation(line.strip().strip("$$"))
                     eq._is_initialized = False
+                    eq._start_line = START
+
                     elements.append(eq)
                 i += 1
                 continue
 
-            if line.strip().startswith("$$") or line.strip().endswith("$$"):
+            if line.strip().startswith("$$"):
+                
+
                 if not in_equation:
                     equationlines = [line.strip("$$")]
                     in_equation = True
+                    START = i
                 else:
                     if equationlines:
                         text = "\n".join(equationlines)
                         if text.strip().strip("\n"):
                             eq = Equation("\n".join(equationlines))
-                            eq._is_initialized = False
+                            
+                            eq._start_line = START
                             elements.append(eq)
                     in_equation = False
                 i += 1
                 continue
 
+            if line.strip().endswith("$$") and in_equation:
+                if in_equation:
+                    equationlines = [line.strip("$$")]
+                    in_equation = True
+                    START = i
+                
+                    if equationlines:
+                        text = "\n".join(equationlines)
+                        if text.strip().strip("\n"):
+                            eq = Equation("\n".join(equationlines))
+                            
+                            eq._start_line = START
+                            elements.append(eq)
+                    in_equation = False
+                i += 1
+                continue
+                
+        
             if in_equation:
                 equationlines.append(line.strip("$$"))
                 i += 1
@@ -294,9 +322,13 @@ class MarkdownParser:
 
             if Settings.Fragment.Splitline.parse:
                 if line.strip().startswith("---"):
-                    elements.append(SplitLine(line.strip().strip("---").strip("\n")))
+                    START = i
+                    el = SplitLine(line.strip().strip("---").strip("\n"))
+                    el._start_line = START
+                    elements.append(el)
                     i += 1
                     continue
+
 
             depth = 0
             stripped_line = line
@@ -314,7 +346,9 @@ class MarkdownParser:
             if enumerate_match:
                 number = int(enumerate_match.group(1))
                 text = enumerate_match.group(2)
+                # print(i)
                 item = Enumerate(text=text, number=number, depth=depth)
+                item._start_line = i
                 if reference:
                     item.reference = reference
                 elements.append(item)
@@ -329,6 +363,8 @@ class MarkdownParser:
                 else:
                     text = ""
                 item = Check(text=text, complete=complete, depth=depth)
+                # print(i)
+                item._start_line = i
                 if reference:
                     item.reference = reference
                 elements.append(item)
@@ -337,7 +373,9 @@ class MarkdownParser:
 
             elif stripped_line.startswith("- "):
                 text = stripped_line[2:]
+                # print(i)
                 item = Bullet(text=text, depth=depth)
+                item._start_line = i
                 if reference:
                     item.reference = reference
                 elements.append(item)
@@ -350,6 +388,7 @@ class MarkdownParser:
                 # Обработка Markdown изображений
                 m = self.re_markdown_image.match(line)
                 if m and not_file:
+                    START = i
                     alt_text, filename, title, ref_link = m.groups()
 
                     # Проверяем расширение файла
@@ -382,9 +421,11 @@ class MarkdownParser:
                         height=height,
                     )
 
+                    image_obj._start_line = START
+
                     if ref_link:
                         image_obj.reference = ref_link
-
+                    
                     elements.append(image_obj)
                     i += 1
                     continue
@@ -392,6 +433,7 @@ class MarkdownParser:
                 # Обработка Wiki изображений (Obsidian)
                 n = self.re_wiki_image.match(line)
                 if n and not_file:
+                    START = i
                     content, ref_link = n.groups()
 
                     # Разделяем содержимое на части
@@ -434,6 +476,7 @@ class MarkdownParser:
                         height=height,
                     )
 
+                    image_obj._start_line = START
                     if ref_link:
                         image_obj.reference = ref_link
 
@@ -461,15 +504,21 @@ class MarkdownParser:
                     if filename.startswith("#^"):
                         i += 1
                         continue
-
-                    elements.append(
-                        File(
+                    
+                    START = i
+                    
+                    el = File(
                             filename=filename + ".md"
                             if not filename.endswith(".md")
                             else filename,
                             parrentdir=self.parrentdir,
                             filedepth=self.filedepth + 1,
                         )
+
+                    el._start_line = START
+
+                    elements.append(
+                        el
                     )
                     i += 1
                     continue
@@ -500,13 +549,16 @@ class MarkdownParser:
                             if not filename.endswith(".md")
                             else filename
                         )
-
-                    elements.append(
-                        File(
+                    
+                    el = File(
                             full_filename,
                             parrentdir=self.parrentdir,
                             filedepth=self.filedepth + 1,
                         )
+                    el._start_line = START
+
+                    elements.append(
+                        el
                     )
                     i += 1
                     continue
@@ -514,26 +566,30 @@ class MarkdownParser:
             # Переделываем ссылки на другие элементы
             m = self.re_reference.match(line)
             if m:
-                elements.append(Reference(m.group()[1:]))
+                
+                START = i
+                el = Reference(m.group()[1:])
+                el._start_line = START
+                elements.append(el)
 
                 i += 1
                 continue
 
-                # Проверяем, есть ли следующая строка и начинается ли она с "|"
             next_is_table = i + 1 < len(lines) and lines[i + 1].strip().startswith("|")
 
             if line.strip().startswith("|"):
                 if not in_table:
+                    START = i
                     in_table = True
                     tablelines = [line]
                 else:
                     tablelines.append(line)
 
-                # Если текущая строка последняя ИЛИ следующая строка НЕ таблица
                 if i == len(lines) - 1 or not next_is_table:
-                    if len(tablelines) >= 2:  # Проверяем минимальный формат
+                    if len(tablelines) >= 2:
                         tab = Table(tablelines)
                         tab._is_initialized = False
+                        tab._start_line = START
                         elements.append(tab)
                         in_table = False
                         tablelines = []
@@ -542,8 +598,11 @@ class MarkdownParser:
 
             else:
                 if in_table:
+                    START = i
                     if len(tablelines) >= 2:
+                        
                         tab = Table(tablelines)
+                        tab._start_line = START
                         tab._is_initialized = False
                         elements.append(tab)
                     in_table = False
@@ -551,7 +610,6 @@ class MarkdownParser:
                     i += 1
                     continue
 
-            # Проверяем, есть ли следующая строка и начинается ли она с ">"
             next_is_quote = i + 1 < len(lines) and lines[i + 1].strip().startswith(">")
 
             if line.strip().startswith(">"):
@@ -561,19 +619,24 @@ class MarkdownParser:
                 else:
                     quotelines.append(line)
 
-                # Если текущая строка последняя ИЛИ следующая строка НЕ цитата
                 if i == len(lines) - 1 or not next_is_quote:
                     if self.quotedepth >= Settings.Quote.max_quote_recursion:
                         raise RecursionError(
                             f"Maximum quote nesting quotedepth ({Settings.Quote.max_quote_recursion}) exceeded"
                         )
-                    elements.append(
-                        Quote.create(
+                    START = i
+
+                    el = Quote.create(
                             quotelines=quotelines,
                             filename=self.filename,
                             parrentdir=self.parrentdir,
                             quotedepth=self.quotedepth + 1,
                         )
+
+                    el._start_line = START 
+
+                    elements.append(
+                        el 
                     )
                     in_quote = False
                     quotelines = []
@@ -582,17 +645,22 @@ class MarkdownParser:
 
             else:
                 if in_quote:
+                    START = i
                     if self.quotedepth >= Settings.Quote.max_quote_recursion:
                         raise RecursionError(
                             f"Maximum quote nesting quotedepth ({Settings.Quote.max_quote_recursion}) exceeded"
                         )
-                    elements.append(
-                        Quote.create(
+                    el = Quote.create(
                             quotelines=quotelines,
                             filename=self.filename,
                             parrentdir=self.parrentdir,
                             quotedepth=self.quotedepth + 1,
                         )
+
+                    el._start_line = START
+                    
+                    elements.append(
+                        el 
                     )
                     in_quote = False
                     quotelines = []
@@ -604,12 +672,18 @@ class MarkdownParser:
             if Settings.Headline.parse:
                 n = self.re_heading.match(line)
                 if n:
+                    START = i
                     level, line = n.groups()
-                    elements.append(Headline(len(level) - 1, line))
+                    el = Headline(len(level) - 1, line)
+                    el._start_line = START
+                    elements.append(el)
                     i += 1
                     continue
 
-            elements.append(Paragraph(line))
+            START = i
+            el = Paragraph(line)
+            el._start_line = START
+            elements.append(el)
             i += 1
             continue
 

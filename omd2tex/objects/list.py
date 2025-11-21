@@ -1,13 +1,12 @@
-from functools import wraps
-import re
-from typing import Union
+from .base import BaseClass
 from .paragraph import Paragraph
 from ..tools import Settings
 from ..tools.settings_preamble import SettingsPreamble
 
 
-class List:
+class List(BaseClass):
     def __init__(self, text: str, depth: int, number=0, complete=False, reference=None):
+        super().__init__()
         self.text = text
         self.depth = depth
         self.complete = complete
@@ -53,9 +52,13 @@ class List:
         grouped = []
         i = 0
 
+        
         while i < len(items):
+            
+            current_line = items[i]._start_line
             current_item = items[i]
             current_type = type(current_item)
+            current_item._start_line = current_line
 
             if not isinstance(current_item, List):
                 grouped.append(current_item)
@@ -66,10 +69,13 @@ class List:
 
             j = i + 1
             while j < len(items):
+
+                current_line = items[i]._start_line
                 next_item = items[j]
                 next_type = type(next_item)
 
                 if next_type == current_type and next_item.depth == current_depth:
+                    next_item._start_line = current_line
                     current_item.append(next_item)
                     j += 1
                 else:
@@ -95,6 +101,7 @@ class List:
 
         result = []
         i = 0
+        
 
         while i < len(items):
             current_item = items[i]
@@ -106,7 +113,10 @@ class List:
 
             j = i + 1
             while j < len(items):
+                current_line = items[i]._start_line
+                
                 next_item = items[j]
+                next_item._start_line = current_line
 
                 if not isinstance(next_item, List):
                     break

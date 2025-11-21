@@ -1,11 +1,13 @@
+from .base import BaseClass
 from .equation import Equation
 from .headline import Headline
 from .image import Image
 from .table import Table
 
 
-class Reference:
+class Reference(BaseClass):
     def __init__(self, ref_text: str) -> None:
+        super().__init__()
         self.ref_text = ref_text
 
     def to_latex(self):
@@ -34,13 +36,10 @@ class Reference:
 
         for el in elements:
             if isinstance(el, Reference):
-                # Обновляем последний референс (перезаписываем если были подряд)
                 last_reference = el
-                # Прикрепляем к последнему элементу в результате (если есть)
                 if result:
                     result[-1].reference = last_reference.ref_text
             else:
-                # Сбрасываем референс для нового элемента
                 last_reference = None
                 result.append(el)
 

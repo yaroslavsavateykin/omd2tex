@@ -1,14 +1,14 @@
 import re
 
-from ..tools import Global
-from ..tools import find_file
-from ..tools import Settings
+from .base import BaseClass
 
-
-class Citation:
+class Citation(BaseClass):
     citation_list = []
 
     def __init__(self, key):
+
+        from ..tools import Global
+        super().__init__()
         Global.CITATION_INITIALIZED = True
 
         self.key = key
@@ -16,6 +16,8 @@ class Citation:
         self.__class__.citation_list.append(self)
 
     def _found_citation(self):
+        from ..tools import find_file
+        from ..tools import Settings
         path = find_file(
             filename=self.key + ".md", search_path=Settings.Export.search_dir
         )

@@ -1,10 +1,10 @@
+from .base import BaseClass
 from .paragraph import Paragraph
-from ..tools import Global
-from ..tools import Settings
 
 
-class Equation:
+class Equation(BaseClass):
     def __init__(self, equation: str) -> None:
+        super().__init__()
         self.equation = equation.strip("\n")
 
         self.reference = None
@@ -12,10 +12,12 @@ class Equation:
         self._is_initialized = True
 
     def _identify_reference(self):
+        from ..tools import Global, Settings
         self._is_initialized = True
         Global.REFERENCE_DICT[self.reference] = "eq"
 
     def to_latex(self):
+        from ..tools import Global, Settings
         if not self._is_initialized:
             raise RuntimeError(
                 "Equation is not initialized! Firstly call _identify_reference()"

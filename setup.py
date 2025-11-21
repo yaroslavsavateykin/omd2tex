@@ -2,7 +2,6 @@ from setuptools import setup, find_packages
 
 
 def parse_requirements(filename):
-    """Парсит requirements.txt, исключая editable installs и комментарии"""
     requirements = []
     try:
         with open(filename, "r", encoding="utf-8") as f:
@@ -14,7 +13,6 @@ def parse_requirements(filename):
                     and not line.startswith("-e")
                     and not line.startswith("git+")
                 ):
-                    # Убираем inline комментарии
                     if "#" in line:
                         line = line.split("#")[0].strip()
                     if line:
@@ -25,7 +23,6 @@ def parse_requirements(filename):
     return requirements
 
 
-# Функция для рекурсивного поиска файлов в директории
 def find_additional_files(directory):
     result = []
     for root, dirs, files in os.walk(directory):

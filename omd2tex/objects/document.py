@@ -4,10 +4,7 @@ import shutil
 from typing import Any, Dict, Union
 import uuid
 
-from numpy import copy
-
-from omd2tex.tools.settings_preamble import SettingsPreamble
-
+from .base import BaseClass
 
 from .citation import Citation
 from .makefile import Makefile
@@ -15,17 +12,17 @@ from .paragraph import Paragraph
 from .preamble import Preamble
 from .file import File
 from .quote import Quote
-from ..tools import Global
-from ..tools import Settings
 
 
-class Document:
+class Document(BaseClass):
     def __init__(
         self,
         filename: str = "",
         settings: Union[Dict[str, Any], str] = None,
         preamble=os.path.join(os.getcwd(), "../default/preamble.json"),
     ):
+        from ..tools import SettingsPreamble, Settings, Global
+        super().__init__()
         if settings:
             Settings.update(settings)
 
@@ -46,33 +43,37 @@ class Document:
         Settings.Export.search_ignore_dirs.append(os.path.relpath(export, search))
 
     def from_file(self, filename: str):
+        from ..tools import SettingsPreamble, Settings, Global
         self.filename = filename
-        Global.DOCUMENT_NAME = self.filename.strip(".md")
+        Global.DOCUMENT_NAME = self.filename.replace(".md", "")
         file = File(
             filename=self.filename,
-            parrentdir=self.dir + "/" + self.filename.strip(".md"),
+            parrentdir=self.dir + "/" + self.filename.replace(".md", ""),
         )
         file.from_file(filename)
         self.file = file
         return self
 
     def from_text(self, text: str):
+        from ..tools import SettingsPreamble, Settings, Global
         self.filename = str(uuid.uuid4())[0:7]
         Global.DOCUMENT_NAME = self.filename
         file = File(
             filename=self.filename,
-            parrentdir=self.dir + "/" + self.filename.strip(".md"),
+            parrentdir=self.dir + "/" + self.filename.replace(".md", ""),
         )
         file.from_text(text)
         self.file = file
         return self
 
     def from_elements(self, list: list):
+        from ..tools import SettingsPreamble, Settings, Global
         self.filename = str(uuid.uuid4())[0:7]
         Global.DOCUMENT_NAME = self.filename
 
         if not self.filename:
             self.filename = str(uuid.uuid4())[:7]
+            print(self.filename)
 
         if not self.dir:
             dir = Settings.Export.export_dir
@@ -80,7 +81,7 @@ class Document:
 
         file = File(
             filename=self.filename,
-            parrentdir=self.dir + "/" + self.filename.strip(".md"),
+            parrentdir=self.dir + "/" + self.filename.replace(".md", ""),
         )
 
         dir_depended_classes = [File, Quote]
@@ -92,7 +93,7 @@ class Document:
                 )
             if type(el) in dir_depended_classes:
                 if not list[i].parrentdir:
-                    list[i].parrentdir += "/" + self.filename.strip(".md")
+                    list[i].parrentdir += "/" + self.filename.replace(".md", "")
                 list[i].filedepth += 1
 
         file.from_elements(list)
@@ -104,6 +105,7 @@ class Document:
         pass
 
     def check(self):
+        from ..tools import SettingsPreamble, Settings, Global
         if self.file:
             self.file.check()
         else:
@@ -113,6 +115,7 @@ class Document:
         Global.to_default()
 
     def to_latex(self):
+        from ..tools import SettingsPreamble, Settings, Global
         preamble = self.preamble.to_latex()
 
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
@@ -143,22 +146,25 @@ class Document:
         return document
 
     def to_latex_file(self, filename: str = "") -> None:
+        from ..tools import SettingsPreamble, Settings, Global
         file = self.to_latex()
 
         if not filename:
-            filename = self.filename.strip(".md") + ".tex"
+            filename = self.filename.replace(".md", "") + ".tex"
 
         # with open(os.getcwd() + "/" + filename, "w") as f:
+        os.makedirs(self.dir, exist_ok=True)
 
-        with open(self.dir + "/" + self.filename.strip(".md"), "w") as f:
+        with open(os.path.join(self.dir, filename), "w") as f:
             f.write(file)
 
         if Settings.Export.makefile:
-            Makefile.to_file(dir)
+            Makefile.to_file(self.dir)
 
         Global.to_default()
 
     def to_latex_project(self, filename="") -> None:
+        from ..tools import SettingsPreamble, Settings, Global
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
 
         if not self.filename or not self.file:
@@ -170,7 +176,7 @@ class Document:
             raise ValueError("Document is not initialized")
 
         try:
-            os.makedirs(self.dir + "/" + self.filename.strip(".md"))
+            os.makedirs(self.dir + "/" + self.filename.replace(".md", ""))
         except:
             # print("Не удалось создать директорию проекта или она уже создана")
             pass
@@ -178,7 +184,7 @@ class Document:
         main = main._to_latex_project()
 
         if Settings.Export.makefile:
-            Makefile.to_file(self.dir + "/" + self.filename.strip(".md"))
+            Makefile.to_file(self.dir + "/" + self.filename.replace(".md", ""))
 
         if Global.CITATION_INITIALIZED:
             citations = Citation.to_latex_preamble()
@@ -202,7 +208,7 @@ class Document:
 \\end{{document}}"""
 
         with open(
-            os.path.join(self.dir, self.filename.strip(".md"), "main.tex"), "w"
+            os.path.join(self.dir, self.filename.replace(".md", ""), "main.tex"), "w"
         ) as f:
             f.write(document)
 
@@ -218,7 +224,7 @@ class Document:
                     "../default/beamer-themes/",
                     style_dict[SettingsPreamble.Beamer.theme],
                 )
-                copy_dir = os.path.join(self.dir, self.filename.strip(".md"))
+                copy_dir = os.path.join(self.dir, self.filename.replace(".md", ""))
 
                 shutil.copy2(style_dir, copy_dir)
             else:

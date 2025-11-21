@@ -9,6 +9,9 @@ from .settings import Settings
 def find_file(filename, search_path=None):
     exclude_dirs = Settings.Export.search_ignore_dirs
 
+    if "/" in filename:
+        filename = filename.split("/")[-1]
+
     if search_path is None:
         search_path = os.getcwd()
     else:
@@ -94,7 +97,7 @@ def find_file_flexible(filename, search_path=None):
                 normalized_file = unicodedata.normalize("NFC", f)
                 if normalized_target == normalized_file:
                     full_path = os.path.join(root, f)
-                    print(f"Найден файл (Unicode нормализация): {full_path}")
+                    print(f"Найден файл: {full_path}")
                     return full_path
             except:
                 pass

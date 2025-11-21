@@ -9,6 +9,8 @@ class Global(ConfigBase):
 
     YAML_DICT = {}
 
-    DOCUMENT_CLASS = "article"
+    DOCUMENT_CLASS = "article"  # article, beamer
 
     DOCUMENT_NAME = ""
+
+    ERROR_CATCHER = True

@@ -1,11 +1,13 @@
 from typing import List
 import re
 
+from .base import BaseClass
+
 from .paragraph import Paragraph
 from .fragment import Caption
 
 
-class Quote:
+class Quote(BaseClass):
     def __init__(
         self,
         quotelines: List[str],
@@ -14,6 +16,7 @@ class Quote:
         filedepth=0,
         quotedepth=0,
     ):
+        super().__init__()
         self.quotelines = quotelines
 
         self.parrentdir = parrentdir

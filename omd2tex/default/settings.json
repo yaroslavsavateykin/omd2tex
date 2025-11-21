@@ -14,10 +14,10 @@
     "branching_project": false
   },
   "frontmatter":{
-    "parse": false
+    "parse": true
   },
   "beamer": {
-    "divide_element": "splitline"
+    "divide_element": ["splitline", "headline"]
   },
   "paragraph": {
     "latinify": true,
@@ -43,6 +43,8 @@
   },
   "image": {
     "parse": true,
+    "absolute_path_in_project_export": false,
+    "copy_to_folder_in_project_export": true,
     "wh_aspect_borders": [0.6, 1.8],
     "default_width": "8cm",
     "default_height": "8cm"
@@ -54,6 +56,9 @@
 
   "list": {
     "itemsep": "0pt"
+  },
+  "codeblock": {
+    "parse": true
   },
   "fragment": {
     "splitline": {

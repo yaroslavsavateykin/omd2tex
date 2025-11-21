@@ -15,5 +15,5 @@ tools/.ipynb_checkpoints/
 test_projects/
 
 build/
-tests/
+!tests/
 omd2tex.egg-info/

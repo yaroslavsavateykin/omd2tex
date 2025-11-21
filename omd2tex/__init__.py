@@ -19,8 +19,7 @@ from .objects import (
     Document,
     Makefile,
 )
-
-from .tools import MarkdownParser, find_file, Settings
+from .tools import MarkdownParser, find_file, Settings, SettingsPreamble, ErrorCompileCatcher
 
 __version__ = "0.1.0"
 __all__ = [
@@ -46,4 +45,6 @@ __all__ = [
     "MarkdownParser",
     "find_file",
     "Settings",
+    "SettingsPreamble",
+    "ErrorCompileCatcher"
 ]

@@ -2,12 +2,15 @@ from typing import List
 from pylatexenc.latex2text import LatexNodes2Text
 import numpy as np
 
+from .base import BaseClass
+
 from ..tools import Global
 from .paragraph import Paragraph
 
 
-class Table:
+class Table(BaseClass):
     def __init__(self, lines: List[str]):
+        super().__init__()
         self.lines = lines
 
         self.ilen = 2

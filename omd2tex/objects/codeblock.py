@@ -1,9 +1,11 @@
+from .base import BaseClass
 from .fragment import Caption
 from .paragraph import Paragraph
 
 
-class CodeBlock:
+class CodeBlock(BaseClass):
     def __init__(self, blocktype: str, blocklines: list) -> None:
+        super().__init__()
         self.blocktype = blocktype
         self.blocklines = blocklines
         self.reference = None

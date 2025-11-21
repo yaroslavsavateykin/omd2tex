@@ -14,3 +14,29 @@ from .citation import Citation
 from .file import File
 from .document import Document
 from .makefile import Makefile
+from .base import BaseClass
+
+
+__all__ = ['Caption', 
+           'SplitLine',
+           'Equation', 
+           'Paragraph',
+           "CodeBlock",
+           'Reference',
+           'Headline',
+           'Table',
+           'Image',
+           'Quote',
+           "Footnote",
+           "Enumerate",
+           "Bullet",
+           "Check",
+           "List",
+           'Preamble',
+           'Citation',
+           'File',
+           'Document',
+           'Makefile',
+           "BaseClass"]
+
+

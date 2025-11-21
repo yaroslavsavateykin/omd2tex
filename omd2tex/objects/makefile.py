@@ -1,6 +1,6 @@
 from ..tools import Global
 import os
-
+import asyncio
 
 class Makefile:
     @classmethod
@@ -42,3 +42,4 @@ clean:
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(cls.to_string())
         return filepath
+

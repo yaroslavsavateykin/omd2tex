@@ -2,6 +2,7 @@ import shutil
 from PIL import Image as PillowImage
 import os
 
+from .base import BaseClass
 from omd2tex.tools.settings_preamble import SettingsPreamble
 
 from .paragraph import Paragraph
@@ -10,7 +11,7 @@ from ..tools import Global
 from ..tools import Settings
 
 
-class Image:
+class Image(BaseClass):
     def __init__(
         self,
         filename: str,
@@ -19,6 +20,7 @@ class Image:
         width=None,
         height=None,
     ) -> None:
+        super().__init__()
         self.filename = filename
         self.parrentdir = parrentdir
 
@@ -60,7 +62,7 @@ class Image:
 
         dir = self.dir
         if SettingsPreamble.documentclass == "beamer":
-            image_include = f"\\adjustbox{{max width=\\textwidth, max height=\\textheight, keepaspectratio}}{{\\includegraphics[height = \\textheight/(5/2), keepaspectratio]{{{dir}}}}}"
+            image_include = f"\\adjustbox{{max width=\\textwidth, max height=\\textheight, keepaspectratio}}{{\\includegraphics[height = \\textheight/(3/2), keepaspectratio]{{{dir}}}}}"
         else:
             if self.width:
                 if self.height:
@@ -110,16 +112,18 @@ class Image:
         else:
             raise FileNotFoundError(f"Файл {self.dir} не найден")
 
-    def _ralative_paths(self) -> None:
+    def _relative_paths(self) -> None:
         self.parrentdir = "."
         self.dir = "."
 
     def _to_latex_project(self):
-        self._copy_to_folder()
+        if not Settings.Image.absolute_path_in_project_export:
+            self._relative_paths()
 
-        self._ralative_paths()
+            self.dir = os.path.join(self.parrentdir, "images", self.filename)
 
-        self.dir = self.parrentdir + "/images/" + self.filename
+        if Settings.Image.copy_to_folder_in_project_export:
+            self._copy_to_folder()
 
         return self.to_latex()
 

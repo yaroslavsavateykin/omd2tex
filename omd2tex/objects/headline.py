@@ -1,14 +1,15 @@
 import re
 
+from .base import BaseClass
+
 from .equation import Equation
 from .paragraph import Paragraph
 
-from ..tools import Settings
-from ..tools import Global
 
 
-class Headline:
+class Headline(BaseClass):
     def __init__(self, level: int, text: str) -> None:
+        super().__init__()
         self.level = level
         self.__identify_level()
         self.text = text
@@ -17,6 +18,7 @@ class Headline:
         self.reference = None
 
     def _identify_reference(self) -> None:
+        from ..tools import Global, Settings
         self._is_initialized = True
         self.__global_level_align()
 
@@ -35,14 +37,17 @@ class Headline:
                 Global.REFERENCE_DICT[self.reference] = ref_type[self.level]
 
     def __identify_level(self) -> None:
+        from ..tools import Global, Settings
         if self.level < Global.MIN_HEADLINE_LEVEL:
             Global.MIN_HEADLINE_LEVEL = self.level
 
     def __global_level_align(self) -> None:
+        from ..tools import Global, Settings
         if Settings.Headline.global_level_align:
             self.level -= Global.MIN_HEADLINE_LEVEL
 
     def _pick_surround(self):
+        from ..tools import Global, Settings
         if Settings.Headline.numeration:
             latex_command = [
                 "section",
@@ -145,6 +150,7 @@ class Headline:
 
     @staticmethod
     def _parse_text(text):
+        from ..tools import Global, Settings
         if Settings.Headline.clean_all_highlight:
             text = Paragraph._remove_all_highlight(text)
         if Settings.Headline.clean_markdown_numeration:

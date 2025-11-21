@@ -1,16 +1,16 @@
-from omd2tex.objects.headline import Headline
-from ..tools import Settings
-from ..tools import Counter
+from .base import BaseClass
+from .headline import Headline
 
 from typing import Union, List
 
 
-class SplitLine:
+class SplitLine(BaseClass):
     def __init__(self, text: str = ""):
-        Counter.Splitline += 1
+        # Counter.Splitline += 1
         self.text = text
 
     def to_latex(self):
+        from ..tools import Global, Settings
         return f"\\noindent\\rule{{\\textwidth}}{{{Settings.Fragment.Splitline.width}}} %{self.text}"
 
     def _to_latex_project(self):
@@ -18,6 +18,7 @@ class SplitLine:
 
     @classmethod
     def make_beamer(cls, elements_list: List) -> List:
+        from ..tools import Global, Settings
         frames = []
         current_frame_elements = []
         frame_title = ""
@@ -59,8 +60,9 @@ class SplitLine:
         return frames
 
 
-class Frame:
+class Frame(BaseClass):
     def __init__(self, elements: List, title=""):
+        super().__init__()
         self.elements = elements
         self.title = title
 
@@ -88,7 +90,7 @@ class Frame:
         return latex
 
 
-class Caption:
+class Caption(BaseClass):
     def __init__(self, text: Union[list, str]):
         if isinstance(text, list):
             self.cap_text = " ".join(text)
