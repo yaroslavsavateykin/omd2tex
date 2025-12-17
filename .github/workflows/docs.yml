@@ -25,6 +25,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r docs/requirements.txt
 
+      - name: Clean build directory
+        run: rm -rf docs/_build/html
+
       - name: Build HTML
         run: sphinx-build -b html docs/source docs/_build/html
 
@@ -37,3 +40,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/_build/html
           publish_branch: gh-pages
+          force_orphan: true

@@ -7,6 +7,4 @@ Welcome to omd2tex's documentation!
    :maxdepth: 2
    :caption: Contents
 
-   api/omd2tex
-   api/objects
-   api/tools
+   api/index
