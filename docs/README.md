@@ -24,3 +24,6 @@ Output appears in `docs/_build/html`. Open `index.html` in a browser to view.
 GitHub Pages can publish the docs via GitHub Actions (Source: GitHub Actions). After pushing to `main`, enable Pages in Repository Settings → Pages with Source set to GitHub Actions.
 
 The site uses the PyData Sphinx Theme (pulled in via `docs/requirements.txt`).
+
+To serve from the `gh-pages` branch (recommended for this workflow):
+Settings → Pages → Build and deployment → Source: Deploy from a branch → Branch: `gh-pages` / folder: `/ (root)`.
