@@ -24,6 +24,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r docs/requirements.txt
+          pip install -e .
+
+      - name: Import check
+        run: python -c "import omd2tex"
 
       - name: Clean build directory
         run: rm -rf docs/_build/html
