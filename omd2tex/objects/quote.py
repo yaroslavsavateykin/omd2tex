@@ -179,7 +179,7 @@ class Quote(BaseClass):
 
         functions = {
             "example": lambda content: Paragraph(
-                f"\\begin{{example}}\n{'\n'.join(content)}\n\\end{{example}}"
+                "\\begin{example}\n" + "\n".join(content) + "\n\\end{example}"
             ),
             "hidden": lambda content: Paragraph("", parse=False),
             "text": lambda content: Paragraph(content, parse=False),
