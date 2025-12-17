@@ -20,10 +20,9 @@ class CodeBlock(BaseClass):
     def _minted_python(blocklines: list) -> Paragraph:
         """Render a Python code block using minted."""
 
-        joined_lines = "\n".join(blocklines)
         block = f"""\\usemintedstyle{{default}}
 \\begin{{minted}}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{{python}} 
-{joined_lines}
+{"\n".join(blocklines)}
 \\end{{minted}}"""
 
         return Paragraph(block, parse=False)
