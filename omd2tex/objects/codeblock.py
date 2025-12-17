@@ -20,21 +20,27 @@ class CodeBlock(BaseClass):
     def _minted_python(blocklines: list) -> Paragraph:
         """Render a Python code block using minted."""
 
-        block = f"""\\usemintedstyle{{default}}
-\\begin{{minted}}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{{python}} 
-{"\n".join(blocklines)}
-\\end{{minted}}"""
+        joined_lines = "\n".join(blocklines)
+        block = (
+            "\\usemintedstyle{default}\n"
+            "\\begin{minted}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{python} \n"
+            f"{joined_lines}\n"
+            "\\end{minted}"
+        )
 
         return Paragraph(block, parse=False)
 
     @staticmethod
     def _default_codeblock(blocklines: list) -> Paragraph:
         """Render a generic code block using tcolorbox and verbatim."""
-        block = f"""\\begin{{tcolorbox}}[colback=gray!20, colframe=gray!50, sharp corners, boxrule=1pt]
-\\begin{{verbatim}}
-{"\n".join(blocklines)}
-\\end{{verbatim}}
-\\end{{tcolorbox}}"""
+        joined_lines = "\n".join(blocklines)
+        block = (
+            "\\begin{tcolorbox}[colback=gray!20, colframe=gray!50, sharp corners, boxrule=1pt]\n"
+            "\\begin{verbatim}\n"
+            f"{joined_lines}\n"
+            "\\end{verbatim}\n"
+            "\\end{tcolorbox}"
+        )
 
         return Paragraph(block, parse=False)
 
