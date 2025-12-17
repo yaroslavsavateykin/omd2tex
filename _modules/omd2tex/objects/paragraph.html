@@ -1,0 +1,959 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.objects.paragraph &#8212; omd2tex 0.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/omd2tex/objects/paragraph';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">omd2tex 0.0.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">omd2tex.obje...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for omd2tex.objects.paragraph</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.citation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Citation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.footnote</span><span class="w"> </span><span class="kn">import</span> <span class="n">Footnote</span>
+
+
+<div class="viewcode-block" id="Paragraph">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Paragraph</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a paragraph wrapper with optional parsing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Raw paragraph content.</span>
+<span class="sd">            parse: Whether to apply markdown and reference transformations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="n">parse</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">footnote</span> <span class="o">=</span> <span class="n">Footnote</span><span class="p">()</span><span class="o">.</span><span class="n">collection</span>
+
+<div class="viewcode-block" id="Paragraph.to_latex">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.to_latex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_latex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the paragraph to LaTeX, optionally parsing markdown constructs.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_text</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_latex_project</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Paragraph.change_letters_for_equations">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.change_letters_for_equations">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">change_letters_for_equations</span><span class="p">(</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dict_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">surround_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace symbols in equations using a mapping file and wrapper.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Input equation text.</span>
+<span class="sd">            dict_file: Optional path to a JSON mapping file; defaults to bundled formulas.</span>
+<span class="sd">            surround_func: Callable applied to mapped values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Transformed text with mapped symbols.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+
+        <span class="k">if</span> <span class="n">dict_file</span><span class="p">:</span>
+            <span class="n">dict_file</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Paragraph</span><span class="o">.</span><span class="n">formulas_json</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dict_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">((</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;default/formulas.json&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">dict_file</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">change_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">change_dict</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">surround_func</span><span class="p">(</span><span class="n">change_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">text</span></div>
+
+    <span class="n">_change_letters_for_equations</span> <span class="o">=</span> <span class="n">change_letters_for_equations</span>
+
+<div class="viewcode-block" id="Paragraph.highlight_text1">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.highlight_text1">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">highlight_text1</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert HTML superscript/subscript markers to LaTeX equivalents.&quot;&quot;&quot;</span>
+        <span class="n">change_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="sa">r</span><span class="s2">&quot;&lt;sup&gt;(.*?)&lt;/sup&gt;&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;$^</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">$&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;&lt;sub&gt;(.*?)&lt;/sub&gt;&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;$_</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">$&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;&lt;u&gt;(.*?)&lt;/u&gt;&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">ul</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">regular</span> <span class="ow">in</span> <span class="n">change_dict</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+                <span class="n">regular</span><span class="p">,</span>
+                <span class="n">change_dict</span><span class="p">[</span><span class="n">regular</span><span class="p">],</span>
+                <span class="n">text</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span></div>
+
+    <span class="n">_highlight_text1</span> <span class="o">=</span> <span class="n">highlight_text1</span>
+
+<div class="viewcode-block" id="Paragraph.highlight_text2">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.highlight_text2">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">highlight_text2</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert markdown emphasis markers to LaTeX formatting.&quot;&quot;&quot;</span>
+        <span class="n">change_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="sa">r</span><span class="s2">&quot;\*\*(.*?)\*\*&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">textbf</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;__(.*?)__&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">textbf</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;\*(.*?)\*&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">textit</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;_(.*?)_&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">textit</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;==(.*?)==&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">sethlcolor</span><span class="se">{{</span><span class="s2">mintgreen</span><span class="se">}}\\</span><span class="s2">hl</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;~~(.*?)~~&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">sout</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">&quot;#(.*?)(?=\s|$)&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">#</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">regular</span> <span class="ow">in</span> <span class="n">change_dict</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+                <span class="n">regular</span><span class="p">,</span>
+                <span class="n">change_dict</span><span class="p">[</span><span class="n">regular</span><span class="p">],</span>
+                <span class="n">text</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span></div>
+
+    <span class="n">_highlight_text2</span> <span class="o">=</span> <span class="n">highlight_text2</span>
+
+<div class="viewcode-block" id="Paragraph.replace_inline_code">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.replace_inline_code">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replace_inline_code</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace inline code segments with placeholders preserving content.&quot;&quot;&quot;</span>
+        <span class="n">inline_codes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">replace_inline</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="n">inline_codes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;@@INLINE-CODE-</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inline_codes</span><span class="p">)</span><span class="si">}</span><span class="s2">@@&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;`(.*?)`&quot;</span><span class="p">,</span> <span class="n">replace_inline</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text</span><span class="p">,</span> <span class="n">inline_codes</span></div>
+
+    <span class="n">_replace_inline_code</span> <span class="o">=</span> <span class="n">replace_inline_code</span>
+
+<div class="viewcode-block" id="Paragraph.replace_inline_equation">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.replace_inline_equation">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replace_inline_equation</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace inline equations with placeholders preserving content.&quot;&quot;&quot;</span>
+        <span class="n">inline_equations</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">replace_inline</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="n">inline_equations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;@@INLINE-EQUATION-</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inline_equations</span><span class="p">)</span><span class="si">}</span><span class="s2">@@&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\$(.*?)\$&quot;</span><span class="p">,</span> <span class="n">replace_inline</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span><span class="p">,</span> <span class="n">inline_equations</span></div>
+
+    <span class="n">_replace_inline_equation</span> <span class="o">=</span> <span class="n">replace_inline_equation</span>
+
+<div class="viewcode-block" id="Paragraph.replace_outline_equation">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.replace_outline_equation">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replace_outline_equation</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace outline equations with placeholders preserving content.&quot;&quot;&quot;</span>
+        <span class="n">outline_equations</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">replace_inline</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="n">outline_equations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;@@OUTLINE-EQUATION-</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">outline_equations</span><span class="p">)</span><span class="si">}</span><span class="s2">@@&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\$\$(.*?)\$\$&quot;</span><span class="p">,</span> <span class="n">replace_inline</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span><span class="p">,</span> <span class="n">outline_equations</span></div>
+
+    <span class="n">_replace_outline_equation</span> <span class="o">=</span> <span class="n">replace_outline_equation</span>
+
+<div class="viewcode-block" id="Paragraph.restore_placeholders">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.restore_placeholders">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore_placeholders</span><span class="p">(</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inline_equations</span><span class="o">=</span><span class="p">[],</span> <span class="n">inline_codes</span><span class="o">=</span><span class="p">[],</span> <span class="n">outline_equations</span><span class="o">=</span><span class="p">[]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore code and equation placeholders into the provided text.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">inline_codes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inline_code</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inline_codes</span><span class="p">):</span>
+                <span class="n">inline_code</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">inline_code</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">#&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">$&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">%&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;@@INLINE-CODE-</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">@@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">texttt</span><span class="se">{{</span><span class="si">{</span><span class="n">inline_code</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inline_equations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inline_equation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inline_equations</span><span class="p">):</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;@@INLINE-EQUATION-</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">@@&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">inline_equation</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">outline_equations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">outline_equation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">outline_equations</span><span class="p">):</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;@@OUTLINE-EQUATION-</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">@@&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">outline_equation</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text</span></div>
+
+    <span class="n">_restore_placeholders</span> <span class="o">=</span> <span class="n">restore_placeholders</span>
+
+<div class="viewcode-block" id="Paragraph.latinify_lines">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.latinify_lines">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latinify_lines</span><span class="p">(</span>
+        <span class="n">lines</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">probability</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">change_dict</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Randomly replace characters based on latinify mapping and probability.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">change_dict</span><span class="p">:</span>
+            <span class="n">change_dict</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Paragraph</span><span class="o">.</span><span class="n">latinify_json</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">change_dict</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">((</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;default/latinify.json&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">change_dict</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">repl_map</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">replace_in_string</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">result_chars</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">repl_map</span> <span class="ow">and</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">probability</span><span class="p">:</span>
+                    <span class="n">result_chars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">repl_map</span><span class="p">[</span><span class="n">ch</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result_chars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result_chars</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">replace_in_string</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">])</span></div>
+
+    <span class="n">_latinify_lines</span> <span class="o">=</span> <span class="n">latinify_lines</span>
+
+<div class="viewcode-block" id="Paragraph.eq_ru_letter_workaround">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.eq_ru_letter_workaround">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eq_ru_letter_workaround</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap Cyrillic characters in equations with text mode to avoid errors.&quot;&quot;&quot;</span>
+        <span class="n">change_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;й&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ц&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;у&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;к&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;е&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;н&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;г&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ш&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;щ&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;з&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ф&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ы&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;в&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;а&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;п&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;р&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;о&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;л&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;д&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ж&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;э&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;я&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ч&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;с&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;м&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;и&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;т&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ь&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;б&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ю&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ё&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">new_text</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">letter</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">change_list</span><span class="p">:</span>  <span class="c1"># Проверяем в нижнем регистре</span>
+                <span class="n">new_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text</span><span class="se">{{</span><span class="si">{</span><span class="n">letter</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_text</span><span class="p">)</span></div>
+
+    <span class="n">_eq_ru_letter_workaround</span> <span class="o">=</span> <span class="n">eq_ru_letter_workaround</span>
+
+<div class="viewcode-block" id="Paragraph.text_errors_workaround">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.text_errors_workaround">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">text_errors_workaround</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize known problematic characters and dashes.&quot;&quot;&quot;</span>
+        <span class="n">change_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;й&quot;</span><span class="p">:</span> <span class="s2">&quot;й&quot;</span><span class="p">,</span> <span class="s2">&quot;–&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;ο&quot;</span><span class="p">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;ё&quot;</span><span class="p">:</span> <span class="s2">&quot;ё&quot;</span><span class="p">,</span> <span class="s2">&quot;−&quot;</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">change_dict</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">change_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">text</span></div>
+
+    <span class="n">_text_errors_workaround</span> <span class="o">=</span> <span class="n">text_errors_workaround</span>
+
+<div class="viewcode-block" id="Paragraph.process_references">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.process_references">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_references</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert wiki-style references to LaTeX cref calls using global mapping.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+
+        <span class="n">ref_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">&quot;\[\[(?:([^\|\]#]+)?#)?\^([^\|\]]+)(?:\|([^\]]+))?\]\]&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">process_ref_match</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="n">file_reference</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">ref_id</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ref_id</span> <span class="ow">in</span> <span class="n">Global</span><span class="o">.</span><span class="n">REFERENCE_DICT</span><span class="p">:</span>
+                <span class="n">latex_ref</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">cref</span><span class="se">{{</span><span class="si">{</span><span class="n">Global</span><span class="o">.</span><span class="n">REFERENCE_DICT</span><span class="p">[</span><span class="n">ref_id</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">ref_id</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">latex_ref</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="c1"># print(f&quot;Reference {ref_id} not found in Global.REFERENCE_DICT&quot;)</span>
+
+            <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">text</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">latex_ref</span>
+            <span class="k">return</span> <span class="n">latex_ref</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">ref_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">process_ref_match</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text</span></div>
+
+    <span class="n">_process_references</span> <span class="o">=</span> <span class="n">process_references</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_footnotes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace footnote markers with LaTeX footnote commands using collection.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">footnote</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="se">\\</span><span class="s2">footnote</span><span class="se">{{</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">footnote</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="se">}}</span><span class="s2"> &quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Footnote </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="s2">&quot; &quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[\^([^\]]+)\]&quot;</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text</span>
+
+<div class="viewcode-block" id="Paragraph.process_citations">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.process_citations">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_citations</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize citation markers to LaTeX ``\\cite{}`` commands.</span>
+
+<span class="sd">        Supports patterns like ``![[ @cite|text ]]``, ``[[ @cite ]]``, and ``\\cite{@cite}``, returning formatted citations or empty strings when source entries are missing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Input string possibly containing various citation syntaxes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Text with citation patterns replaced by LaTeX citations; returns empty strings when citations are missing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">text</span>
+
+        <span class="n">pattern1</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(!?)\[\[@([^|\]]+)(?:\|([^\]]+))?\]\]&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">replace_pattern1</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="n">has_exclamation</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;!&quot;</span>
+            <span class="n">cite</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">text_part</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">text_part</span><span class="p">:</span>
+                <span class="n">cit</span> <span class="o">=</span> <span class="n">Citation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">cite</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cit</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text_part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">cite</span><span class="se">{{</span><span class="si">{</span><span class="n">cite</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cit</span> <span class="o">=</span> <span class="n">Citation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">cite</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cit</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">cite</span><span class="se">{{</span><span class="si">{</span><span class="n">cite</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern1</span><span class="p">,</span> <span class="n">replace_pattern1</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="n">pattern2</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">cite\{@([^}]+)\}&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">replace_pattern2</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="n">cite</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">cit</span> <span class="o">=</span> <span class="n">Citation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">cite</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cit</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">cite</span><span class="se">{{</span><span class="si">{</span><span class="n">cite</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern2</span><span class="p">,</span> <span class="n">replace_pattern2</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+    <span class="n">_process_citations</span> <span class="o">=</span> <span class="n">process_citations</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse and transform paragraph text according to settings.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span>
+
+            <span class="c1"># text = self.escape_latex_special_chars(text)</span>
+            <span class="n">text</span><span class="p">,</span> <span class="n">outline_equations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_outline_equation</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">highlight_text1</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">outline_equations</span><span class="p">)):</span>
+                <span class="n">outline_equations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_letters_for_equations</span><span class="p">(</span>
+                    <span class="n">outline_equations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;\$\$(.*?)\$\$&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;$$</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">change_letters_for_equations</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">),</span><span class="w"> </span><span class="n">dict_file</span><span class="o">=</span><span class="n">Settings</span><span class="o">.</span><span class="n">Paragraph</span><span class="o">.</span><span class="n">formulas_json</span><span class="p">)</span><span class="si">}</span><span class="s2">$$&quot;</span><span class="p">,</span>
+                <span class="n">text</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;\$(?:[^$</span><span class="se">\\</span><span class="s2">]|</span><span class="se">\\</span><span class="s2">\$|</span><span class="se">\\</span><span class="s2">[^$])*?\$&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">change_letters_for_equations</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">),</span><span class="w"> </span><span class="n">dict_file</span><span class="o">=</span><span class="n">Settings</span><span class="o">.</span><span class="n">Paragraph</span><span class="o">.</span><span class="n">formulas_json</span><span class="p">)</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">,</span>
+                <span class="n">text</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_letters_for_equations</span><span class="p">(</span>
+                <span class="n">text</span><span class="p">,</span> <span class="n">surround_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">$&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">text</span><span class="p">,</span> <span class="n">inline_codes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_inline_code</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">text</span><span class="p">,</span> <span class="n">inline_equations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_inline_equation</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">outline_equations</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">eq_ru_letter_workaround</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outline_equations</span>
+            <span class="p">]</span>
+
+            <span class="n">inline_equations</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">eq_ru_letter_workaround</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">inline_equations</span>
+            <span class="p">]</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">highlight_text2</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">restore_placeholders</span><span class="p">(</span>
+                <span class="n">text</span><span class="p">,</span>
+                <span class="n">inline_codes</span><span class="o">=</span><span class="n">inline_codes</span><span class="p">,</span>
+                <span class="n">inline_equations</span><span class="o">=</span><span class="n">inline_equations</span><span class="p">,</span>
+                <span class="n">outline_equations</span><span class="o">=</span><span class="n">outline_equations</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_references</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_footnotes</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_citations</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_errors_workaround</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Paragraph</span><span class="o">.</span><span class="n">latinify</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">latinify_lines</span><span class="p">(</span>
+                    <span class="n">text</span><span class="p">,</span>
+                    <span class="n">probability</span><span class="o">=</span><span class="n">Settings</span><span class="o">.</span><span class="n">Paragraph</span><span class="o">.</span><span class="n">latinify_probability</span><span class="p">,</span>
+                    <span class="n">change_dict</span><span class="o">=</span><span class="n">Settings</span><span class="o">.</span><span class="n">Paragraph</span><span class="o">.</span><span class="n">latinify_json</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\%&quot;</span><span class="p">,</span> <span class="s2">&quot;%&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\%&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span>
+
+        <span class="k">return</span> <span class="n">text</span>
+
+<div class="viewcode-block" id="Paragraph.escape_latex_special_chars">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.escape_latex_special_chars">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">escape_latex_special_chars</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Escape unescaped LaTeX special characters in the provided text.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): Входная строка с LaTeX-выражениями</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Строка с экранированными специальными символами LaTeX</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Список специальных символов LaTeX, которые нужно экранировать</span>
+        <span class="n">special_chars</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="s2">&quot;\%&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;~&quot;</span><span class="p">,</span> <span class="s2">&quot;^&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="n">special_chars</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;\%&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Регулярное выражение для поиска неэкранированных специальных символов</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?&lt;!</span><span class="se">\\</span><span class="s2">)([&quot;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">special_chars</span><span class="p">))</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;])&quot;</span>
+
+        <span class="c1"># Экранируем найденные символы</span>
+        <span class="n">escaped_text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\1&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">escaped_text</span></div>
+
+
+<div class="viewcode-block" id="Paragraph.remove_all_highlight">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.remove_all_highlight">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_all_highlight</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Strip all markdown-style highlighting and emphasis markers.&quot;&quot;&quot;</span>
+        <span class="n">change_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="sa">r</span><span class="s2">&quot;\*\*(.*?)\*\*&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="sa">r</span><span class="s2">&quot;__(.*?)__&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="sa">r</span><span class="s2">&quot;\*(.*?)\*&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="sa">r</span><span class="s2">&quot;_(.*?)_&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="sa">r</span><span class="s2">&quot;==(.*?)==&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="sa">r</span><span class="s2">&quot;~~(.*?)~~&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="sa">r</span><span class="s2">&quot;#(.*?)(?=\s|$)&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
+                <span class="mi">1</span>
+            <span class="p">),</span>  <span class="c1"># Только до пробела или конца строки</span>
+            <span class="sa">r</span><span class="s2">&quot;&lt;u&gt;(.*?)&lt;/u&gt;&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="sa">r</span><span class="s2">&quot;&lt;sup&gt;(.*?)&lt;/sup&gt;&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>  <span class="c1"># Исправлено</span>
+            <span class="sa">r</span><span class="s2">&quot;&lt;sub&gt;(.*?)&lt;/sub&gt;&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>  <span class="c1"># Исправлено</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">regular</span> <span class="ow">in</span> <span class="n">change_dict</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+                <span class="n">regular</span><span class="p">,</span>
+                <span class="n">change_dict</span><span class="p">[</span><span class="n">regular</span><span class="p">],</span>
+                <span class="n">text</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span></div>
+
+    <span class="n">_remove_all_highlight</span> <span class="o">=</span> <span class="n">remove_all_highlight</span>
+
+<div class="viewcode-block" id="Paragraph.merge_items">
+<a class="viewcode-back" href="../../../api/objects.html#omd2tex.objects.Paragraph.merge_items">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_items</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge adjacent Paragraph instances when parsing flags match.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">items</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+            <span class="n">current_item</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_item</span><span class="p">,</span> <span class="n">Paragraph</span><span class="p">):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_item</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+                <span class="n">next_item</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">next_item</span><span class="p">,</span> <span class="n">Paragraph</span><span class="p">):</span>
+                    <span class="k">break</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">next_item</span><span class="o">.</span><span class="n">parse</span> <span class="o">==</span> <span class="n">current_item</span><span class="o">.</span><span class="n">parse</span>
+                    <span class="ow">and</span> <span class="n">next_item</span><span class="o">.</span><span class="n">reference</span> <span class="o">==</span> <span class="n">current_item</span><span class="o">.</span><span class="n">reference</span>
+                <span class="p">):</span>
+                    <span class="n">current_item</span><span class="o">.</span><span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">current_item</span><span class="o">.</span><span class="n">text</span>
+                    <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_item</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">j</span> <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, omd2tex contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

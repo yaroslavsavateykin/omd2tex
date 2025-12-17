@@ -1,0 +1,766 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>omd2tex.tools.settings module &#8212; omd2tex 0.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script src="../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_api/omd2tex.tools.settings';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">omd2tex 0.0.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">omd2tex.tool...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="module-omd2tex.tools.settings">
+<span id="omd2tex-tools-settings-module"></span><h1>omd2tex.tools.settings module<a class="headerlink" href="#module-omd2tex.tools.settings" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.tools.settings.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Parse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Parse</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Parse" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Parse.merge_elements">
+<span class="sig-name descname"><span class="pre">merge_elements</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Parse.merge_elements" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Export">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Export</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Export" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Export.search_dir">
+<span class="sig-name descname"><span class="pre">search_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'~/Obsidian/'</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Export.search_dir" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Export.search_ignore_dirs">
+<span class="sig-name descname"><span class="pre">search_ignore_dirs</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['.trash',</span> <span class="pre">'.obsidian',</span> <span class="pre">'.plugins',</span> <span class="pre">'.smart-env',</span> <span class="pre">'.reference-map']</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Export.search_ignore_dirs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Export.makefile">
+<span class="sig-name descname"><span class="pre">makefile</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Export.makefile" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Export.export_dir">
+<span class="sig-name descname"><span class="pre">export_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./test/'</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Export.export_dir" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Export.branching_project">
+<span class="sig-name descname"><span class="pre">branching_project</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Export.branching_project" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Frontmatter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Frontmatter</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Frontmatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Frontmatter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Frontmatter.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Frontmatter.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Beamer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Beamer</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Beamer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Beamer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Beamer.divide_element">
+<span class="sig-name descname"><span class="pre">divide_element</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['splitline',</span> <span class="pre">'headline']</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Beamer.divide_element" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Paragraph">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Paragraph</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Paragraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Paragraph" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Paragraph.latinify">
+<span class="sig-name descname"><span class="pre">latinify</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Paragraph.latinify" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Paragraph.latinify_probability">
+<span class="sig-name descname"><span class="pre">latinify_probability</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.05</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Paragraph.latinify_probability" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Paragraph.latinify_json">
+<span class="sig-name descname"><span class="pre">latinify_json</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Paragraph.latinify_json" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Paragraph.formulas_json">
+<span class="sig-name descname"><span class="pre">formulas_json</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Paragraph.formulas_json" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Preamble">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Preamble</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Preamble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Preamble" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Preamble.create_preamble">
+<span class="sig-name descname"><span class="pre">create_preamble</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Preamble.create_preamble" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Preamble.settings_json">
+<span class="sig-name descname"><span class="pre">settings_json</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Preamble.settings_json" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.File">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">File</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.File"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.File" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.File.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.File.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.File.max_file_recursion">
+<span class="sig-name descname"><span class="pre">max_file_recursion</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.File.max_file_recursion" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.File.pass_if_not_found">
+<span class="sig-name descname"><span class="pre">pass_if_not_found</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.File.pass_if_not_found" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.File.divide_with_new_page">
+<span class="sig-name descname"><span class="pre">divide_with_new_page</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.File.divide_with_new_page" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Headline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Headline</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Headline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Headline" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Headline.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Headline.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Headline.global_level_align">
+<span class="sig-name descname"><span class="pre">global_level_align</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Headline.global_level_align" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Headline.numeration">
+<span class="sig-name descname"><span class="pre">numeration</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Headline.numeration" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Headline.clean_markdown_numeration">
+<span class="sig-name descname"><span class="pre">clean_markdown_numeration</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Headline.clean_markdown_numeration" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Headline.clean_all_highlight">
+<span class="sig-name descname"><span class="pre">clean_all_highlight</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Headline.clean_all_highlight" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Image">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Image</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Image" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Image.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Image.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Image.absolute_path_in_project_export">
+<span class="sig-name descname"><span class="pre">absolute_path_in_project_export</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Image.absolute_path_in_project_export" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Image.copy_to_folder_in_project_export">
+<span class="sig-name descname"><span class="pre">copy_to_folder_in_project_export</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Image.copy_to_folder_in_project_export" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Image.wh_aspect_borders">
+<span class="sig-name descname"><span class="pre">wh_aspect_borders</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[0.6,</span> <span class="pre">1.8]</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Image.wh_aspect_borders" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Image.default_width">
+<span class="sig-name descname"><span class="pre">default_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'8cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Image.default_width" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Image.default_height">
+<span class="sig-name descname"><span class="pre">default_height</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'8cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Image.default_height" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Quote">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Quote</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Quote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Quote" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Quote.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Quote.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Quote.max_quote_recursion">
+<span class="sig-name descname"><span class="pre">max_quote_recursion</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Quote.max_quote_recursion" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.List">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">List</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.List"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.List" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.List.itemsep">
+<span class="sig-name descname"><span class="pre">itemsep</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0pt'</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.List.itemsep" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Codeblock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Codeblock</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Codeblock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Codeblock" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Codeblock.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Codeblock.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Fragment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Fragment</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Fragment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Fragment" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Fragment.Splitline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Splitline</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Fragment.Splitline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Fragment.Splitline" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Fragment.Splitline.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Fragment.Splitline.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Fragment.Splitline.width">
+<span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.5pt'</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Fragment.Splitline.width" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Fragment.Caption">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Caption</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings.html#Settings.Fragment.Caption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings.Settings.Fragment.Caption" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings.Settings.Fragment.Caption.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#omd2tex.tools.settings.Settings.Fragment.Caption.parse" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Parse"><code class="docutils literal notranslate"><span class="pre">Settings.Parse</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Parse.merge_elements"><code class="docutils literal notranslate"><span class="pre">Settings.Parse.merge_elements</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Export"><code class="docutils literal notranslate"><span class="pre">Settings.Export</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Export.search_dir"><code class="docutils literal notranslate"><span class="pre">Settings.Export.search_dir</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Export.search_ignore_dirs"><code class="docutils literal notranslate"><span class="pre">Settings.Export.search_ignore_dirs</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Export.makefile"><code class="docutils literal notranslate"><span class="pre">Settings.Export.makefile</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Export.export_dir"><code class="docutils literal notranslate"><span class="pre">Settings.Export.export_dir</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Export.branching_project"><code class="docutils literal notranslate"><span class="pre">Settings.Export.branching_project</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Frontmatter"><code class="docutils literal notranslate"><span class="pre">Settings.Frontmatter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Frontmatter.parse"><code class="docutils literal notranslate"><span class="pre">Settings.Frontmatter.parse</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Beamer"><code class="docutils literal notranslate"><span class="pre">Settings.Beamer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Beamer.divide_element"><code class="docutils literal notranslate"><span class="pre">Settings.Beamer.divide_element</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Paragraph"><code class="docutils literal notranslate"><span class="pre">Settings.Paragraph</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Paragraph.latinify"><code class="docutils literal notranslate"><span class="pre">Settings.Paragraph.latinify</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Paragraph.latinify_probability"><code class="docutils literal notranslate"><span class="pre">Settings.Paragraph.latinify_probability</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Paragraph.latinify_json"><code class="docutils literal notranslate"><span class="pre">Settings.Paragraph.latinify_json</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Paragraph.formulas_json"><code class="docutils literal notranslate"><span class="pre">Settings.Paragraph.formulas_json</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Preamble"><code class="docutils literal notranslate"><span class="pre">Settings.Preamble</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Preamble.create_preamble"><code class="docutils literal notranslate"><span class="pre">Settings.Preamble.create_preamble</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Preamble.settings_json"><code class="docutils literal notranslate"><span class="pre">Settings.Preamble.settings_json</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.File"><code class="docutils literal notranslate"><span class="pre">Settings.File</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.File.parse"><code class="docutils literal notranslate"><span class="pre">Settings.File.parse</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.File.max_file_recursion"><code class="docutils literal notranslate"><span class="pre">Settings.File.max_file_recursion</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.File.pass_if_not_found"><code class="docutils literal notranslate"><span class="pre">Settings.File.pass_if_not_found</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.File.divide_with_new_page"><code class="docutils literal notranslate"><span class="pre">Settings.File.divide_with_new_page</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Headline"><code class="docutils literal notranslate"><span class="pre">Settings.Headline</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Headline.parse"><code class="docutils literal notranslate"><span class="pre">Settings.Headline.parse</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Headline.global_level_align"><code class="docutils literal notranslate"><span class="pre">Settings.Headline.global_level_align</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Headline.numeration"><code class="docutils literal notranslate"><span class="pre">Settings.Headline.numeration</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Headline.clean_markdown_numeration"><code class="docutils literal notranslate"><span class="pre">Settings.Headline.clean_markdown_numeration</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Headline.clean_all_highlight"><code class="docutils literal notranslate"><span class="pre">Settings.Headline.clean_all_highlight</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Image"><code class="docutils literal notranslate"><span class="pre">Settings.Image</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Image.parse"><code class="docutils literal notranslate"><span class="pre">Settings.Image.parse</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Image.absolute_path_in_project_export"><code class="docutils literal notranslate"><span class="pre">Settings.Image.absolute_path_in_project_export</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Image.copy_to_folder_in_project_export"><code class="docutils literal notranslate"><span class="pre">Settings.Image.copy_to_folder_in_project_export</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Image.wh_aspect_borders"><code class="docutils literal notranslate"><span class="pre">Settings.Image.wh_aspect_borders</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Image.default_width"><code class="docutils literal notranslate"><span class="pre">Settings.Image.default_width</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Image.default_height"><code class="docutils literal notranslate"><span class="pre">Settings.Image.default_height</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Quote"><code class="docutils literal notranslate"><span class="pre">Settings.Quote</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Quote.parse"><code class="docutils literal notranslate"><span class="pre">Settings.Quote.parse</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Quote.max_quote_recursion"><code class="docutils literal notranslate"><span class="pre">Settings.Quote.max_quote_recursion</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.List"><code class="docutils literal notranslate"><span class="pre">Settings.List</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.List.itemsep"><code class="docutils literal notranslate"><span class="pre">Settings.List.itemsep</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Codeblock"><code class="docutils literal notranslate"><span class="pre">Settings.Codeblock</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Codeblock.parse"><code class="docutils literal notranslate"><span class="pre">Settings.Codeblock.parse</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Fragment"><code class="docutils literal notranslate"><span class="pre">Settings.Fragment</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Fragment.Splitline"><code class="docutils literal notranslate"><span class="pre">Settings.Fragment.Splitline</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Fragment.Splitline.parse"><code class="docutils literal notranslate"><span class="pre">Settings.Fragment.Splitline.parse</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Fragment.Splitline.width"><code class="docutils literal notranslate"><span class="pre">Settings.Fragment.Splitline.width</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Fragment.Caption"><code class="docutils literal notranslate"><span class="pre">Settings.Fragment.Caption</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings.Settings.Fragment.Caption.parse"><code class="docutils literal notranslate"><span class="pre">Settings.Fragment.Caption.parse</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/_api/omd2tex.tools.settings.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, omd2tex contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

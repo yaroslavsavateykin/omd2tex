@@ -1,0 +1,808 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>omd2tex package &#8212; omd2tex 0.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script src="../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_api/omd2tex';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">omd2tex 0.0.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="omd2tex.objects.html">omd2tex.objects package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.base.html">omd2tex.objects.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.citation.html">omd2tex.objects.citation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.codeblock.html">omd2tex.objects.codeblock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.document.html">omd2tex.objects.document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.equation.html">omd2tex.objects.equation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.file.html">omd2tex.objects.file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.footnote.html">omd2tex.objects.footnote module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.fragment.html">omd2tex.objects.fragment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.headline.html">omd2tex.objects.headline module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.image.html">omd2tex.objects.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.list.html">omd2tex.objects.list module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.makefile.html">omd2tex.objects.makefile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.paragraph.html">omd2tex.objects.paragraph module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.preamble.html">omd2tex.objects.preamble module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.quote.html">omd2tex.objects.quote module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.reference.html">omd2tex.objects.reference module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.table.html">omd2tex.objects.table module</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="omd2tex.tools.html">omd2tex.tools package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.class_constructor.html">omd2tex.tools.class_constructor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.config_base.html">omd2tex.tools.config_base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.counter.html">omd2tex.tools.counter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.database.html">omd2tex.tools.database module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.error_catcher.html">omd2tex.tools.error_catcher module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.frontmatter_parser.html">omd2tex.tools.frontmatter_parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.globals.html">omd2tex.tools.globals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.markdown_parser.html">omd2tex.tools.markdown_parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.search.html">omd2tex.tools.search module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.settings.html">omd2tex.tools.settings module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.settings_preamble.html">omd2tex.tools.settings_preamble module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.text_tools.html">omd2tex.tools.text_tools module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">omd2tex package</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="omd2tex-package">
+<h1>omd2tex package<a class="headerlink" href="#omd2tex-package" title="Link to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="omd2tex.objects.html">omd2tex.objects package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.base.html">omd2tex.objects.base module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.base.html#omd2tex.objects.base.BaseClass"><code class="docutils literal notranslate"><span class="pre">BaseClass</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.citation.html">omd2tex.objects.citation module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.citation.html#omd2tex.objects.citation.Citation"><code class="docutils literal notranslate"><span class="pre">Citation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.codeblock.html">omd2tex.objects.codeblock module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.codeblock.html#omd2tex.objects.codeblock.CodeBlock"><code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.document.html">omd2tex.objects.document module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.document.html#omd2tex.objects.document.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.equation.html">omd2tex.objects.equation module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.equation.html#omd2tex.objects.equation.Equation"><code class="docutils literal notranslate"><span class="pre">Equation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.file.html">omd2tex.objects.file module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.file.html#omd2tex.objects.file.File"><code class="docutils literal notranslate"><span class="pre">File</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.footnote.html">omd2tex.objects.footnote module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.footnote.html#omd2tex.objects.footnote.Footnote"><code class="docutils literal notranslate"><span class="pre">Footnote</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.fragment.html">omd2tex.objects.fragment module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.fragment.html#omd2tex.objects.fragment.SplitLine"><code class="docutils literal notranslate"><span class="pre">SplitLine</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.fragment.html#omd2tex.objects.fragment.Frame"><code class="docutils literal notranslate"><span class="pre">Frame</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.fragment.html#omd2tex.objects.fragment.Caption"><code class="docutils literal notranslate"><span class="pre">Caption</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.headline.html">omd2tex.objects.headline module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.headline.html#omd2tex.objects.headline.Headline"><code class="docutils literal notranslate"><span class="pre">Headline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.image.html">omd2tex.objects.image module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.image.html#omd2tex.objects.image.Image"><code class="docutils literal notranslate"><span class="pre">Image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.image.html#omd2tex.objects.image.ImageFrame"><code class="docutils literal notranslate"><span class="pre">ImageFrame</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.list.html">omd2tex.objects.list module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.list.html#omd2tex.objects.list.List"><code class="docutils literal notranslate"><span class="pre">List</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.list.html#omd2tex.objects.list.Enumerate"><code class="docutils literal notranslate"><span class="pre">Enumerate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.list.html#omd2tex.objects.list.Check"><code class="docutils literal notranslate"><span class="pre">Check</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.list.html#omd2tex.objects.list.Bullet"><code class="docutils literal notranslate"><span class="pre">Bullet</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.makefile.html">omd2tex.objects.makefile module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.makefile.html#omd2tex.objects.makefile.Makefile"><code class="docutils literal notranslate"><span class="pre">Makefile</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.paragraph.html">omd2tex.objects.paragraph module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.paragraph.html#omd2tex.objects.paragraph.Paragraph"><code class="docutils literal notranslate"><span class="pre">Paragraph</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.preamble.html">omd2tex.objects.preamble module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.preamble.html#omd2tex.objects.preamble.NewComands"><code class="docutils literal notranslate"><span class="pre">NewComands</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.preamble.html#omd2tex.objects.preamble.Preamble"><code class="docutils literal notranslate"><span class="pre">Preamble</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.quote.html">omd2tex.objects.quote module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.quote.html#omd2tex.objects.quote.Quote"><code class="docutils literal notranslate"><span class="pre">Quote</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.reference.html">omd2tex.objects.reference module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.reference.html#omd2tex.objects.reference.Reference"><code class="docutils literal notranslate"><span class="pre">Reference</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.table.html">omd2tex.objects.table module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.table.html#omd2tex.objects.table.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.objects.html#module-omd2tex.objects">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Caption"><code class="docutils literal notranslate"><span class="pre">Caption</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Caption.attach_caption"><code class="docutils literal notranslate"><span class="pre">Caption.attach_caption()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.SplitLine"><code class="docutils literal notranslate"><span class="pre">SplitLine</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.SplitLine.to_latex"><code class="docutils literal notranslate"><span class="pre">SplitLine.to_latex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.SplitLine.make_beamer"><code class="docutils literal notranslate"><span class="pre">SplitLine.make_beamer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Equation"><code class="docutils literal notranslate"><span class="pre">Equation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Equation.to_latex"><code class="docutils literal notranslate"><span class="pre">Equation.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph"><code class="docutils literal notranslate"><span class="pre">Paragraph</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.to_latex"><code class="docutils literal notranslate"><span class="pre">Paragraph.to_latex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.change_letters_for_equations"><code class="docutils literal notranslate"><span class="pre">Paragraph.change_letters_for_equations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.highlight_text1"><code class="docutils literal notranslate"><span class="pre">Paragraph.highlight_text1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.highlight_text2"><code class="docutils literal notranslate"><span class="pre">Paragraph.highlight_text2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.replace_inline_code"><code class="docutils literal notranslate"><span class="pre">Paragraph.replace_inline_code()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.replace_inline_equation"><code class="docutils literal notranslate"><span class="pre">Paragraph.replace_inline_equation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.replace_outline_equation"><code class="docutils literal notranslate"><span class="pre">Paragraph.replace_outline_equation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.restore_placeholders"><code class="docutils literal notranslate"><span class="pre">Paragraph.restore_placeholders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.latinify_lines"><code class="docutils literal notranslate"><span class="pre">Paragraph.latinify_lines()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.eq_ru_letter_workaround"><code class="docutils literal notranslate"><span class="pre">Paragraph.eq_ru_letter_workaround()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.text_errors_workaround"><code class="docutils literal notranslate"><span class="pre">Paragraph.text_errors_workaround()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.process_references"><code class="docutils literal notranslate"><span class="pre">Paragraph.process_references()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.process_citations"><code class="docutils literal notranslate"><span class="pre">Paragraph.process_citations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.escape_latex_special_chars"><code class="docutils literal notranslate"><span class="pre">Paragraph.escape_latex_special_chars()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.remove_all_highlight"><code class="docutils literal notranslate"><span class="pre">Paragraph.remove_all_highlight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Paragraph.merge_items"><code class="docutils literal notranslate"><span class="pre">Paragraph.merge_items()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.CodeBlock"><code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.CodeBlock.create"><code class="docutils literal notranslate"><span class="pre">CodeBlock.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.CodeBlock.to_latex"><code class="docutils literal notranslate"><span class="pre">CodeBlock.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Reference"><code class="docutils literal notranslate"><span class="pre">Reference</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Reference.to_latex"><code class="docutils literal notranslate"><span class="pre">Reference.to_latex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Reference.identify_elements_reference"><code class="docutils literal notranslate"><span class="pre">Reference.identify_elements_reference()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Reference.attach_reference"><code class="docutils literal notranslate"><span class="pre">Reference.attach_reference()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Headline"><code class="docutils literal notranslate"><span class="pre">Headline</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Headline.to_latex"><code class="docutils literal notranslate"><span class="pre">Headline.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Table.to_latex"><code class="docutils literal notranslate"><span class="pre">Table.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Image"><code class="docutils literal notranslate"><span class="pre">Image</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Image.to_latex"><code class="docutils literal notranslate"><span class="pre">Image.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Quote"><code class="docutils literal notranslate"><span class="pre">Quote</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Quote.to_latex"><code class="docutils literal notranslate"><span class="pre">Quote.to_latex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Quote.create"><code class="docutils literal notranslate"><span class="pre">Quote.create()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Footnote"><code class="docutils literal notranslate"><span class="pre">Footnote</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Footnote.collection"><code class="docutils literal notranslate"><span class="pre">Footnote.collection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Footnote.append"><code class="docutils literal notranslate"><span class="pre">Footnote.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Footnote.to_default"><code class="docutils literal notranslate"><span class="pre">Footnote.to_default()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Footnote.change_footnote_keys"><code class="docutils literal notranslate"><span class="pre">Footnote.change_footnote_keys()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Enumerate"><code class="docutils literal notranslate"><span class="pre">Enumerate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Enumerate.to_latex_item"><code class="docutils literal notranslate"><span class="pre">Enumerate.to_latex_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Enumerate.to_latex"><code class="docutils literal notranslate"><span class="pre">Enumerate.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Bullet"><code class="docutils literal notranslate"><span class="pre">Bullet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Bullet.to_latex_item"><code class="docutils literal notranslate"><span class="pre">Bullet.to_latex_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Bullet.to_latex"><code class="docutils literal notranslate"><span class="pre">Bullet.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Check"><code class="docutils literal notranslate"><span class="pre">Check</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Check.to_latex_item"><code class="docutils literal notranslate"><span class="pre">Check.to_latex_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Check.to_latex"><code class="docutils literal notranslate"><span class="pre">Check.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.List"><code class="docutils literal notranslate"><span class="pre">List</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.List.to_latex_item"><code class="docutils literal notranslate"><span class="pre">List.to_latex_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.List.to_latex"><code class="docutils literal notranslate"><span class="pre">List.to_latex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.List.append"><code class="docutils literal notranslate"><span class="pre">List.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.List.append_items"><code class="docutils literal notranslate"><span class="pre">List.append_items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.List.merge"><code class="docutils literal notranslate"><span class="pre">List.merge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.List.merge_items"><code class="docutils literal notranslate"><span class="pre">List.merge_items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.List.indent"><code class="docutils literal notranslate"><span class="pre">List.indent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Preamble"><code class="docutils literal notranslate"><span class="pre">Preamble</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Preamble.to_latex"><code class="docutils literal notranslate"><span class="pre">Preamble.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Citation"><code class="docutils literal notranslate"><span class="pre">Citation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Citation.citation_list"><code class="docutils literal notranslate"><span class="pre">Citation.citation_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Citation.to_latex"><code class="docutils literal notranslate"><span class="pre">Citation.to_latex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Citation.to_latex_preamble"><code class="docutils literal notranslate"><span class="pre">Citation.to_latex_preamble()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.File"><code class="docutils literal notranslate"><span class="pre">File</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.File.from_file"><code class="docutils literal notranslate"><span class="pre">File.from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.File.from_elements"><code class="docutils literal notranslate"><span class="pre">File.from_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.File.from_text"><code class="docutils literal notranslate"><span class="pre">File.from_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.File.check"><code class="docutils literal notranslate"><span class="pre">File.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.File.to_latex"><code class="docutils literal notranslate"><span class="pre">File.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Document.from_file"><code class="docutils literal notranslate"><span class="pre">Document.from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Document.from_text"><code class="docutils literal notranslate"><span class="pre">Document.from_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Document.from_elements"><code class="docutils literal notranslate"><span class="pre">Document.from_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Document.check"><code class="docutils literal notranslate"><span class="pre">Document.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Document.to_latex"><code class="docutils literal notranslate"><span class="pre">Document.to_latex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Document.to_latex_file"><code class="docutils literal notranslate"><span class="pre">Document.to_latex_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Document.to_latex_project"><code class="docutils literal notranslate"><span class="pre">Document.to_latex_project()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Makefile"><code class="docutils literal notranslate"><span class="pre">Makefile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Makefile.to_string"><code class="docutils literal notranslate"><span class="pre">Makefile.to_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.objects.html#omd2tex.objects.Makefile.to_file"><code class="docutils literal notranslate"><span class="pre">Makefile.to_file()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omd2tex.tools.html">omd2tex.tools package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.class_constructor.html">omd2tex.tools.class_constructor module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.class_constructor.html#omd2tex.tools.class_constructor.ClassConstructor"><code class="docutils literal notranslate"><span class="pre">ClassConstructor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.config_base.html">omd2tex.tools.config_base module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase"><code class="docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.counter.html">omd2tex.tools.counter module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.counter.html#omd2tex.tools.counter.Counter"><code class="docutils literal notranslate"><span class="pre">Counter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.database.html">omd2tex.tools.database module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.database.html#omd2tex.tools.database.MdDataBase"><code class="docutils literal notranslate"><span class="pre">MdDataBase</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.error_catcher.html">omd2tex.tools.error_catcher module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.error_catcher.html#omd2tex.tools.error_catcher.ConsoleColors"><code class="docutils literal notranslate"><span class="pre">ConsoleColors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.error_catcher.html#omd2tex.tools.error_catcher.ObjectImage"><code class="docutils literal notranslate"><span class="pre">ObjectImage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.error_catcher.html#omd2tex.tools.error_catcher.ErrorCompileCatcher"><code class="docutils literal notranslate"><span class="pre">ErrorCompileCatcher</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.frontmatter_parser.html">omd2tex.tools.frontmatter_parser module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.frontmatter_parser.html#omd2tex.tools.frontmatter_parser.FrontMatterParser"><code class="docutils literal notranslate"><span class="pre">FrontMatterParser</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.globals.html">omd2tex.tools.globals module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.globals.html#omd2tex.tools.globals.Global"><code class="docutils literal notranslate"><span class="pre">Global</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.markdown_parser.html">omd2tex.tools.markdown_parser module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.markdown_parser.html#omd2tex.tools.markdown_parser.MarkdownParser"><code class="docutils literal notranslate"><span class="pre">MarkdownParser</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.search.html">omd2tex.tools.search module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.search.html#omd2tex.tools.search.find_file"><code class="docutils literal notranslate"><span class="pre">find_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.search.html#omd2tex.tools.search.find_file_flexible"><code class="docutils literal notranslate"><span class="pre">find_file_flexible()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.search.html#omd2tex.tools.search.list_files_in_directory"><code class="docutils literal notranslate"><span class="pre">list_files_in_directory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.search.html#omd2tex.tools.search.get_image_dimensions"><code class="docutils literal notranslate"><span class="pre">get_image_dimensions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.settings.html">omd2tex.tools.settings module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.settings.html#omd2tex.tools.settings.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.settings_preamble.html">omd2tex.tools.settings_preamble module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.settings_preamble.html#omd2tex.tools.settings_preamble.SettingsPreamble"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.text_tools.html">omd2tex.tools.text_tools module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.text_tools.html#omd2tex.tools.text_tools.remove_elements"><code class="docutils literal notranslate"><span class="pre">remove_elements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.text_tools.html#omd2tex.tools.text_tools.return_func"><code class="docutils literal notranslate"><span class="pre">return_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.text_tools.html#omd2tex.tools.text_tools.return_regular"><code class="docutils literal notranslate"><span class="pre">return_regular()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="omd2tex.tools.html#module-omd2tex.tools">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Parse"><code class="docutils literal notranslate"><span class="pre">Settings.Parse</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Export"><code class="docutils literal notranslate"><span class="pre">Settings.Export</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Frontmatter"><code class="docutils literal notranslate"><span class="pre">Settings.Frontmatter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Beamer"><code class="docutils literal notranslate"><span class="pre">Settings.Beamer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Paragraph"><code class="docutils literal notranslate"><span class="pre">Settings.Paragraph</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Preamble"><code class="docutils literal notranslate"><span class="pre">Settings.Preamble</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.File"><code class="docutils literal notranslate"><span class="pre">Settings.File</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Headline"><code class="docutils literal notranslate"><span class="pre">Settings.Headline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Image"><code class="docutils literal notranslate"><span class="pre">Settings.Image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Quote"><code class="docutils literal notranslate"><span class="pre">Settings.Quote</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.List"><code class="docutils literal notranslate"><span class="pre">Settings.List</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Codeblock"><code class="docutils literal notranslate"><span class="pre">Settings.Codeblock</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Settings.Fragment"><code class="docutils literal notranslate"><span class="pre">Settings.Fragment</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global"><code class="docutils literal notranslate"><span class="pre">Global</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global.REFERENCE_DICT"><code class="docutils literal notranslate"><span class="pre">Global.REFERENCE_DICT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global.MIN_HEADLINE_LEVEL"><code class="docutils literal notranslate"><span class="pre">Global.MIN_HEADLINE_LEVEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global.CITATION_INITIALIZED"><code class="docutils literal notranslate"><span class="pre">Global.CITATION_INITIALIZED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global.CREATE_PROJECT"><code class="docutils literal notranslate"><span class="pre">Global.CREATE_PROJECT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global.YAML_DICT"><code class="docutils literal notranslate"><span class="pre">Global.YAML_DICT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global.DOCUMENT_CLASS"><code class="docutils literal notranslate"><span class="pre">Global.DOCUMENT_CLASS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global.DOCUMENT_NAME"><code class="docutils literal notranslate"><span class="pre">Global.DOCUMENT_NAME</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Global.ERROR_CATCHER"><code class="docutils literal notranslate"><span class="pre">Global.ERROR_CATCHER</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.find_file"><code class="docutils literal notranslate"><span class="pre">find_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.find_file_flexible"><code class="docutils literal notranslate"><span class="pre">find_file_flexible()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.list_files_in_directory"><code class="docutils literal notranslate"><span class="pre">list_files_in_directory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.get_image_dimensions"><code class="docutils literal notranslate"><span class="pre">get_image_dimensions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser"><code class="docutils literal notranslate"><span class="pre">MarkdownParser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.re_text_files1"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.re_text_files1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.re_text_files2"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.re_text_files2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.re_reference"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.re_reference</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.image_extensions_pattern"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.image_extensions_pattern</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.re_markdown_image"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.re_markdown_image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.re_wiki_image"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.re_wiki_image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.re_heading"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.re_heading</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.re_footnote"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.re_footnote</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.enumerate_pattern"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.enumerate_pattern</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.check"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.from_file"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.from_text"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.from_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MarkdownParser.from_elements"><code class="docutils literal notranslate"><span class="pre">MarkdownParser.from_elements()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Counter"><code class="docutils literal notranslate"><span class="pre">Counter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.Counter.Splitline"><code class="docutils literal notranslate"><span class="pre">Counter.Splitline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.SettingsPreamble"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.SettingsPreamble.Article"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Article</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.SettingsPreamble.Beamer"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.SettingsPreamble.documentclass"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.documentclass</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.ErrorCompileCatcher"><code class="docutils literal notranslate"><span class="pre">ErrorCompileCatcher</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.ErrorCompileCatcher.analyze"><code class="docutils literal notranslate"><span class="pre">ErrorCompileCatcher.analyze()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.FrontMatterParser"><code class="docutils literal notranslate"><span class="pre">FrontMatterParser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.FrontMatterParser.quote_sensitive_yaml_values"><code class="docutils literal notranslate"><span class="pre">FrontMatterParser.quote_sensitive_yaml_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.FrontMatterParser.update"><code class="docutils literal notranslate"><span class="pre">FrontMatterParser.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.FrontMatterParser.update_file"><code class="docutils literal notranslate"><span class="pre">FrontMatterParser.update_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MdDataBase"><code class="docutils literal notranslate"><span class="pre">MdDataBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="omd2tex.tools.html#omd2tex.tools.MdDataBase.to_df"><code class="docutils literal notranslate"><span class="pre">MdDataBase.to_df()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-omd2tex">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-omd2tex" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-omd2tex">Module contents</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/_api/omd2tex.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, omd2tex contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

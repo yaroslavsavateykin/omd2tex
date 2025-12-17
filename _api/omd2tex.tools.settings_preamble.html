@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>omd2tex.tools.settings_preamble module &#8212; omd2tex 0.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script src="../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_api/omd2tex.tools.settings_preamble';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">omd2tex 0.0.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">omd2tex.tool...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="module-omd2tex.tools.settings_preamble">
+<span id="omd2tex-tools-settings-preamble-module"></span><h1>omd2tex.tools.settings_preamble module<a class="headerlink" href="#module-omd2tex.tools.settings_preamble" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.tools.settings_preamble.</span></span><span class="sig-name descname"><span class="pre">SettingsPreamble</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings_preamble.html#SettingsPreamble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Article">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Article</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings_preamble.html#SettingsPreamble.Article"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Article.fontsize">
+<span class="sig-name descname"><span class="pre">fontsize</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'12pt'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.fontsize" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Article.linespread">
+<span class="sig-name descname"><span class="pre">linespread</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.5</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.linespread" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Article.left">
+<span class="sig-name descname"><span class="pre">left</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.left" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Article.right">
+<span class="sig-name descname"><span class="pre">right</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.right" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Article.top">
+<span class="sig-name descname"><span class="pre">top</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.top" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Article.bottom">
+<span class="sig-name descname"><span class="pre">bottom</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.bottom" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Beamer</span></span><a class="reference internal" href="../_modules/omd2tex/tools/settings_preamble.html#SettingsPreamble.Beamer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../api/generated/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase" title="omd2tex.tools.config_base.ConfigBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigBase</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.fontsize">
+<span class="sig-name descname"><span class="pre">fontsize</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'12pt'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.fontsize" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.linespread">
+<span class="sig-name descname"><span class="pre">linespread</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.5</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.linespread" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.left">
+<span class="sig-name descname"><span class="pre">left</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.5cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.left" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.right">
+<span class="sig-name descname"><span class="pre">right</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.5cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.right" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.top">
+<span class="sig-name descname"><span class="pre">top</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.5cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.top" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.bottom">
+<span class="sig-name descname"><span class="pre">bottom</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.5cm'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.bottom" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.theme">
+<span class="sig-name descname"><span class="pre">theme</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'blei'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.theme" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.colortheme">
+<span class="sig-name descname"><span class="pre">colortheme</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'default'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.colortheme" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.fonttheme">
+<span class="sig-name descname"><span class="pre">fonttheme</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'professionalfonts'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.fonttheme" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.title">
+<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.title" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.author">
+<span class="sig-name descname"><span class="pre">author</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.author" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.institute">
+<span class="sig-name descname"><span class="pre">institute</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.institute" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.date">
+<span class="sig-name descname"><span class="pre">date</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.date" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.tools.settings_preamble.SettingsPreamble.documentclass">
+<span class="sig-name descname"><span class="pre">documentclass</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'article'</span></em><a class="headerlink" href="#omd2tex.tools.settings_preamble.SettingsPreamble.documentclass" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Article</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.fontsize"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Article.fontsize</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.linespread"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Article.linespread</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.left"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Article.left</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.right"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Article.right</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.top"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Article.top</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Article.bottom"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Article.bottom</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.fontsize"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.fontsize</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.linespread"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.linespread</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.left"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.left</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.right"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.right</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.top"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.top</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.bottom"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.bottom</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.theme"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.theme</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.colortheme"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.colortheme</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.fonttheme"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.fonttheme</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.title"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.title</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.author"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.author</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.institute"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.institute</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.Beamer.date"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.Beamer.date</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.tools.settings_preamble.SettingsPreamble.documentclass"><code class="docutils literal notranslate"><span class="pre">SettingsPreamble.documentclass</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/_api/omd2tex.tools.settings_preamble.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, omd2tex contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
