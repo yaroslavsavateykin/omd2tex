@@ -124,7 +124,8 @@ class MarkdownParser(BaseClass):
         elements = Reference.attach_reference(elements)
         elements = Reference.identify_elements_reference(elements)
         elements = Caption.attach_caption(elements)
-        if not Global.ERROR_CATCHER:
+
+        if not Global.ERROR_CATCHER or Settings.Parse.merge_elements:
             elements = List.append_items(elements)
             elements = List.merge_items(elements)
         if (
@@ -153,6 +154,8 @@ class MarkdownParser(BaseClass):
             Check,
             File,
         )
+
+        from .frontmatter_parser import FrontMatterParser
 
         non_md_extensions = [
             ".jpg",
@@ -196,6 +199,16 @@ class MarkdownParser(BaseClass):
 
         footnote = Footnote()
 
+        frontmatter = FrontMatterParser(text=lines)
+        Global.YAML_DICT = frontmatter.yaml
+        self.yaml = frontmatter.yaml
+
+        if Settings.Frontmatter.parse:
+            Settings.update(frontmatter.yaml)
+            SettingsPreamble.update(frontmatter.yaml)
+
+        i = frontmatter.yaml_line_end
+
         while i < len(lines):
             line = lines[i]
 
@@ -215,29 +228,29 @@ class MarkdownParser(BaseClass):
                 continue
 
             # READING YAML
-            if Settings.Frontmatter.parse:
-                if i == 0 and line.startswith("---"):
-                    in_yaml = True
-                    yaml_lines = []
-                    i += 1
-                    continue
-
-                if in_yaml:
-                    if line.startswith("---"):
-                        in_yaml = False
-                        if yaml_lines:
-                            yamles = yaml.safe_load("\n".join(yaml_lines))
-                            Settings.update(yamles)
-                            SettingsPreamble.update(yamles)
-                            for key in yamles:
-                                Global.YAML_DICT[key] = yamles[key]
-                            self.yaml = yamles
-                        i += 1
-                        continue
-                    else:
-                        yaml_lines.append(line)
-                        i += 1
-                        continue
+            # if Settings.Frontmatter.parse:
+            #     if i == 0 and line.startswith("---"):
+            #         in_yaml = True
+            #         yaml_lines = []
+            #         i += 1
+            #         continue
+            #
+            #     if in_yaml:
+            #         if line.startswith("---"):
+            #             in_yaml = False
+            #             if yaml_lines:
+            #                 yamles = yaml.safe_load("\n".join(yaml_lines))
+            #                 Settings.update(yamles)
+            #                 SettingsPreamble.update(yamles)
+            #                 for key in yamles:
+            #                     Global.YAML_DICT[key] = yamles[key]
+            #                 self.yaml = yamles
+            #             i += 1
+            #             continue
+            #         else:
+            #             yaml_lines.append(line)
+            #             i += 1
+            #             continue
 
             # БЛОКИ КОДА
             if line.startswith("```") and not in_code_block:
@@ -251,8 +264,8 @@ class MarkdownParser(BaseClass):
             if in_code_block:
                 if line.startswith("```"):
                     if blocklines:
-                        el = CodeBlock.create(blocktype,blocklines)
-                        el._start_line = START 
+                        el = CodeBlock.create(blocktype, blocklines)
+                        el._start_line = START
                         elements.append(el)
                     in_code_block = False
                     i += 1
@@ -279,8 +292,6 @@ class MarkdownParser(BaseClass):
                 continue
 
             if line.strip().startswith("$$"):
-                
-
                 if not in_equation:
                     equationlines = [line.strip("$$")]
                     in_equation = True
@@ -290,7 +301,7 @@ class MarkdownParser(BaseClass):
                         text = "\n".join(equationlines)
                         if text.strip().strip("\n"):
                             eq = Equation("\n".join(equationlines))
-                            
+
                             eq._start_line = START
                             elements.append(eq)
                     in_equation = False
@@ -302,19 +313,18 @@ class MarkdownParser(BaseClass):
                     equationlines = [line.strip("$$")]
                     in_equation = True
                     START = i
-                
+
                     if equationlines:
                         text = "\n".join(equationlines)
                         if text.strip().strip("\n"):
                             eq = Equation("\n".join(equationlines))
-                            
+
                             eq._start_line = START
                             elements.append(eq)
                     in_equation = False
                 i += 1
                 continue
-                
-        
+
             if in_equation:
                 equationlines.append(line.strip("$$"))
                 i += 1
@@ -328,7 +338,6 @@ class MarkdownParser(BaseClass):
                     elements.append(el)
                     i += 1
                     continue
-
 
             depth = 0
             stripped_line = line
@@ -425,7 +434,7 @@ class MarkdownParser(BaseClass):
 
                     if ref_link:
                         image_obj.reference = ref_link
-                    
+
                     elements.append(image_obj)
                     i += 1
                     continue
@@ -504,22 +513,20 @@ class MarkdownParser(BaseClass):
                     if filename.startswith("#^"):
                         i += 1
                         continue
-                    
+
                     START = i
-                    
+
                     el = File(
-                            filename=filename + ".md"
-                            if not filename.endswith(".md")
-                            else filename,
-                            parrentdir=self.parrentdir,
-                            filedepth=self.filedepth + 1,
-                        )
+                        filename=filename + ".md"
+                        if not filename.endswith(".md")
+                        else filename,
+                        parrentdir=self.parrentdir,
+                        filedepth=self.filedepth + 1,
+                    )
 
                     el._start_line = START
 
-                    elements.append(
-                        el
-                    )
+                    elements.append(el)
                     i += 1
                     continue
 
@@ -549,24 +556,21 @@ class MarkdownParser(BaseClass):
                             if not filename.endswith(".md")
                             else filename
                         )
-                    
+
                     el = File(
-                            full_filename,
-                            parrentdir=self.parrentdir,
-                            filedepth=self.filedepth + 1,
-                        )
+                        full_filename,
+                        parrentdir=self.parrentdir,
+                        filedepth=self.filedepth + 1,
+                    )
                     el._start_line = START
 
-                    elements.append(
-                        el
-                    )
+                    elements.append(el)
                     i += 1
                     continue
 
             # Переделываем ссылки на другие элементы
             m = self.re_reference.match(line)
             if m:
-                
                 START = i
                 el = Reference(m.group()[1:])
                 el._start_line = START
@@ -600,7 +604,6 @@ class MarkdownParser(BaseClass):
                 if in_table:
                     START = i
                     if len(tablelines) >= 2:
-                        
                         tab = Table(tablelines)
                         tab._start_line = START
                         tab._is_initialized = False
@@ -627,17 +630,15 @@ class MarkdownParser(BaseClass):
                     START = i
 
                     el = Quote.create(
-                            quotelines=quotelines,
-                            filename=self.filename,
-                            parrentdir=self.parrentdir,
-                            quotedepth=self.quotedepth + 1,
-                        )
-
-                    el._start_line = START 
-
-                    elements.append(
-                        el 
+                        quotelines=quotelines,
+                        filename=self.filename,
+                        parrentdir=self.parrentdir,
+                        quotedepth=self.quotedepth + 1,
                     )
+
+                    el._start_line = START
+
+                    elements.append(el)
                     in_quote = False
                     quotelines = []
                 i += 1
@@ -651,17 +652,15 @@ class MarkdownParser(BaseClass):
                             f"Maximum quote nesting quotedepth ({Settings.Quote.max_quote_recursion}) exceeded"
                         )
                     el = Quote.create(
-                            quotelines=quotelines,
-                            filename=self.filename,
-                            parrentdir=self.parrentdir,
-                            quotedepth=self.quotedepth + 1,
-                        )
+                        quotelines=quotelines,
+                        filename=self.filename,
+                        parrentdir=self.parrentdir,
+                        quotedepth=self.quotedepth + 1,
+                    )
 
                     el._start_line = START
-                    
-                    elements.append(
-                        el 
-                    )
+
+                    elements.append(el)
                     in_quote = False
                     quotelines = []
                     i += 1

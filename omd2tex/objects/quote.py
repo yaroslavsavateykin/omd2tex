@@ -115,14 +115,19 @@ class Quote(BaseClass):
         return instance._apply_quote_type()
 
     def _apply_quote_type(self):
-        text = "\\\\\n".join([el.to_latex() for el in self.elements])
+        text = "\n\n".join([el.to_latex() for el in self.elements])
 
         functions = {
             "example": lambda content: Paragraph(
                 f"\\begin{{example}}\n{'\n'.join(content)}\n\\end{{example}}"
             ),
             "hidden": lambda content: Paragraph("", parse=False),
-            "text": lambda content: Paragraph("\n".join(content)),
+            "text": lambda content: Paragraph(content, parse=False),
+            "task": lambda content: Paragraph(
+                f"\\begin{{breakableframe}}\n{content}\n\\end{{breakableframe}}",
+                parse=False,
+            ),
+            "solution": lambda content: Paragraph(content, parse=False),
             "caption": lambda content: Caption(" ".join(content)),
             "pause": lambda content: Paragraph("\\pause", parse=False),
             "default": lambda content: Paragraph(

@@ -22,6 +22,7 @@ class Document(BaseClass):
         preamble=os.path.join(os.getcwd(), "../default/preamble.json"),
     ):
         from ..tools import SettingsPreamble, Settings, Global
+
         super().__init__()
         if settings:
             Settings.update(settings)
@@ -44,6 +45,7 @@ class Document(BaseClass):
 
     def from_file(self, filename: str):
         from ..tools import SettingsPreamble, Settings, Global
+
         self.filename = filename
         Global.DOCUMENT_NAME = self.filename.replace(".md", "")
         file = File(
@@ -56,6 +58,7 @@ class Document(BaseClass):
 
     def from_text(self, text: str):
         from ..tools import SettingsPreamble, Settings, Global
+
         self.filename = str(uuid.uuid4())[0:7]
         Global.DOCUMENT_NAME = self.filename
         file = File(
@@ -63,11 +66,13 @@ class Document(BaseClass):
             parrentdir=self.dir + "/" + self.filename.replace(".md", ""),
         )
         file.from_text(text)
+        # file.filename = self.filename
         self.file = file
         return self
 
     def from_elements(self, list: list):
         from ..tools import SettingsPreamble, Settings, Global
+
         self.filename = str(uuid.uuid4())[0:7]
         Global.DOCUMENT_NAME = self.filename
 
@@ -97,6 +102,7 @@ class Document(BaseClass):
                 list[i].filedepth += 1
 
         file.from_elements(list)
+        # file.filename = self.filename
         self.file = file
 
         return self
@@ -106,6 +112,7 @@ class Document(BaseClass):
 
     def check(self):
         from ..tools import SettingsPreamble, Settings, Global
+
         if self.file:
             self.file.check()
         else:
@@ -116,6 +123,7 @@ class Document(BaseClass):
 
     def to_latex(self):
         from ..tools import SettingsPreamble, Settings, Global
+
         preamble = self.preamble.to_latex()
 
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
@@ -147,6 +155,7 @@ class Document(BaseClass):
 
     def to_latex_file(self, filename: str = "") -> None:
         from ..tools import SettingsPreamble, Settings, Global
+
         file = self.to_latex()
 
         if not filename:

@@ -1,4 +1,7 @@
 {
+  "parse": {
+    "merge_elements": true
+  },
   "export": {
     "search_dir": "~/Obsidian/",
     "search_ignore_dirs": [
@@ -6,8 +9,7 @@
       ".obsidian",
       ".plugins",
       ".smart-env",
-      ".reference-map",
-      "LaTeX"
+      ".reference-map"
     ],
     "makefile": true,
     "export_dir": "./test/",
@@ -32,7 +34,8 @@
   "file": {
     "parse": true,
     "max_file_recursion": 5,
-    "pass_if_not_found": true
+    "pass_if_not_found": true,
+    "divide_with_new_page": true
   },
   "headline": {
     "parse": true,

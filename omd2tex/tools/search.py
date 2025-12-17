@@ -9,6 +9,9 @@ from .settings import Settings
 def find_file(filename, search_path=None):
     exclude_dirs = Settings.Export.search_ignore_dirs
 
+    if search_path is None:
+        search_path = Settings.Export.search_dir
+
     if "/" in filename:
         filename = filename.split("/")[-1]
 

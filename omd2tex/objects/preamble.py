@@ -5,6 +5,38 @@ from typing import Dict, Any
 from .base import BaseClass
 
 
+class NewComands(BaseClass):
+    @staticmethod
+    def fill():
+        string = r"""
+
+\newcommand{\dashboxed}[1]{%
+    \tikz[baseline=(X.base)]\node[draw,dashed,inner sep=5pt] (X) {$#1$};%
+}
+
+\newcommand{\dotboxed}[1]{%
+    \tikz[baseline=(X.base)]\node[draw,dotted,inner sep=5pt] (X) {$#1$};%
+}
+
+\newcommand{\ph}{\text{pH}}
+\newcommand{\poh}{\text{pOH}}
+\newcommand{\p}[1]{\text{p}\mathrm{#1}}
+\newcommand{\chemb}[1]{\left[\ce{#1}\right]}
+%\renewcommand{\ce}[1]{{\ce{#1}}}
+
+\tcbuselibrary{breakable}
+
+\newtcolorbox{breakableframe}{
+    sharp corners,
+    boxrule=0.5pt,
+    colback=white,
+    colframe=black,
+    width=\linewidth,
+    breakable=true,
+    before upper={\parindent15pt}
+}
+"""
+        return string
 
 
 class Preamble(BaseClass):
@@ -17,6 +49,7 @@ class Preamble(BaseClass):
     def _load_config(self) -> Dict[str, Any]:
         from ..tools import Settings
         from ..tools import SettingsPreamble
+
         if Settings.Preamble.settings_json:
             config_path = os.path.expanduser(Settings.Preamble.settings_json)
         else:
@@ -35,6 +68,7 @@ class Preamble(BaseClass):
     def to_latex(self) -> str:
         from ..tools import Settings
         from ..tools import SettingsPreamble
+
         documentclass = SettingsPreamble.documentclass
 
         if documentclass == "beamer":
@@ -45,6 +79,7 @@ class Preamble(BaseClass):
     def _generate_article_preamble(self) -> str:
         from ..tools import Settings
         from ..tools import SettingsPreamble
+
         string = rf"""
 \documentclass[{SettingsPreamble.Article.fontsize}]{{{SettingsPreamble.documentclass}}}
 \linespread{{{SettingsPreamble.Article.linespread}}}
@@ -154,15 +189,6 @@ class Preamble(BaseClass):
 \tikzstyle{{block}} = [rectangle, draw, text centered, text width=10.5cm, minimum height=1.5cm, align=center]
 \tikzstyle{{line}} = [draw, -latex']
 
-\newcommand{{\dashboxed}}[1]{{%
-    \tikz[baseline=(X.base)]\node[draw,dashed,inner sep=5pt] (X) {{$#1$}};%
-}}
-
-\newcommand{{\dotboxed}}[1]{{%
-    \tikz[baseline=(X.base)]\node[draw,dotted,inner sep=5pt] (X) {{$#1$}};%
-}}
-
-
 
 
 %-------------------------------Settings--------------------------------
@@ -198,6 +224,7 @@ class Preamble(BaseClass):
 %\AfterEndEnvironment{{itemize}}{{\vspace{{-10pt}}}}
 
 
+{NewComands.fill()}
 
 %\let\oldsection\section% Store \section
 %\renewcommand{{\section}}{{% Update \section
@@ -247,7 +274,7 @@ class Preamble(BaseClass):
         if any([title_line, author_line, institute_line, date_line]):
             self.beamer_titlepage = True
 
-        #SettingsPreamble.Beamer.check()
+        # SettingsPreamble.Beamer.check()
 
         string = rf"""
 \documentclass[{SettingsPreamble.Beamer.fontsize}]{{beamer}}
@@ -331,24 +358,7 @@ class Preamble(BaseClass):
 \DefTblrTemplate{{contfoot-text}}{{default}}{{Продолжение на следующей странице}}
 \DefTblrTemplate{{conthead-text}}{{default}}{{(Продолжение)}}
 
-
-
-\newcommand{{\dashboxed}}[1]{{%
-    \tikz[baseline=(X.base)]\node[draw,dashed,inner sep=5pt] (X) {{$#1$}};%
-}}
-
-\newcommand{{\dotboxed}}[1]{{%
-    \tikz[baseline=(X.base)]\node[draw,dotted,inner sep=5pt] (X) {{$#1$}};%
-}}
-
-\newcommand{{\waveboxed}}[1]{{%
-    \tikz[baseline=(X.base)]\node[
-        draw,
-        decorate,
-        decoration={{snake,amplitude=0.5mm}},
-        inner sep=5pt
-    ] (X) {{$#1$}};%
-}}
+{NewComands.fill()}
 
 %----------------------Code Highlighting-----------------------------
 \usepackage{{minted}}

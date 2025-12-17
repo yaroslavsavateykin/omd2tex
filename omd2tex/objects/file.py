@@ -80,7 +80,7 @@ class File(BaseClass):
 
                 if not list[i].filename:
                     list[i].filename = new_filename
-                list[i].parrentdir += "/" + self.filename.replace(".md","")
+                list[i].parrentdir += "/" + self.filename.replace(".md", "")
                 list[i].filedepth += 1
                 # print(list[i].parrentdir)
 
@@ -127,10 +127,14 @@ class File(BaseClass):
             text = "\n\n".join([elem._to_latex_project() for elem in self.elements])
 
             if self.filename:
-                filename_tex = self.filename.replace(".md","") + ".tex"
+                filename_tex = self.filename.replace(".md", "") + ".tex"
             else:
                 filename_tex = "main.tex"
 
             with open(self.parrentdir + "/" + filename_tex, "w") as f:
                 f.write(text)
-            return f"\\input{{{filename_tex}}}"
+
+            if Settings.File.divide_with_new_page:
+                return f"\\input{{{filename_tex}}}\\newpage"
+            else:
+                return f"\\input{{{filename_tex}}}"

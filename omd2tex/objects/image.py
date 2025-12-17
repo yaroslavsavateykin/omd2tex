@@ -19,12 +19,16 @@ class Image(BaseClass):
         caption="",
         width=None,
         height=None,
+        dir=None,
     ) -> None:
         super().__init__()
         self.filename = filename
         self.parrentdir = parrentdir
 
-        self.dir = find_file(filename, Settings.Export.search_dir)
+        if dir is None:
+            self.dir = find_file(filename, Settings.Export.search_dir)
+        else:
+            self.dir = dir
 
         self.caption = caption
 
@@ -104,8 +108,6 @@ class Image(BaseClass):
 
         if os.path.exists(destination):
             os.remove(destination)
-
-        print(self.dir, destination)
 
         if os.path.isfile(self.dir):
             shutil.copy2(self.dir, destination)

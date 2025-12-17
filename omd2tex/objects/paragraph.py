@@ -28,6 +28,7 @@ class Paragraph(BaseClass):
     @staticmethod
     def _change_letters_for_equations(text, dict_file="", surround_func=lambda x: x):
         from ..tools import Global, Settings
+
         if dict_file:
             dict_file = Settings.Paragraph.formulas_json
         else:
@@ -231,6 +232,7 @@ class Paragraph(BaseClass):
     @staticmethod
     def _process_references(text: str) -> str:
         from ..tools import Global, Settings
+
         ref_pattern = re.compile(
             r"\[\[(?:([^\|\]#]+)?#)?\^([^\|\]]+)(?:\|([^\]]+))?\]\]"
         )
@@ -244,7 +246,7 @@ class Paragraph(BaseClass):
                 latex_ref = f"\\cref{{{Global.REFERENCE_DICT[ref_id]}:{ref_id}}}"
             else:
                 latex_ref = ""
-                #print(f"Reference {ref_id} not found in Global.REFERENCE_DICT")
+                # print(f"Reference {ref_id} not found in Global.REFERENCE_DICT")
 
             if text:
                 return text + " " + latex_ref
@@ -320,6 +322,7 @@ class Paragraph(BaseClass):
 
     def _parse_text(self) -> str:
         from ..tools import Global, Settings
+
         if self.parse:
             text = self.text
 
@@ -384,6 +387,8 @@ class Paragraph(BaseClass):
                     probability=Settings.Paragraph.latinify_probability,
                     change_dict=Settings.Paragraph.latinify_json,
                 )
+
+            text = text.replace(r"\%", "%").replace("%", r"\%")
 
         else:
             text = self.text

@@ -257,7 +257,7 @@ class ErrorCompileCatcher:
             if not batch:
                 batch = 1
 
-        objects1 = chunk_list(objects, batch)
+        objects_chunked = chunk_list(objects, batch)
 
         current_dir = os.getcwd()
         export_dir = os.path.join(current_dir, "error_catcher")
@@ -268,12 +268,15 @@ class ErrorCompileCatcher:
             pass
 
         os.makedirs(export_dir, exist_ok=True)
+
+        old_export_dir = Settings.Export.export_dir
         Settings.Export.export_dir = export_dir
 
         start = time.time()
 
         errors_found = 0
-        for i, obj in enumerate(objects1):
+        sub_checked = False
+        for i, obj in enumerate(objects_chunked):
             comp_time_start = time.time()
 
             doc = Document().from_elements([x.object for x in obj])
@@ -370,6 +373,7 @@ class ErrorCompileCatcher:
                     if result.returncode == 1:
                         ob.stdout = result.stdout
                         ob.compile_success = False
+                        # print(ob)
                         errors_found += 1
 
                     else:
@@ -386,7 +390,11 @@ class ErrorCompileCatcher:
                             f"time: {(comp_time_end - comp_time_start):.2f} seconds",
                         )
 
+                    sub_checked = True
+
                     if total_errors <= errors_found:
+                        Settings.Export.export_dir = old_export_dir
+
                         return objects
 
             else:
@@ -395,12 +403,12 @@ class ErrorCompileCatcher:
 
             comp_time_end = time.time()
 
-            if i + 1 == len(objects1):
+            if i + 1 == len(objects_chunked):
                 proc = 100
             else:
                 proc = (i + 1) * batch / length * 100
 
-            if print_analyzing:
+            if print_analyzing and not sub_checked:
                 returncode = True if result.returncode != 1 else False
                 print(
                     f"{proc:.2f}% checked |",
@@ -408,6 +416,8 @@ class ErrorCompileCatcher:
                     f"result: {ConsoleColors.true_false_color(returncode)} |",
                     f"time: {(comp_time_end - comp_time_start):.2f} seconds",
                 )
+
+            sub_checked = False
 
         if rmdir:
             shutil.rmtree(export_dir)
@@ -417,6 +427,7 @@ class ErrorCompileCatcher:
         if print_analyzing:
             print(f"Total time used: {(end - start):.2f} seconds")
 
+        Settings.Export.export_dir = old_export_dir
         return objects
 
     def analyze(
@@ -428,7 +439,8 @@ class ErrorCompileCatcher:
     ):
         from .globals import Global
 
-        Global.ERROR_CATCHER = False
+        old_gl_error_catcher = Global.ERROR_CATCHER
+        Global.ERROR_CATCHER = True
 
         objects = self._recursive_opener([self.file])
 
@@ -458,6 +470,6 @@ class ErrorCompileCatcher:
             else:
                 print("No errors found. :)")
 
-        Global.ERROR_CATCHER = False
+        Global.ERROR_CATCHER = old_gl_error_catcher
 
         return error_objects

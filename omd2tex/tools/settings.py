@@ -1,9 +1,17 @@
 from .config_base import ConfigBase
 
 class Settings(ConfigBase):
+    class Parse(ConfigBase):
+        merge_elements = True
+
+        def __init__(self):
+            self.merge_elements = self.__class__.merge_elements
+            super().__init__()
+
+
     class Export(ConfigBase):
         search_dir = '~/Obsidian/'
-        search_ignore_dirs = ['.trash', '.obsidian', '.plugins', '.smart-env', '.reference-map', 'LaTeX']
+        search_ignore_dirs = ['.trash', '.obsidian', '.plugins', '.smart-env', '.reference-map']
         makefile = True
         export_dir = './test/'
         branching_project = False
@@ -61,11 +69,13 @@ class Settings(ConfigBase):
         parse = True
         max_file_recursion = 5
         pass_if_not_found = True
+        divide_with_new_page = True
 
         def __init__(self):
             self.parse = self.__class__.parse
             self.max_file_recursion = self.__class__.max_file_recursion
             self.pass_if_not_found = self.__class__.pass_if_not_found
+            self.divide_with_new_page = self.__class__.divide_with_new_page
             super().__init__()
 
 
@@ -155,6 +165,7 @@ class Settings(ConfigBase):
 
 
     def __init__(self):
+        self.parse = self.__class__.Parse()
         self.export = self.__class__.Export()
         self.frontmatter = self.__class__.Frontmatter()
         self.beamer = self.__class__.Beamer()
