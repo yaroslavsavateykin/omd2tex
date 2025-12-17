@@ -211,7 +211,7 @@ class CodeBlock(BaseClass):
         """Dispatch block rendering based on the specified block type."""
         functions = {
             "example": lambda content: Paragraph(
-                f"\\begin{{example}}\n{'\n'.join(content)}\n\\end{{example}}"
+                "\\begin{example}\n" + "\n".join(content) + "\n\\end{example}"
             ),
             "hidden": lambda content: Paragraph("", parse=False),
             "text": lambda content: Paragraph("\n".join(content)),
