@@ -14,11 +14,9 @@ release = "0.0.0"
 year = datetime.now().year
 copyright = f"{year}, {author}"
 
-html_theme = "pydata_sphinx_theme"
 # -- General configuration ---------------------------------------------------
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
 ]
@@ -26,7 +24,6 @@ extensions = [
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-autosummary_generate = True
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False
 

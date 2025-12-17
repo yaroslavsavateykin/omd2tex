@@ -27,9 +27,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r docs/requirements.txt
 
-      - name: Generate API reference
-        run: sphinx-apidoc -o docs/source/_api omd2tex --separate
-
       - name: Build HTML
         run: sphinx-build -b html docs/source docs/_build/html
 

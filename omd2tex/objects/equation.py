@@ -26,11 +26,11 @@ class Equation(BaseClass):
                 "Equation is not initialized! Firstly call _identify_reference()"
             )
 
-        equation = Paragraph._change_letters_for_equations(
+        equation = Paragraph.change_letters_for_equations(
             self.equation.strip("\n"),
             dict_file=Settings.Paragraph.formulas_json,
         )
-        equation = Paragraph._eq_ru_letter_workaround(equation)
+        equation = Paragraph.eq_ru_letter_workaround(equation)
         if self.reference:
             equation = rf"""
 \begin{{equation}}

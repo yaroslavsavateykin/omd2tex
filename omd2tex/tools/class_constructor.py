@@ -6,7 +6,7 @@ from typing import Union, Dict, Any
 from pathlib import Path
 
 
-from config_base import ConfigBase
+from omd2tex.tools.config_base import ConfigBase
 
 
 class ClassConstructor:

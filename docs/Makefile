@@ -18,7 +18,7 @@ apidoc:
 	@mkdir -p "$(APIDIR)"
 	@$(SPHINXAPIDOC) -o "$(APIDIR)" "../$(PROJECT)" --separate
 
-html: apidoc
+html:
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 # Catch-all target: route unknown targets to Sphinx

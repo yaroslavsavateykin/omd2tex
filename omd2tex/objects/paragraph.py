@@ -36,7 +36,9 @@ class Paragraph(BaseClass):
         return self.to_latex()
 
     @staticmethod
-    def _change_letters_for_equations(text: str, dict_file: str = "", surround_func=lambda x: x) -> str:
+    def change_letters_for_equations(
+        text: str, dict_file: str = "", surround_func=lambda x: x
+    ) -> str:
         """Replace symbols in equations using a mapping file and wrapper.
 
         Args:
@@ -62,34 +64,14 @@ class Paragraph(BaseClass):
             text = text.replace(key, surround_func(change_dict[key]))
 
         return text
+    _change_letters_for_equations = change_letters_for_equations
 
     @staticmethod
-    def _highlight_text1(text: str) -> str:
+    def highlight_text1(text: str) -> str:
         """Convert HTML superscript/subscript markers to LaTeX equivalents."""
         change_dict = {
-            r"<sup>(.*?)</sup>": lambda x: f"$^{{{x.group(1)}}}$",  # Исправлено
-            r"<sub>(.*?)</sub>": lambda x: f"$_{{{x.group(1)}}}$",  # Исправлено
-        }
-
-        for regular in change_dict:
-            text = re.sub(
-                regular,
-                change_dict[regular],
-                text,
-            )
-        return text
-
-    @staticmethod
-    def _highlight_text2(text: str) -> str:
-        """Convert markdown emphasis markers to LaTeX formatting."""
-        change_dict = {
-            r"\*\*(.*?)\*\*": lambda x: f"\\textbf{{{x.group(1)}}}",
-            r"__(.*?)__": lambda x: f"\\textbf{{{x.group(1)}}}",
-            r"\*(.*?)\*": lambda x: f"\\textit{{{x.group(1)}}}",
-            r"_(.*?)_": lambda x: f"\\textit{{{x.group(1)}}}",
-            r"==(.*?)==": lambda x: f"\\sethlcolor{{mintgreen}}\\hl{{{x.group(1)}}}",
-            r"~~(.*?)~~": lambda x: f"\\sout{{{x.group(1)}}}",
-            r"#(.*?)(?=\s|$)": lambda x: f"\\#{x.group(1)}",  # Только до пробела или конца строки
+            r"<sup>(.*?)</sup>": lambda x: f"$^{{{x.group(1)}}}$",
+            r"<sub>(.*?)</sub>": lambda x: f"$_{{{x.group(1)}}}$",
             r"<u>(.*?)</u>": lambda x: f"\\ul{{{x.group(1)}}}",
         }
 
@@ -100,9 +82,32 @@ class Paragraph(BaseClass):
                 text,
             )
         return text
+    _highlight_text1 = highlight_text1
 
     @staticmethod
-    def _replace_inline_code(text: str) -> tuple[str, list]:
+    def highlight_text2(text: str) -> str:
+        """Convert markdown emphasis markers to LaTeX formatting."""
+        change_dict = {
+            r"\*\*(.*?)\*\*": lambda x: f"\\textbf{{{x.group(1)}}}",
+            r"__(.*?)__": lambda x: f"\\textbf{{{x.group(1)}}}",
+            r"\*(.*?)\*": lambda x: f"\\textit{{{x.group(1)}}}",
+            r"_(.*?)_": lambda x: f"\\textit{{{x.group(1)}}}",
+            r"==(.*?)==": lambda x: f"\\sethlcolor{{mintgreen}}\\hl{{{x.group(1)}}}",
+            r"~~(.*?)~~": lambda x: f"\\sout{{{x.group(1)}}}",
+            r"#(.*?)(?=\s|$)": lambda x: f"\\#{x.group(1)}",
+        }
+
+        for regular in change_dict:
+            text = re.sub(
+                regular,
+                change_dict[regular],
+                text,
+            )
+        return text
+    _highlight_text2 = highlight_text2
+
+    @staticmethod
+    def replace_inline_code(text: str) -> tuple[str, list]:
         """Replace inline code segments with placeholders preserving content."""
         inline_codes = []
 
@@ -113,9 +118,10 @@ class Paragraph(BaseClass):
         text = re.sub(r"`(.*?)`", replace_inline, text)
 
         return text, inline_codes
+    _replace_inline_code = replace_inline_code
 
     @staticmethod
-    def _replace_inline_equation(text: str) -> tuple[str, list]:
+    def replace_inline_equation(text: str) -> tuple[str, list]:
         """Replace inline equations with placeholders preserving content."""
         inline_equations = []
 
@@ -125,9 +131,10 @@ class Paragraph(BaseClass):
 
         text = re.sub(r"\$(.*?)\$", replace_inline, text)
         return text, inline_equations
+    _replace_inline_equation = replace_inline_equation
 
     @staticmethod
-    def _replace_outline_equation(text: str) -> tuple[str, list]:
+    def replace_outline_equation(text: str) -> tuple[str, list]:
         """Replace outline equations with placeholders preserving content."""
         outline_equations = []
 
@@ -137,9 +144,10 @@ class Paragraph(BaseClass):
 
         text = re.sub(r"\$\$(.*?)\$\$", replace_inline, text)
         return text, outline_equations
+    _replace_outline_equation = replace_outline_equation
 
     @staticmethod
-    def _restore_placeholders(
+    def restore_placeholders(
         text: str, inline_equations=[], inline_codes=[], outline_equations=[]
     ) -> str:
         """Restore code and equation placeholders into the provided text."""
@@ -170,9 +178,10 @@ class Paragraph(BaseClass):
                 )
 
         return text
+    _restore_placeholders = restore_placeholders
 
     @staticmethod
-    def _latinify_lines(
+    def latinify_lines(
         lines: str,
         probability=0.05,
         seed=None,
@@ -202,9 +211,10 @@ class Paragraph(BaseClass):
             return "".join(result_chars)
 
         return "".join([replace_in_string(line) for line in lines])
+    _latinify_lines = latinify_lines
 
     @staticmethod
-    def _eq_ru_letter_workaround(text: str) -> str:
+    def eq_ru_letter_workaround(text: str) -> str:
         """Wrap Cyrillic characters in equations with text mode to avoid errors."""
         change_list = [
             "й",
@@ -248,18 +258,20 @@ class Paragraph(BaseClass):
                 new_text.append(letter)
 
         return "".join(new_text)
+    _eq_ru_letter_workaround = eq_ru_letter_workaround
 
     @staticmethod
-    def _text_errors_workaround(text: str) -> str:
+    def text_errors_workaround(text: str) -> str:
         """Normalize known problematic characters and dashes."""
         change_dict = {"й": "й", "–": "-", "ο": "o", "ё": "ё", "−": "-"}
         for key in change_dict:
             text = text.replace(key, change_dict[key])
 
         return text
+    _text_errors_workaround = text_errors_workaround
 
     @staticmethod
-    def _process_references(text: str) -> str:
+    def process_references(text: str) -> str:
         """Convert wiki-style references to LaTeX cref calls using global mapping."""
         from ..tools import Global, Settings
 
@@ -285,9 +297,11 @@ class Paragraph(BaseClass):
         text = ref_pattern.sub(process_ref_match, text)
 
         return text
+    _process_references = process_references
 
     def _process_footnotes(self, text: str) -> str:
         """Replace footnote markers with LaTeX footnote commands using collection."""
+
         def process(match):
             key = match.group(1)
             if self.footnote[key]:
@@ -301,7 +315,7 @@ class Paragraph(BaseClass):
         return text
 
     @staticmethod
-    def _process_citations(text: str) -> str:
+    def process_citations(text: str) -> str:
         """Normalize citation markers to LaTeX ``\\cite{}`` commands.
 
         Supports patterns like ``![[ @cite|text ]]``, ``[[ @cite ]]``, and ``\\cite{@cite}``, returning formatted citations or empty strings when source entries are missing.
@@ -349,6 +363,7 @@ class Paragraph(BaseClass):
         result = re.sub(pattern2, replace_pattern2, result)
 
         return result
+    _process_citations = process_citations
 
     def _parse_text(self) -> str:
         """Parse and transform paragraph text according to settings."""
@@ -358,62 +373,62 @@ class Paragraph(BaseClass):
             text = self.text
 
             # text = self.escape_latex_special_chars(text)
-            text, outline_equations = self._replace_outline_equation(text)
+            text, outline_equations = self.replace_outline_equation(text)
 
-            text = self._highlight_text1(text)
+            text = self.highlight_text1(text)
 
             for i in range(len(outline_equations)):
-                outline_equations[i] = self._change_letters_for_equations(
+                outline_equations[i] = self.change_letters_for_equations(
                     outline_equations[i]
                 )
 
             text = re.sub(
                 r"\$\$(.*?)\$\$",
-                lambda x: f"$${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=Settings.Paragraph.formulas_json)}$$",
+                lambda x: f"$${self.change_letters_for_equations(x.group(0).strip('$'), dict_file=Settings.Paragraph.formulas_json)}$$",
                 text,
             )
 
             text = re.sub(
                 r"\$(?:[^$\\]|\\\$|\\[^$])*?\$",
-                lambda x: f"${self._change_letters_for_equations(x.group(0).strip('$'), dict_file=Settings.Paragraph.formulas_json)}$",
+                lambda x: f"${self.change_letters_for_equations(x.group(0).strip('$'), dict_file=Settings.Paragraph.formulas_json)}$",
                 text,
             )
 
-            text = self._change_letters_for_equations(
+            text = self.change_letters_for_equations(
                 text, surround_func=lambda x: f"${x}$"
             )
 
-            text, inline_codes = self._replace_inline_code(text)
+            text, inline_codes = self.replace_inline_code(text)
 
-            text, inline_equations = self._replace_inline_equation(text)
+            text, inline_equations = self.replace_inline_equation(text)
 
             outline_equations = [
-                self._eq_ru_letter_workaround(x) for x in outline_equations
+                self.eq_ru_letter_workaround(x) for x in outline_equations
             ]
 
             inline_equations = [
-                self._eq_ru_letter_workaround(x) for x in inline_equations
+                self.eq_ru_letter_workaround(x) for x in inline_equations
             ]
 
-            text = self._highlight_text2(text)
+            text = self.highlight_text2(text)
 
-            text = self._restore_placeholders(
+            text = self.restore_placeholders(
                 text,
                 inline_codes=inline_codes,
                 inline_equations=inline_equations,
                 outline_equations=outline_equations,
             )
 
-            text = self._process_references(text)
+            text = self.process_references(text)
 
             text = self._process_footnotes(text)
 
-            text = self._process_citations(text)
+            text = self.process_citations(text)
 
-            text = self._text_errors_workaround(text)
+            text = self.text_errors_workaround(text)
 
             if Settings.Paragraph.latinify:
-                text = self._latinify_lines(
+                text = self.latinify_lines(
                     text,
                     probability=Settings.Paragraph.latinify_probability,
                     change_dict=Settings.Paragraph.latinify_json,
@@ -449,7 +464,7 @@ class Paragraph(BaseClass):
         return escaped_text
 
     @staticmethod
-    def _remove_all_highlight(text: str) -> str:
+    def remove_all_highlight(text: str) -> str:
         """Strip all markdown-style highlighting and emphasis markers."""
         change_dict = {
             r"\*\*(.*?)\*\*": lambda x: x.group(1),
@@ -473,6 +488,7 @@ class Paragraph(BaseClass):
                 text,
             )
         return text
+    _remove_all_highlight = remove_all_highlight
 
     @staticmethod
     def merge_items(items: list) -> list:

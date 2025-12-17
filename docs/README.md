@@ -10,18 +10,11 @@ source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 pip install -r docs/requirements.txt
 ```
 
-## Generate API pages
-
-```bash
-cd docs
-make apidoc
-```
-
 ## Build HTML
 
 ```bash
 cd docs
-make html
+sphinx-build -b html source _build/html
 ```
 
 Output appears in `docs/_build/html`. Open `index.html` in a browser to view.

@@ -19,7 +19,7 @@ class Document(BaseClass):
         self,
         filename: str = "",
         settings: Union[Dict[str, Any], str] = None,
-        preamble=os.path.join(os.getcwd(), "../default/preamble.json"),
+        preamble: str = None,
     ) -> None:
         """Initialize a document wrapper with optional settings and preamble.
 
@@ -37,6 +37,8 @@ class Document(BaseClass):
         from ..tools import SettingsPreamble, Settings, Global
 
         super().__init__()
+        if preamble is None:
+            preamble = os.path.join(os.getcwd(), "../default/preamble.json")
         if settings:
             Settings.update(settings)
 

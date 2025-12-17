@@ -156,7 +156,7 @@ class Headline(BaseClass):
         """Sanitize and render heading text according to settings."""
         from ..tools import Global, Settings
         if Settings.Headline.clean_all_highlight:
-            text = Paragraph._remove_all_highlight(text)
+            text = Paragraph.remove_all_highlight(text)
         if Settings.Headline.clean_markdown_numeration:
             text = Headline._clean_markdown_numeration(text)
         text = Paragraph(text).to_latex()

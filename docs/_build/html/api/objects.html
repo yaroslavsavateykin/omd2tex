@@ -1,0 +1,1272 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>omd2tex.objects &#8212; omd2tex 0.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/objects';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="omd2tex.tools" href="tools.html" />
+    <link rel="prev" title="omd2tex package" href="omd2tex.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">omd2tex 0.0.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="omd2tex.html">
+    omd2tex package
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    omd2tex.objects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tools.html">
+    omd2tex.tools
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="omd2tex.html">
+    omd2tex package
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    omd2tex.objects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tools.html">
+    omd2tex.tools
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">omd2tex.objects</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-omd2tex.objects">
+<span id="omd2tex-objects"></span><h1>omd2tex.objects<a class="headerlink" href="#module-omd2tex.objects" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Caption">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Caption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/fragment.html#Caption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Caption" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Caption.attach_caption">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attach_caption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/fragment.html#Caption.attach_caption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Caption.attach_caption" title="Link to this definition">#</a></dt>
+<dd><p>Attach caption objects to the preceding element as metadata.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.SplitLine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">SplitLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/fragment.html#SplitLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.SplitLine" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.SplitLine.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/fragment.html#SplitLine.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.SplitLine.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render a horizontal rule using configured width.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.SplitLine.make_beamer">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">make_beamer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/fragment.html#SplitLine.make_beamer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.SplitLine.make_beamer" title="Link to this definition">#</a></dt>
+<dd><p>Split elements into beamer frames based on divider elements.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Equation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Equation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">equation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/equation.html#Equation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Equation" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Equation.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/equation.html#Equation.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Equation.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render the equation to LaTeX with or without numbering.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Paragraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render the paragraph to LaTeX, optionally parsing markdown constructs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.change_letters_for_equations">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_letters_for_equations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_file:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surround_func=&lt;function</span> <span class="pre">Paragraph.&lt;lambda&gt;&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.change_letters_for_equations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.change_letters_for_equations" title="Link to this definition">#</a></dt>
+<dd><p>Replace symbols in equations using a mapping file and wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – Input equation text.</p></li>
+<li><p><strong>dict_file</strong> – Optional path to a JSON mapping file; defaults to bundled formulas.</p></li>
+<li><p><strong>surround_func</strong> – Callable applied to mapped values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed text with mapped symbols.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.highlight_text1">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">highlight_text1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.highlight_text1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.highlight_text1" title="Link to this definition">#</a></dt>
+<dd><p>Convert HTML superscript/subscript markers to LaTeX equivalents.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.highlight_text2">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">highlight_text2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.highlight_text2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.highlight_text2" title="Link to this definition">#</a></dt>
+<dd><p>Convert markdown emphasis markers to LaTeX formatting.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.replace_inline_code">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">replace_inline_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.replace_inline_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.replace_inline_code" title="Link to this definition">#</a></dt>
+<dd><p>Replace inline code segments with placeholders preserving content.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.replace_inline_equation">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">replace_inline_equation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.replace_inline_equation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.replace_inline_equation" title="Link to this definition">#</a></dt>
+<dd><p>Replace inline equations with placeholders preserving content.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.replace_outline_equation">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">replace_outline_equation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.replace_outline_equation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.replace_outline_equation" title="Link to this definition">#</a></dt>
+<dd><p>Replace outline equations with placeholders preserving content.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.restore_placeholders">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">restore_placeholders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inline_equations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inline_codes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outline_equations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.restore_placeholders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.restore_placeholders" title="Link to this definition">#</a></dt>
+<dd><p>Restore code and equation placeholders into the provided text.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.latinify_lines">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">latinify_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.latinify_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.latinify_lines" title="Link to this definition">#</a></dt>
+<dd><p>Randomly replace characters based on latinify mapping and probability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.eq_ru_letter_workaround">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eq_ru_letter_workaround</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.eq_ru_letter_workaround"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.eq_ru_letter_workaround" title="Link to this definition">#</a></dt>
+<dd><p>Wrap Cyrillic characters in equations with text mode to avoid errors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.text_errors_workaround">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text_errors_workaround</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.text_errors_workaround"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.text_errors_workaround" title="Link to this definition">#</a></dt>
+<dd><p>Normalize known problematic characters and dashes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.process_references">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process_references</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.process_references"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.process_references" title="Link to this definition">#</a></dt>
+<dd><p>Convert wiki-style references to LaTeX cref calls using global mapping.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.process_citations">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process_citations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.process_citations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.process_citations" title="Link to this definition">#</a></dt>
+<dd><p>Normalize citation markers to LaTeX <code class="docutils literal notranslate"><span class="pre">\cite{}</span></code> commands.</p>
+<p>Supports patterns like <code class="docutils literal notranslate"><span class="pre">![[</span> <span class="pre">&#64;cite|text</span> <span class="pre">]]</span></code>, <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">&#64;cite</span> <span class="pre">]]</span></code>, and <code class="docutils literal notranslate"><span class="pre">\cite{&#64;cite}</span></code>, returning formatted citations or empty strings when source entries are missing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Input string possibly containing various citation syntaxes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Text with citation patterns replaced by LaTeX citations; returns empty strings when citations are missing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.escape_latex_special_chars">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">escape_latex_special_chars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.escape_latex_special_chars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.escape_latex_special_chars" title="Link to this definition">#</a></dt>
+<dd><p>Escape unescaped LaTeX special characters in the provided text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Входная строка с LaTeX-выражениями</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Строка с экранированными специальными символами LaTeX</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.remove_all_highlight">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_all_highlight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.remove_all_highlight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.remove_all_highlight" title="Link to this definition">#</a></dt>
+<dd><p>Strip all markdown-style highlighting and emphasis markers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Paragraph.merge_items">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">merge_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/paragraph.html#Paragraph.merge_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Paragraph.merge_items" title="Link to this definition">#</a></dt>
+<dd><p>Merge adjacent Paragraph instances when parsing flags match.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.CodeBlock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">CodeBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocktype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocklines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/codeblock.html#CodeBlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.CodeBlock" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.CodeBlock.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocktype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocklines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><span class="pre">BaseClass</span></a></span></span><a class="reference internal" href="../_modules/omd2tex/objects/codeblock.html#CodeBlock.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.CodeBlock.create" title="Link to this definition">#</a></dt>
+<dd><p>Factory method to create and render a code block element.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.CodeBlock.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/codeblock.html#CodeBlock.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.CodeBlock.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render the code block to LaTeX.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Reference">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/reference.html#Reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Reference" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Reference.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/reference.html#Reference.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Reference.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render reference placeholder; no direct LaTeX output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Reference.identify_elements_reference">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identify_elements_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/reference.html#Reference.identify_elements_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Reference.identify_elements_reference" title="Link to this definition">#</a></dt>
+<dd><p>Update reference mappings for supported element types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>elements</strong> – List of parsed elements to inspect.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New list with reference metadata registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Reference.attach_reference">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attach_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/reference.html#Reference.attach_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Reference.attach_reference" title="Link to this definition">#</a></dt>
+<dd><p>Attach the last seen reference object to the preceding element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>elements</strong> – Sequence of elements that may include Reference instances.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List where references are assigned to prior elements when present.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Headline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Headline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/headline.html#Headline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Headline" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Headline.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/headline.html#Headline.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Headline.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render the object to LaTeX markup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>LaTeX string representation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Table">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/table.html#Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Table" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Table.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/table.html#Table.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Table.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render the table to LaTeX longtblr format.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Image">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parrentdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caption</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/image.html#Image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Image" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Image.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/image.html#Image.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Image.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render the image as a LaTeX figure block respecting settings.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Quote">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quotelines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parrentdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filedepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quotedepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/quote.html#Quote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Quote" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Quote.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/quote.html#Quote.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Quote.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Convert the quote and its elements to LaTeX.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>LaTeX string for the quote environment with proper indentation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Quote.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quotelines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parrentdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filedepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quotedepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><span class="pre">BaseClass</span></a></span></span><a class="reference internal" href="../_modules/omd2tex/objects/quote.html#Quote.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Quote.create" title="Link to this definition">#</a></dt>
+<dd><p>Factory to create and process quote content in one step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>quotelines</strong> – Raw quote lines including leading markers.</p></li>
+<li><p><strong>filename</strong> – Source filename for context.</p></li>
+<li><p><strong>parrentdir</strong> – Parent directory path for nested includes.</p></li>
+<li><p><strong>filedepth</strong> – Current file recursion depth.</p></li>
+<li><p><strong>quotedepth</strong> – Current quote recursion depth.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Processed element resulting from quote interpretation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Footnote">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Footnote</span></span><a class="reference internal" href="../_modules/omd2tex/objects/footnote.html#Footnote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Footnote" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.objects.Footnote.collection">
+<span class="sig-name descname"><span class="pre">collection</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#omd2tex.objects.Footnote.collection" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Footnote.append">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/footnote.html#Footnote.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Footnote.append" title="Link to this definition">#</a></dt>
+<dd><p>Add a footnote to the shared collection converting markdown to LaTeX.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Footnote identifier.</p></li>
+<li><p><strong>text</strong> – Footnote text as string or list of lines.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><p>Mutates the class-level <code class="docutils literal notranslate"><span class="pre">collection</span></code> mapping.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Footnote.to_default">
+<span class="sig-name descname"><span class="pre">to_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/footnote.html#Footnote.to_default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Footnote.to_default" title="Link to this definition">#</a></dt>
+<dd><p>Reset the shared footnote collection to defaults.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Footnote.change_footnote_keys">
+<span class="sig-name descname"><span class="pre">change_footnote_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/footnote.html#Footnote.change_footnote_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Footnote.change_footnote_keys" title="Link to this definition">#</a></dt>
+<dd><p>Replace footnote keys in text with unique generated identifiers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Input text containing footnote markers.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Text with footnote keys rewritten to unique values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Enumerate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Enumerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Enumerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Enumerate" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.list.html#omd2tex.objects.list.List" title="omd2tex.objects.list.List"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Enumerate.to_latex_item">
+<span class="sig-name descname"><span class="pre">to_latex_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Enumerate.to_latex_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Enumerate.to_latex_item" title="Link to this definition">#</a></dt>
+<dd><p>Render an enumerated item with adjusted counter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Enumerate.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Enumerate.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Enumerate.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render an enumerate environment with optional keep-with-next fix.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Bullet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Bullet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Bullet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Bullet" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.list.html#omd2tex.objects.list.List" title="omd2tex.objects.list.List"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Bullet.to_latex_item">
+<span class="sig-name descname"><span class="pre">to_latex_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Bullet.to_latex_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Bullet.to_latex_item" title="Link to this definition">#</a></dt>
+<dd><p>Render a bullet list item.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Bullet.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Bullet.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Bullet.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render a bullet list environment.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Check">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Check" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.list.html#omd2tex.objects.list.List" title="omd2tex.objects.list.List"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Check.to_latex_item">
+<span class="sig-name descname"><span class="pre">to_latex_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Check.to_latex_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Check.to_latex_item" title="Link to this definition">#</a></dt>
+<dd><p>Render a checklist item using box symbols.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Check.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#Check.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Check.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render a checklist as an itemize environment.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.List">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">List</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#List"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.List" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.List.to_latex_item">
+<span class="sig-name descname"><span class="pre">to_latex_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#List.to_latex_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.List.to_latex_item" title="Link to this definition">#</a></dt>
+<dd><p>Render a single list item to LaTeX.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>LaTeX string representing the list item content.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.List.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#List.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.List.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render the list and merged nested items to LaTeX.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>LaTeX string for the list content, including merged sublists when present.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.List.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_api/omd2tex.objects.list.html#omd2tex.objects.list.List" title="omd2tex.objects.list.List"><span class="pre">List</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#List.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.List.append" title="Link to this definition">#</a></dt>
+<dd><p>Append another list item at the same depth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item</strong> – List item to append; must match depth.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – If item type or depth is incompatible.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.List.append_items">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">append_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#List.append_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.List.append_items" title="Link to this definition">#</a></dt>
+<dd><p>Group consecutive list items of equal depth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>items</strong> – Sequence of parsed elements possibly containing List instances.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List with grouped List items aggregated by depth.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.List.merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_api/omd2tex.objects.list.html#omd2tex.objects.list.List" title="omd2tex.objects.list.List"><span class="pre">List</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#List.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.List.merge" title="Link to this definition">#</a></dt>
+<dd><p>Merge a deeper nested item under the current list element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item</strong> – Nested List item.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – If provided item is not deeper than the current one.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.List.merge_items">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">merge_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#List.merge_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.List.merge_items" title="Link to this definition">#</a></dt>
+<dd><p>Merge subsequent deeper list items into preceding parents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>items</strong> – Sequence of elements containing List instances.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List where nested items are attached to their appropriate parents.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.List.indent">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">indent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/list.html#List.indent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.List.indent" title="Link to this definition">#</a></dt>
+<dd><p>Indent text by a multiple of four spaces based on depth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – String to indent.</p></li>
+<li><p><strong>depth</strong> – Nesting level to determine indentation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Indented text string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Preamble">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Preamble</span></span><a class="reference internal" href="../_modules/omd2tex/objects/preamble.html#Preamble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Preamble" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Preamble.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/preamble.html#Preamble.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Preamble.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Generate LaTeX preamble string based on document class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Citation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Citation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/citation.html#Citation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Citation" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="omd2tex.objects.Citation.citation_list">
+<span class="sig-name descname"><span class="pre">citation_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#omd2tex.objects.Citation.citation_list" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Citation.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/citation.html#Citation.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Citation.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render citation content into LaTeX filecontents and bibliography declaration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Citation.to_latex_preamble">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_latex_preamble</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/citation.html#Citation.to_latex_preamble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Citation.to_latex_preamble" title="Link to this definition">#</a></dt>
+<dd><p>Concatenate LaTeX preamble entries for all registered citations.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.File">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">File</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parrentdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filedepth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/file.html#File"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.File" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.File.from_file">
+<span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_api/omd2tex.objects.file.html#omd2tex.objects.file.File" title="omd2tex.objects.file.File"><span class="pre">File</span></a></span></span><a class="reference internal" href="../_modules/omd2tex/objects/file.html#File.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.File.from_file" title="Link to this definition">#</a></dt>
+<dd><p>Parse markdown from disk into this File instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.File.from_elements">
+<span class="sig-name descname"><span class="pre">from_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_api/omd2tex.objects.list.html#omd2tex.objects.list.List" title="omd2tex.objects.list.List"><span class="pre">List</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_api/omd2tex.objects.file.html#omd2tex.objects.file.File" title="omd2tex.objects.file.File"><span class="pre">File</span></a></span></span><a class="reference internal" href="../_modules/omd2tex/objects/file.html#File.from_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.File.from_elements" title="Link to this definition">#</a></dt>
+<dd><p>Populate this file from an existing list of elements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.File.from_text">
+<span class="sig-name descname"><span class="pre">from_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_api/omd2tex.objects.file.html#omd2tex.objects.file.File" title="omd2tex.objects.file.File"><span class="pre">File</span></a></span></span><a class="reference internal" href="../_modules/omd2tex/objects/file.html#File.from_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.File.from_text" title="Link to this definition">#</a></dt>
+<dd><p>Parse markdown text directly into this File instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.File.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/file.html#File.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.File.check" title="Link to this definition">#</a></dt>
+<dd><p>Print parsed elements and their LaTeX output for debugging.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.File.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/file.html#File.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.File.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render contained elements to a combined LaTeX string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Document">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preamble</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/omd2tex/objects/document.html#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Document" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../_api/omd2tex.objects.base.html#omd2tex.objects.base.BaseClass" title="omd2tex.objects.base.BaseClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseClass</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Document.from_file">
+<span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_api/omd2tex.objects.document.html#omd2tex.objects.document.Document" title="omd2tex.objects.document.Document"><span class="pre">Document</span></a></span></span><a class="reference internal" href="../_modules/omd2tex/objects/document.html#Document.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Document.from_file" title="Link to this definition">#</a></dt>
+<dd><p>Load and parse a markdown file into a Document.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Document.from_text">
+<span class="sig-name descname"><span class="pre">from_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_api/omd2tex.objects.document.html#omd2tex.objects.document.Document" title="omd2tex.objects.document.Document"><span class="pre">Document</span></a></span></span><a class="reference internal" href="../_modules/omd2tex/objects/document.html#Document.from_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Document.from_text" title="Link to this definition">#</a></dt>
+<dd><p>Create a document from raw markdown text.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Document.from_elements">
+<span class="sig-name descname"><span class="pre">from_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_api/omd2tex.objects.document.html#omd2tex.objects.document.Document" title="omd2tex.objects.document.Document"><span class="pre">Document</span></a></span></span><a class="reference internal" href="../_modules/omd2tex/objects/document.html#Document.from_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Document.from_elements" title="Link to this definition">#</a></dt>
+<dd><p>Build a document from preconstructed elements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Document.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/document.html#Document.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Document.check" title="Link to this definition">#</a></dt>
+<dd><p>Print contained file diagnostics and reset global state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Document.to_latex">
+<span class="sig-name descname"><span class="pre">to_latex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/document.html#Document.to_latex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Document.to_latex" title="Link to this definition">#</a></dt>
+<dd><p>Render the document to a full LaTeX string with preamble and body.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Document.to_latex_file">
+<span class="sig-name descname"><span class="pre">to_latex_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/document.html#Document.to_latex_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Document.to_latex_file" title="Link to this definition">#</a></dt>
+<dd><p>Write the rendered LaTeX document to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Optional override for output filename; defaults to derived from markdown name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><p>Writes LaTeX files to disk and may create makefiles.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Document.to_latex_project">
+<span class="sig-name descname"><span class="pre">to_latex_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/document.html#Document.to_latex_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Document.to_latex_project" title="Link to this definition">#</a></dt>
+<dd><p>Create a full LaTeX project directory with includes and assets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Optional override for main filename.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the document or file is not initialized before export.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><p>Writes multiple files/directories and copies theme assets when needed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="omd2tex.objects.Makefile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">omd2tex.objects.</span></span><span class="sig-name descname"><span class="pre">Makefile</span></span><a class="reference internal" href="../_modules/omd2tex/objects/makefile.html#Makefile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Makefile" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Makefile.to_string">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/makefile.html#Makefile.to_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Makefile.to_string" title="Link to this definition">#</a></dt>
+<dd><p>Generate Makefile content tailored to citation and reference usage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="omd2tex.objects.Makefile.to_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/omd2tex/objects/makefile.html#Makefile.to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#omd2tex.objects.Makefile.to_file" title="Link to this definition">#</a></dt>
+<dd><p>Записывает Makefile в указанную директорию</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> – Target directory where Makefile should be written.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path to the generated Makefile.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><p>Writes a Makefile to disk.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="omd2tex.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">omd2tex package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="tools.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">omd2tex.tools</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Caption"><code class="docutils literal notranslate"><span class="pre">Caption</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Caption.attach_caption"><code class="docutils literal notranslate"><span class="pre">Caption.attach_caption()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.SplitLine"><code class="docutils literal notranslate"><span class="pre">SplitLine</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.SplitLine.to_latex"><code class="docutils literal notranslate"><span class="pre">SplitLine.to_latex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.SplitLine.make_beamer"><code class="docutils literal notranslate"><span class="pre">SplitLine.make_beamer()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Equation"><code class="docutils literal notranslate"><span class="pre">Equation</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Equation.to_latex"><code class="docutils literal notranslate"><span class="pre">Equation.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph"><code class="docutils literal notranslate"><span class="pre">Paragraph</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.to_latex"><code class="docutils literal notranslate"><span class="pre">Paragraph.to_latex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.change_letters_for_equations"><code class="docutils literal notranslate"><span class="pre">Paragraph.change_letters_for_equations()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.highlight_text1"><code class="docutils literal notranslate"><span class="pre">Paragraph.highlight_text1()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.highlight_text2"><code class="docutils literal notranslate"><span class="pre">Paragraph.highlight_text2()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.replace_inline_code"><code class="docutils literal notranslate"><span class="pre">Paragraph.replace_inline_code()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.replace_inline_equation"><code class="docutils literal notranslate"><span class="pre">Paragraph.replace_inline_equation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.replace_outline_equation"><code class="docutils literal notranslate"><span class="pre">Paragraph.replace_outline_equation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.restore_placeholders"><code class="docutils literal notranslate"><span class="pre">Paragraph.restore_placeholders()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.latinify_lines"><code class="docutils literal notranslate"><span class="pre">Paragraph.latinify_lines()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.eq_ru_letter_workaround"><code class="docutils literal notranslate"><span class="pre">Paragraph.eq_ru_letter_workaround()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.text_errors_workaround"><code class="docutils literal notranslate"><span class="pre">Paragraph.text_errors_workaround()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.process_references"><code class="docutils literal notranslate"><span class="pre">Paragraph.process_references()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.process_citations"><code class="docutils literal notranslate"><span class="pre">Paragraph.process_citations()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.escape_latex_special_chars"><code class="docutils literal notranslate"><span class="pre">Paragraph.escape_latex_special_chars()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.remove_all_highlight"><code class="docutils literal notranslate"><span class="pre">Paragraph.remove_all_highlight()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Paragraph.merge_items"><code class="docutils literal notranslate"><span class="pre">Paragraph.merge_items()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.CodeBlock"><code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.CodeBlock.create"><code class="docutils literal notranslate"><span class="pre">CodeBlock.create()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.CodeBlock.to_latex"><code class="docutils literal notranslate"><span class="pre">CodeBlock.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Reference"><code class="docutils literal notranslate"><span class="pre">Reference</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Reference.to_latex"><code class="docutils literal notranslate"><span class="pre">Reference.to_latex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Reference.identify_elements_reference"><code class="docutils literal notranslate"><span class="pre">Reference.identify_elements_reference()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Reference.attach_reference"><code class="docutils literal notranslate"><span class="pre">Reference.attach_reference()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Headline"><code class="docutils literal notranslate"><span class="pre">Headline</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Headline.to_latex"><code class="docutils literal notranslate"><span class="pre">Headline.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Table.to_latex"><code class="docutils literal notranslate"><span class="pre">Table.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Image"><code class="docutils literal notranslate"><span class="pre">Image</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Image.to_latex"><code class="docutils literal notranslate"><span class="pre">Image.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Quote"><code class="docutils literal notranslate"><span class="pre">Quote</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Quote.to_latex"><code class="docutils literal notranslate"><span class="pre">Quote.to_latex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Quote.create"><code class="docutils literal notranslate"><span class="pre">Quote.create()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Footnote"><code class="docutils literal notranslate"><span class="pre">Footnote</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Footnote.collection"><code class="docutils literal notranslate"><span class="pre">Footnote.collection</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Footnote.append"><code class="docutils literal notranslate"><span class="pre">Footnote.append()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Footnote.to_default"><code class="docutils literal notranslate"><span class="pre">Footnote.to_default()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Footnote.change_footnote_keys"><code class="docutils literal notranslate"><span class="pre">Footnote.change_footnote_keys()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Enumerate"><code class="docutils literal notranslate"><span class="pre">Enumerate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Enumerate.to_latex_item"><code class="docutils literal notranslate"><span class="pre">Enumerate.to_latex_item()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Enumerate.to_latex"><code class="docutils literal notranslate"><span class="pre">Enumerate.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Bullet"><code class="docutils literal notranslate"><span class="pre">Bullet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Bullet.to_latex_item"><code class="docutils literal notranslate"><span class="pre">Bullet.to_latex_item()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Bullet.to_latex"><code class="docutils literal notranslate"><span class="pre">Bullet.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Check"><code class="docutils literal notranslate"><span class="pre">Check</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Check.to_latex_item"><code class="docutils literal notranslate"><span class="pre">Check.to_latex_item()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Check.to_latex"><code class="docutils literal notranslate"><span class="pre">Check.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.List"><code class="docutils literal notranslate"><span class="pre">List</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.List.to_latex_item"><code class="docutils literal notranslate"><span class="pre">List.to_latex_item()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.List.to_latex"><code class="docutils literal notranslate"><span class="pre">List.to_latex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.List.append"><code class="docutils literal notranslate"><span class="pre">List.append()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.List.append_items"><code class="docutils literal notranslate"><span class="pre">List.append_items()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.List.merge"><code class="docutils literal notranslate"><span class="pre">List.merge()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.List.merge_items"><code class="docutils literal notranslate"><span class="pre">List.merge_items()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.List.indent"><code class="docutils literal notranslate"><span class="pre">List.indent()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Preamble"><code class="docutils literal notranslate"><span class="pre">Preamble</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Preamble.to_latex"><code class="docutils literal notranslate"><span class="pre">Preamble.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Citation"><code class="docutils literal notranslate"><span class="pre">Citation</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Citation.citation_list"><code class="docutils literal notranslate"><span class="pre">Citation.citation_list</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Citation.to_latex"><code class="docutils literal notranslate"><span class="pre">Citation.to_latex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Citation.to_latex_preamble"><code class="docutils literal notranslate"><span class="pre">Citation.to_latex_preamble()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.File"><code class="docutils literal notranslate"><span class="pre">File</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.File.from_file"><code class="docutils literal notranslate"><span class="pre">File.from_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.File.from_elements"><code class="docutils literal notranslate"><span class="pre">File.from_elements()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.File.from_text"><code class="docutils literal notranslate"><span class="pre">File.from_text()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.File.check"><code class="docutils literal notranslate"><span class="pre">File.check()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.File.to_latex"><code class="docutils literal notranslate"><span class="pre">File.to_latex()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Document.from_file"><code class="docutils literal notranslate"><span class="pre">Document.from_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Document.from_text"><code class="docutils literal notranslate"><span class="pre">Document.from_text()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Document.from_elements"><code class="docutils literal notranslate"><span class="pre">Document.from_elements()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Document.check"><code class="docutils literal notranslate"><span class="pre">Document.check()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Document.to_latex"><code class="docutils literal notranslate"><span class="pre">Document.to_latex()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Document.to_latex_file"><code class="docutils literal notranslate"><span class="pre">Document.to_latex_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Document.to_latex_project"><code class="docutils literal notranslate"><span class="pre">Document.to_latex_project()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Makefile"><code class="docutils literal notranslate"><span class="pre">Makefile</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Makefile.to_string"><code class="docutils literal notranslate"><span class="pre">Makefile.to_string()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#omd2tex.objects.Makefile.to_file"><code class="docutils literal notranslate"><span class="pre">Makefile.to_file()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/objects.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, omd2tex contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
