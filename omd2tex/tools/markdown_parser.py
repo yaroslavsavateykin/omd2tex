@@ -1,5 +1,5 @@
 import re
-from typing import Union
+from typing import List, Optional, Tuple, Union
 import yaml
 import uuid
 
@@ -44,6 +44,22 @@ class MarkdownParser(BaseClass):
         filedepth: int = 0,
         quotedepth=0,
     ) -> None:
+        """Instantiate a parser for a markdown document fragment.
+
+        Initializes bookkeeping for nested parsing contexts, YAML storage, and target filename metadata while respecting branching project settings.
+
+        Args:
+            parrentdir: Directory of the parent document for relative inclusion.
+            filename: Target markdown filename to parse.
+            filedepth: Current recursion depth for nested files.
+            quotedepth: Current recursion depth for nested quote parsing.
+
+        Returns:
+            None
+
+        Raises:
+            None explicitly.
+        """
         super().__init__()
         self.filename = filename
 
@@ -63,6 +79,19 @@ class MarkdownParser(BaseClass):
         self.elements = []
 
     def check(self):
+        """Print parsed elements and their LaTeX representation.
+
+        Iterates over collected elements and prints their string representation followed by the rendered LaTeX output. Helpful for debugging parsing results.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Side Effects:
+            Writes diagnostic information to stdout.
+        """
         elements = self.elements
         if not elements:
             print("No elements found")
@@ -70,8 +99,17 @@ class MarkdownParser(BaseClass):
             print(f"\n{el}\n{el.to_latex()}")
 
     @staticmethod
-    def __parse_size_parameter(size_str):
-        """Парсит строку размера в формате '300' или '300x200'"""
+    def __parse_size_parameter(size_str: Optional[str]) -> Tuple[Optional[int], Optional[int]]:
+        """Parse a size specification string into width and height.
+
+        Accepts simple numeric strings like ``"300"`` for width-only or ``"300x200"`` for both dimensions.
+
+        Args:
+            size_str: Raw size specification; may be None or empty.
+
+        Returns:
+            Tuple of integers (width, height) where unspecified height is None; returns (None, None) when the input is invalid.
+        """
         if not size_str or not re.match(r"^\d+(x\d+)?$", size_str.strip()):
             return None, None
 
@@ -81,7 +119,20 @@ class MarkdownParser(BaseClass):
 
         return width, height
 
-    def from_file(self, filename: str):
+    def from_file(self, filename: str) -> "MarkdownParser":
+        """Parse markdown from a file into structured elements.
+
+        Resolves the file path via search settings, loads UTF-8 content, and delegates line parsing to the internal parser, preserving recursion metadata.
+
+        Args:
+            filename: Name of the markdown file to locate and parse.
+
+        Returns:
+            Self instance for chaining regardless of whether parsing succeeded.
+
+        Raises:
+            FileNotFoundError: Propagated if the search path does not exist.
+        """
         self.dir_filename = find_file(filename, search_path=Settings.Export.search_dir)
 
         if not self.dir_filename:
@@ -94,7 +145,17 @@ class MarkdownParser(BaseClass):
                 self.__parse(lines)
             return self
 
-    def from_text(self, text: Union[str, list]):
+    def from_text(self, text: Union[str, List[str]]) -> "MarkdownParser":
+        """Parse raw markdown text supplied as a string or list of lines.
+
+        Converts string input to lines when necessary and populates the element list by invoking the internal parser.
+
+        Args:
+            text: Markdown content as a single string or list of lines.
+
+        Returns:
+            Self instance for chaining.
+        """
         if isinstance(text, str):
             self.__parse(text.splitlines())
         else:
@@ -102,7 +163,20 @@ class MarkdownParser(BaseClass):
 
         return self
 
-    def from_elements(self, list: list):
+    def from_elements(self, list: list) -> "MarkdownParser":
+        """Initialize parser state from preconstructed element objects.
+
+        Validates elements to avoid unsupported document types and processes them through post-parsing normalization steps.
+
+        Args:
+            list: Sequence of element instances to normalize.
+
+        Returns:
+            Self instance with processed elements.
+
+        Raises:
+            TypeError: If disallowed element types (Document or MarkdownParser) are provided.
+        """
         from ..objects import Document
 
         not_pass = [Document, MarkdownParser]
@@ -118,6 +192,16 @@ class MarkdownParser(BaseClass):
         return self
 
     def _process_elements_list(self, elements: list) -> list:
+        """Post-process parsed elements applying references, captions, and layout rules.
+
+        Applies reference attachment, caption propagation, list merging, and beamer-specific transformations depending on settings and recursion depth.
+
+        Args:
+            elements: Raw list of parsed elements to normalize.
+
+        Returns:
+            Updated list of elements respecting configured parsing behavior.
+        """
         from ..objects import Caption, Reference, List, SplitLine
         from .globals import Global
 
@@ -137,7 +221,20 @@ class MarkdownParser(BaseClass):
 
         return elements
 
-    def __parse(self, lines: list):
+    def __parse(self, lines: list) -> None:
+        """Parse markdown lines into element objects.
+
+        Implements a line-by-line stateful parser handling frontmatter, equations, code blocks, lists, images, references, tables, quotes, and paragraphs while respecting recursion guards and settings.
+
+        Args:
+            lines: Markdown file content as a list of lines.
+
+        Returns:
+            None
+
+        Raises:
+            RecursionError: When quote or file inclusion depth exceeds configured limits.
+        """
         from ..objects import (
             SplitLine,
             Equation,

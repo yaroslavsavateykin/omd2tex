@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.tools.config_base &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.tools.config_base</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+
+
+<div class="viewcode-block" id="ConfigBase">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfigBase</span><span class="p">:</span>
+    <span class="n">_class_original_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_class_original_values</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Snapshot class attribute defaults for later restoration.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cls: Target configuration class.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            Populates the class-level `_class_original_values` cache.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_class_original_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_class_original_values</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">)):</span>
+                    <span class="k">continue</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ConfigBase</span><span class="p">):</span>
+                    <span class="n">value</span><span class="o">.</span><span class="n">_save_class_original_values</span><span class="p">()</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">_class_original_values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span>
+                        <span class="n">value</span><span class="o">.</span><span class="n">_class_original_values</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">_class_original_values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConfigBase.update">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase.update">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update configuration values from a dict or file path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source: Mapping of overrides or path to a JSON/YAML file with settings.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: If a provided file path does not exist.</span>
+<span class="sd">            ValueError: When the file format is unsupported.</span>
+<span class="sd">            json.JSONDecodeError or yaml.YAMLError: If configuration parsing fails.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_class_original_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_save_class_original_values</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Файл </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2"> не найден&quot;</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;.json&quot;</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;.yml&quot;</span><span class="p">]:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Неподдерживаемый формат: </span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">source</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_update_class_recursive</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_class_recursive</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively propagate configuration values to nested ConfigBase subclasses.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: Configuration class or subclass instance to modify.</span>
+<span class="sd">            data: Mapping of values to apply.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">key</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">key</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">attr_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">current_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_value</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">current_value</span><span class="p">,</span> <span class="n">ConfigBase</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_update_class_recursive</span><span class="p">(</span><span class="n">current_value</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConfigBase.to_default">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase.to_default">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_default</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore configuration values to their original defaults.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cls: Target configuration class.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            Mutates class attributes back to saved defaults.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_class_original_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_save_class_original_values</span><span class="p">()</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_reset_class_to_default</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reset_class_to_default</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively reset configuration attributes to their saved defaults.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: Configuration class or subclass to reset.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            Mutates the target&#39;s attributes in place.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">_class_original_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">_save_class_original_values</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">original_value</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">_class_original_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">original_value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="c1"># вложенный класс</span>
+                <span class="n">nested_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nested_class</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span>
+                    <span class="n">nested_class</span><span class="p">,</span> <span class="n">ConfigBase</span>
+                <span class="p">):</span>
+                    <span class="n">target</span><span class="o">.</span><span class="n">_reset_class_to_default</span><span class="p">(</span><span class="n">nested_class</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">original_value</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ConfigBase.check">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.config_base.html#omd2tex.tools.config_base.ConfigBase.check">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print configuration values for debugging purposes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indent: Current indentation level for nested configuration output.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            Prints configuration attributes to stdout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">indent</span>
+        <span class="n">has_output</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">)):</span>
+                <span class="k">continue</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">has_output</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ConfigBase</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_output</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">No configuration attributes found&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

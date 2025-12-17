@@ -9,7 +9,18 @@ class ConfigBase:
     _class_original_values: Dict[str, Any] = None
 
     @classmethod
-    def _save_class_original_values(cls):
+    def _save_class_original_values(cls) -> None:
+        """Snapshot class attribute defaults for later restoration.
+
+        Args:
+            cls: Target configuration class.
+
+        Returns:
+            None
+
+        Side Effects:
+            Populates the class-level `_class_original_values` cache.
+        """
         if cls._class_original_values is None:
             cls._class_original_values = {}
             for name in dir(cls):
@@ -25,7 +36,20 @@ class ConfigBase:
                     cls._class_original_values[name] = copy.deepcopy(value)
 
     @classmethod
-    def update(cls, source: Union[Dict[str, Any], str]):
+    def update(cls, source: Union[Dict[str, Any], str]) -> None:
+        """Update configuration values from a dict or file path.
+
+        Args:
+            source: Mapping of overrides or path to a JSON/YAML file with settings.
+
+        Returns:
+            None
+
+        Raises:
+            FileNotFoundError: If a provided file path does not exist.
+            ValueError: When the file format is unsupported.
+            json.JSONDecodeError or yaml.YAMLError: If configuration parsing fails.
+        """
         if cls._class_original_values is None:
             cls._save_class_original_values()
 
@@ -47,7 +71,16 @@ class ConfigBase:
         cls._update_class_recursive(cls, data)
 
     @classmethod
-    def _update_class_recursive(cls, target, data: Dict[str, Any]):
+    def _update_class_recursive(cls, target, data: Dict[str, Any]) -> None:
+        """Recursively propagate configuration values to nested ConfigBase subclasses.
+
+        Args:
+            target: Configuration class or subclass instance to modify.
+            data: Mapping of values to apply.
+
+        Returns:
+            None
+        """
         for key, value in data.items():
             attr_name = (
                 key
@@ -70,13 +103,35 @@ class ConfigBase:
                 setattr(target, attr_name, value)
 
     @classmethod
-    def to_default(cls):
+    def to_default(cls) -> None:
+        """Restore configuration values to their original defaults.
+
+        Args:
+            cls: Target configuration class.
+
+        Returns:
+            None
+
+        Side Effects:
+            Mutates class attributes back to saved defaults.
+        """
         if cls._class_original_values is None:
             cls._save_class_original_values()
         cls._reset_class_to_default(cls)
 
     @classmethod
-    def _reset_class_to_default(cls, target):
+    def _reset_class_to_default(cls, target) -> None:
+        """Recursively reset configuration attributes to their saved defaults.
+
+        Args:
+            target: Configuration class or subclass to reset.
+
+        Returns:
+            None
+
+        Side Effects:
+            Mutates the target's attributes in place.
+        """
         if target._class_original_values is None:
             target._save_class_original_values()
 
@@ -92,7 +147,18 @@ class ConfigBase:
                 setattr(target, name, copy.deepcopy(original_value))
 
     @classmethod
-    def check(cls, indent: int = 0):
+    def check(cls, indent: int = 0) -> None:
+        """Print configuration values for debugging purposes.
+
+        Args:
+            indent: Current indentation level for nested configuration output.
+
+        Returns:
+            None
+
+        Side Effects:
+            Prints configuration attributes to stdout.
+        """
         prefix = "    " * indent
         has_output = False
         for name in dir(cls):

@@ -1,6 +1,7 @@
 import shutil
 from PIL import Image as PillowImage
 import os
+from typing import Optional, Tuple
 
 from .base import BaseClass
 from omd2tex.tools.settings_preamble import SettingsPreamble
@@ -16,11 +17,24 @@ class Image(BaseClass):
         self,
         filename: str,
         parrentdir: str,
-        caption="",
-        width=None,
-        height=None,
-        dir=None,
+        caption: str = "",
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        dir: Optional[str] = None,
     ) -> None:
+        """Initialize an image element with sizing and caption metadata.
+
+        Args:
+            filename: Image filename to locate or copy.
+            parrentdir: Parent directory for relative placement during export.
+            caption: Optional caption text for the figure.
+            width: Optional desired width in pixels.
+            height: Optional desired height in pixels.
+            dir: Optional explicit absolute path to the image file.
+
+        Returns:
+            None
+        """
         super().__init__()
         self.filename = filename
         self.parrentdir = parrentdir
@@ -39,19 +53,22 @@ class Image(BaseClass):
         self.reference = None
 
     def _identify_reference(self) -> None:
+        """Register the image reference in the global reference dictionary."""
         if self.reference:
             Global.REFERENCE_DICT[self.reference] = "fig"
         else:
             Global.REFERENCE_DICT[self.reference] = "not_found_fig"
 
-    def _get_image_dimensions(self):
+    def _get_image_dimensions(self) -> Tuple[Optional[int], Optional[int]]:
+        """Return the intrinsic width and height of the image if available."""
         try:
             with PillowImage.open(self.dir) as img:
                 return img.width, img.height
         except FileNotFoundError:
             return None, None
 
-    def to_latex(self):
+    def to_latex(self) -> str:
+        """Render the image as a LaTeX figure block respecting settings."""
         if self.caption:
             caption = f"\\caption{{{Paragraph(self.caption).to_latex()}}}"
         else:
@@ -100,6 +117,7 @@ class Image(BaseClass):
         return latex_lines
 
     def _copy_to_folder(self) -> None:
+        """Copy the source image into the export project images folder."""
         dir_path = os.path.join(self.parrentdir, "images")
         os.makedirs(dir_path, exist_ok=True)
 
@@ -115,10 +133,19 @@ class Image(BaseClass):
             raise FileNotFoundError(f"Файл {self.dir} не найден")
 
     def _relative_paths(self) -> None:
+        """Adjust paths to be relative for project export."""
         self.parrentdir = "."
         self.dir = "."
 
-    def _to_latex_project(self):
+    def _to_latex_project(self) -> str:
+        """Render the image for inclusion in a LaTeX project and manage assets.
+
+        Returns:
+            LaTeX string for the figure while ensuring relative paths and optional copying of the source file according to settings.
+
+        Side Effects:
+            May copy image files to the project directory and mutate internal path attributes.
+        """
         if not Settings.Image.absolute_path_in_project_export:
             self._relative_paths()
 

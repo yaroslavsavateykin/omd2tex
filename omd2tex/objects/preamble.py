@@ -8,6 +8,7 @@ from .base import BaseClass
 class NewComands(BaseClass):
     @staticmethod
     def fill():
+        """Return custom LaTeX command definitions for the preamble."""
         string = r"""
 
 \newcommand{\dashboxed}[1]{%
@@ -41,12 +42,14 @@ class NewComands(BaseClass):
 
 class Preamble(BaseClass):
     def __init__(self) -> None:
+        """Initialize preamble builder with defaults."""
         super().__init__()
         # self.config = self._load_config()
         self.beamer_titlepage = False
         # SettingsPreamble.update(self.config)
 
     def _load_config(self) -> Dict[str, Any]:
+        """Load preamble configuration from JSON file."""
         from ..tools import Settings
         from ..tools import SettingsPreamble
 
@@ -66,6 +69,7 @@ class Preamble(BaseClass):
             raise ValueError(f"Некорректный JSON файл: {config_path}")
 
     def to_latex(self) -> str:
+        """Generate LaTeX preamble string based on document class."""
         from ..tools import Settings
         from ..tools import SettingsPreamble
 
@@ -77,6 +81,7 @@ class Preamble(BaseClass):
             return self._generate_article_preamble()
 
     def _generate_article_preamble(self) -> str:
+        """Compose LaTeX preamble for article documents."""
         from ..tools import Settings
         from ..tools import SettingsPreamble
 
@@ -247,6 +252,7 @@ class Preamble(BaseClass):
         return string
 
     def _generate_beamer_preamble(self) -> str:
+        """Compose LaTeX preamble for beamer presentations."""
         from ..tools import Settings
         from ..tools import SettingsPreamble
 
@@ -381,4 +387,5 @@ class Preamble(BaseClass):
         return string
 
     def _to_latex_project(self):
+        """Return preamble string for project export context."""
         return self.to_latex()

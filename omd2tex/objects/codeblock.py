@@ -8,6 +8,8 @@ from .paragraph import Paragraph
 
 class CodeBlock(BaseClass):
     def __init__(self, blocktype: str, blocklines: list) -> None:
+        """Initialize a code block wrapper with type and lines."""
+
         super().__init__()
         self.blocktype = blocktype
         self.blocklines = blocklines
@@ -15,7 +17,9 @@ class CodeBlock(BaseClass):
         self.caption = None
 
     @staticmethod
-    def _minted_python(blocklines: list):
+    def _minted_python(blocklines: list) -> Paragraph:
+        """Render a Python code block using minted."""
+
         block = f"""\\usemintedstyle{{default}}
 \\begin{{minted}}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{{python}} 
 {"\n".join(blocklines)}
@@ -24,7 +28,8 @@ class CodeBlock(BaseClass):
         return Paragraph(block, parse=False)
 
     @staticmethod
-    def _default_codeblock(blocklines: list):
+    def _default_codeblock(blocklines: list) -> Paragraph:
+        """Render a generic code block using tcolorbox and verbatim."""
         block = f"""\\begin{{tcolorbox}}[colback=gray!20, colframe=gray!50, sharp corners, boxrule=1pt]
 \\begin{{verbatim}}
 {"\n".join(blocklines)}
@@ -35,6 +40,7 @@ class CodeBlock(BaseClass):
 
     @staticmethod
     def _create_picture_from_smiles(lines: list):
+        """Create an image from SMILES strings or reactions using RDKit."""
         from rdkit import Chem
         from rdkit.Chem import Draw
         from rdkit.Chem.Draw import IPythonConsole
@@ -195,7 +201,8 @@ class CodeBlock(BaseClass):
 
         return image
 
-    def _apply_blocktype(self):
+    def _apply_blocktype(self) -> BaseClass:
+        """Dispatch block rendering based on the specified block type."""
         functions = {
             "example": lambda content: Paragraph(
                 f"\\begin{{example}}\n{'\n'.join(content)}\n\\end{{example}}"
@@ -218,15 +225,17 @@ class CodeBlock(BaseClass):
             return self._default_codeblock(self.blocklines)
 
     @classmethod
-    def create(cls, blocktype: str, blocklines: list):
+    def create(cls, blocktype: str, blocklines: list) -> BaseClass:
+        """Factory method to create and render a code block element."""
         instance = cls.__new__(cls)
         instance.blocktype = blocktype
         instance.blocklines = blocklines
         instance.reference = None
         return instance._apply_blocktype()
 
-    def to_latex(self):
+    def to_latex(self) -> str:
+        """Render the code block to LaTeX."""
         return self._apply_blocktype().to_latex()
 
-    def _to_latex_project(self):
+    def _to_latex_project(self) -> str:
         return self.to_latex()

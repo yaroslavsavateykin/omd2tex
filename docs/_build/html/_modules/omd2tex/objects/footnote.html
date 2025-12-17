@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.objects.footnote &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.objects.footnote</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClass</span>
+
+
+<div class="viewcode-block" id="Footnote">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.footnote.html#omd2tex.Footnote">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Footnote</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Footnote.append">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.footnote.html#omd2tex.Footnote.append">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a footnote to the shared collection converting markdown to LaTeX.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key: Footnote identifier.</span>
+<span class="sd">            text: Footnote text as string or list of lines.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            Mutates the class-level ``collection`` mapping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.paragraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Paragraph</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">collection</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Footnote.to_default">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.footnote.html#omd2tex.Footnote.to_default">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_default</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the shared footnote collection to defaults.&quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a footnote helper with an exchange dictionary.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exchange_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Footnote.change_footnote_keys">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.footnote.html#omd2tex.Footnote.change_footnote_keys">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">change_footnote_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace footnote keys in text with unique generated identifiers.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Input text containing footnote markers.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Text with footnote keys rewritten to unique values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchange_dict</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[^</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exchange_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">]&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span><span class="mi">7</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exchange_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_key</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[^</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exchange_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">]&quot;</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[\^([^\]]+)\]&quot;</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,5 +1,6 @@
 import uuid
 import os
+from typing import List, Optional
 
 from .base import BaseClass
 
@@ -11,10 +12,20 @@ from .quote import Quote
 class File(BaseClass):
     def __init__(
         self,
-        filename: str = None,
-        parrentdir: str = None,
+        filename: Optional[str] = None,
+        parrentdir: Optional[str] = None,
         filedepth: int = 0,
     ) -> None:
+        """Initialize a file container for parsed markdown content.
+
+        Args:
+            filename: Name of the markdown file represented.
+            parrentdir: Directory where output should be written.
+            filedepth: Current recursion depth for nested files.
+
+        Returns:
+            None
+        """
         from ..tools import MarkdownParser
 
         super().__init__()
@@ -32,7 +43,8 @@ class File(BaseClass):
         else:
             self.elements = []
 
-    def from_file(self, filename: str):
+    def from_file(self, filename: str) -> "File":
+        """Parse markdown from disk into this File instance."""
         from ..tools import MarkdownParser
 
         if not self.parrentdir:
@@ -50,7 +62,8 @@ class File(BaseClass):
 
         return self
 
-    def from_elements(self, list):
+    def from_elements(self, list: List) -> "File":
+        """Populate this file from an existing list of elements."""
         from ..tools import MarkdownParser
         from .document import Document
 
@@ -89,7 +102,8 @@ class File(BaseClass):
 
         return self
 
-    def from_text(self, text: str):
+    def from_text(self, text: str) -> "File":
+        """Parse markdown text directly into this File instance."""
         from ..tools import MarkdownParser
 
         if not self.filename:
@@ -110,16 +124,26 @@ class File(BaseClass):
         return self
 
     def check(self):
+        """Print parsed elements and their LaTeX output for debugging."""
         elements = self.elements
         for el in elements:
             print(f"\n{el}\n{el.to_latex()}")
 
     def to_latex(self):
+        """Render contained elements to a combined LaTeX string."""
         text = "\n\n".join([elem.to_latex() for elem in self.elements])
 
         return text
 
     def _to_latex_project(self) -> str:
+        """Render contained elements for project export and write to disk.
+
+        Returns:
+            LaTeX input string referencing the generated file; may include page breaks depending on settings.
+
+        Side Effects:
+            Writes TeX files into the parent directory and adjusts paths for nested exports.
+        """
         if Settings.Export.branching_project:
             pass
         else:

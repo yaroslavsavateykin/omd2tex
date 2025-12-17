@@ -10,7 +10,16 @@ from .footnote import Footnote
 
 
 class Paragraph(BaseClass):
-    def __init__(self, text: str, parse=True) -> None:
+    def __init__(self, text: str, parse: bool = True) -> None:
+        """Initialize a paragraph wrapper with optional parsing.
+
+        Args:
+            text: Raw paragraph content.
+            parse: Whether to apply markdown and reference transformations.
+
+        Returns:
+            None
+        """
         super().__init__()
         self.text = text
         self.parse = parse
@@ -19,14 +28,25 @@ class Paragraph(BaseClass):
 
         self.footnote = Footnote().collection
 
-    def to_latex(self):
+    def to_latex(self) -> str:
+        """Render the paragraph to LaTeX, optionally parsing markdown constructs."""
         return self._parse_text()
 
-    def _to_latex_project(self):
+    def _to_latex_project(self) -> str:
         return self.to_latex()
 
     @staticmethod
-    def _change_letters_for_equations(text, dict_file="", surround_func=lambda x: x):
+    def _change_letters_for_equations(text: str, dict_file: str = "", surround_func=lambda x: x) -> str:
+        """Replace symbols in equations using a mapping file and wrapper.
+
+        Args:
+            text: Input equation text.
+            dict_file: Optional path to a JSON mapping file; defaults to bundled formulas.
+            surround_func: Callable applied to mapped values.
+
+        Returns:
+            Transformed text with mapped symbols.
+        """
         from ..tools import Global, Settings
 
         if dict_file:
@@ -45,6 +65,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _highlight_text1(text: str) -> str:
+        """Convert HTML superscript/subscript markers to LaTeX equivalents."""
         change_dict = {
             r"<sup>(.*?)</sup>": lambda x: f"$^{{{x.group(1)}}}$",  # Исправлено
             r"<sub>(.*?)</sub>": lambda x: f"$_{{{x.group(1)}}}$",  # Исправлено
@@ -60,6 +81,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _highlight_text2(text: str) -> str:
+        """Convert markdown emphasis markers to LaTeX formatting."""
         change_dict = {
             r"\*\*(.*?)\*\*": lambda x: f"\\textbf{{{x.group(1)}}}",
             r"__(.*?)__": lambda x: f"\\textbf{{{x.group(1)}}}",
@@ -81,6 +103,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _replace_inline_code(text: str) -> tuple[str, list]:
+        """Replace inline code segments with placeholders preserving content."""
         inline_codes = []
 
         def replace_inline(match):
@@ -93,6 +116,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _replace_inline_equation(text: str) -> tuple[str, list]:
+        """Replace inline equations with placeholders preserving content."""
         inline_equations = []
 
         def replace_inline(match):
@@ -104,6 +128,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _replace_outline_equation(text: str) -> tuple[str, list]:
+        """Replace outline equations with placeholders preserving content."""
         outline_equations = []
 
         def replace_inline(match):
@@ -117,6 +142,7 @@ class Paragraph(BaseClass):
     def _restore_placeholders(
         text: str, inline_equations=[], inline_codes=[], outline_equations=[]
     ) -> str:
+        """Restore code and equation placeholders into the provided text."""
         if inline_codes:
             for i, inline_code in enumerate(inline_codes):
                 inline_code = (
@@ -152,6 +178,7 @@ class Paragraph(BaseClass):
         seed=None,
         change_dict="",
     ) -> str:
+        """Randomly replace characters based on latinify mapping and probability."""
         if seed is not None:
             random.seed(seed)
 
@@ -178,6 +205,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _eq_ru_letter_workaround(text: str) -> str:
+        """Wrap Cyrillic characters in equations with text mode to avoid errors."""
         change_list = [
             "й",
             "ц",
@@ -223,6 +251,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _text_errors_workaround(text: str) -> str:
+        """Normalize known problematic characters and dashes."""
         change_dict = {"й": "й", "–": "-", "ο": "o", "ё": "ё", "−": "-"}
         for key in change_dict:
             text = text.replace(key, change_dict[key])
@@ -231,6 +260,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _process_references(text: str) -> str:
+        """Convert wiki-style references to LaTeX cref calls using global mapping."""
         from ..tools import Global, Settings
 
         ref_pattern = re.compile(
@@ -257,6 +287,7 @@ class Paragraph(BaseClass):
         return text
 
     def _process_footnotes(self, text: str) -> str:
+        """Replace footnote markers with LaTeX footnote commands using collection."""
         def process(match):
             key = match.group(1)
             if self.footnote[key]:
@@ -270,17 +301,16 @@ class Paragraph(BaseClass):
         return text
 
     @staticmethod
-    def _process_citations(text):
-        r"""
-        Обрабатывает различные форматы цитирований и приводит их к формату: text \cite{cite}
+    def _process_citations(text: str) -> str:
+        """Normalize citation markers to LaTeX ``\\cite{}`` commands.
 
-        Поддерживаемые форматы:
-        ![[@cite|text]] -> text \cite{cite}
-        ![[@cite]] -> \cite{cite}
-        [[@cite|text]] -> text \cite{cite}
-        [[@cite]] -> \cite{cite}
-        \cite{@cite} -> \cite{cite}
-        \cite{cite} -> \cite{cite}
+        Supports patterns like ``![[ @cite|text ]]``, ``[[ @cite ]]``, and ``\\cite{@cite}``, returning formatted citations or empty strings when source entries are missing.
+
+        Args:
+            text: Input string possibly containing various citation syntaxes.
+
+        Returns:
+            Text with citation patterns replaced by LaTeX citations; returns empty strings when citations are missing.
         """
         result = text
 
@@ -321,6 +351,7 @@ class Paragraph(BaseClass):
         return result
 
     def _parse_text(self) -> str:
+        """Parse and transform paragraph text according to settings."""
         from ..tools import Global, Settings
 
         if self.parse:
@@ -396,9 +427,8 @@ class Paragraph(BaseClass):
         return text
 
     @staticmethod
-    def escape_latex_special_chars(text):
-        """
-        Экранирует специальные символы LaTeX в строке, если они не экранированы
+    def escape_latex_special_chars(text: str) -> str:
+        """Escape unescaped LaTeX special characters in the provided text.
 
         Args:
             text (str): Входная строка с LaTeX-выражениями
@@ -420,6 +450,7 @@ class Paragraph(BaseClass):
 
     @staticmethod
     def _remove_all_highlight(text: str) -> str:
+        """Strip all markdown-style highlighting and emphasis markers."""
         change_dict = {
             r"\*\*(.*?)\*\*": lambda x: x.group(1),
             r"__(.*?)__": lambda x: x.group(1),
@@ -444,7 +475,8 @@ class Paragraph(BaseClass):
         return text
 
     @staticmethod
-    def merge_items(items: list):
+    def merge_items(items: list) -> list:
+        """Merge adjacent Paragraph instances when parsing flags match."""
         if not items:
             return []
 

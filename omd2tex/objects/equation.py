@@ -4,6 +4,7 @@ from .paragraph import Paragraph
 
 class Equation(BaseClass):
     def __init__(self, equation: str) -> None:
+        """Initialize an equation wrapper with optional reference."""
         super().__init__()
         self.equation = equation.strip("\n")
 
@@ -11,12 +12,14 @@ class Equation(BaseClass):
 
         self._is_initialized = True
 
-    def _identify_reference(self):
+    def _identify_reference(self) -> None:
+        """Register equation reference globally and mark initialization."""
         from ..tools import Global, Settings
         self._is_initialized = True
         Global.REFERENCE_DICT[self.reference] = "eq"
 
-    def to_latex(self):
+    def to_latex(self) -> str:
+        """Render the equation to LaTeX with or without numbering."""
         from ..tools import Global, Settings
         if not self._is_initialized:
             raise RuntimeError(

@@ -6,7 +6,15 @@ from .frontmatter_parser import FrontMatterParser
 
 
 class MdDataBase:
-    def __init__(self, search_path=None) -> None:
+    def __init__(self, search_path: str = None) -> None:
+        """Create a markdown database scanner over a search path.
+
+        Args:
+            search_path: Root directory to traverse; defaults to ``Settings.Export.search_dir`` when None.
+
+        Returns:
+            None
+        """
         if search_path is None:
             self.search_path = Settings.Export.search_dir
         else:
@@ -15,7 +23,20 @@ class MdDataBase:
         self.search_path = os.path.expanduser(self.search_path)
 
     # @property
-    def to_df(self):
+    def to_df(self) -> pd.DataFrame:
+        """Collect frontmatter from markdown files into a DataFrame.
+
+        Walks the search path, parses frontmatter of each ``.md`` file, and aggregates metadata into a pandas DataFrame.
+
+        Args:
+            None
+
+        Returns:
+            pandas.DataFrame containing one row per markdown file with frontmatter fields plus filename and absolute path.
+
+        Side Effects:
+            Reads files from disk.
+        """
         all_dict = []
 
         for root, dirs, files in os.walk(self.search_path):

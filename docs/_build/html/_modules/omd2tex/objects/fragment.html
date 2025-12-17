@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.objects.fragment &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.objects.fragment</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.headline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Headline</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+
+
+<div class="viewcode-block" id="SplitLine">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.fragment.html#omd2tex.SplitLine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SplitLine</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a split line marker optionally carrying text.&quot;&quot;&quot;</span>
+        <span class="c1"># Counter.Splitline += 1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+
+<div class="viewcode-block" id="SplitLine.to_latex">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.fragment.html#omd2tex.SplitLine.to_latex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_latex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render a horizontal rule using configured width.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">noindent</span><span class="se">\\</span><span class="s2">rule</span><span class="se">{{\\</span><span class="s2">textwidth</span><span class="se">}}{{</span><span class="si">{</span><span class="n">Settings</span><span class="o">.</span><span class="n">Fragment</span><span class="o">.</span><span class="n">Splitline</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="se">}}</span><span class="s2"> %</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_latex_project</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SplitLine.make_beamer">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.fragment.html#omd2tex.SplitLine.make_beamer">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_beamer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">elements_list</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split elements into beamer frames based on divider elements.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current_frame_elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">frame_title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="n">divide_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;splitline&quot;</span><span class="p">:</span> <span class="n">SplitLine</span><span class="p">,</span> <span class="s2">&quot;headline&quot;</span><span class="p">:</span> <span class="n">Headline</span><span class="p">}</span>
+
+        <span class="n">divide_list</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">divide_element</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">divide_list</span><span class="p">,</span> <span class="n">List</span><span class="p">):</span>
+            <span class="n">divide_els</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="s2">&quot;splitline&quot;</span> <span class="ow">in</span> <span class="n">divide_list</span><span class="p">:</span>
+                <span class="n">divide_els</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;splitline&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;headline&quot;</span> <span class="ow">in</span> <span class="n">divide_list</span><span class="p">:</span>
+                <span class="n">divide_els</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;headline&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">divide_list</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">divide_dict</span><span class="p">):</span>
+            <span class="n">divide_els</span> <span class="o">=</span> <span class="p">[</span><span class="n">divide_list</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No such divider as </span><span class="si">{</span><span class="n">divide_list</span><span class="si">}</span><span class="s2">. Using Splitline.&quot;</span><span class="p">)</span>
+            <span class="n">divide_els</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;splitline&quot;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">elements_list</span><span class="p">:</span>
+            <span class="n">is_divider</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">divide_el</span> <span class="ow">in</span> <span class="n">divide_els</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">divide_dict</span><span class="p">[</span><span class="n">divide_el</span><span class="p">]):</span>
+                    <span class="n">is_divider</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="n">current_frame_elements</span><span class="p">:</span>
+                        <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="n">Frame</span><span class="p">(</span>
+                                <span class="n">elements</span><span class="o">=</span><span class="n">current_frame_elements</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                <span class="n">title</span><span class="o">=</span><span class="n">frame_title</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="n">current_frame_elements</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                    <span class="n">frame_title</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">break</span>  <span class="c1"># важный момент — прекращаем проверку после нахождения разделителя</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_divider</span><span class="p">:</span>
+                <span class="n">current_frame_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">frames</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Frame">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.fragment.html#omd2tex.Frame">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Frame</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a beamer frame with elements and optional title.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+
+<div class="viewcode-block" id="Frame.to_latex">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.fragment.html#omd2tex.Frame.to_latex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_latex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the frame with contained elements to LaTeX.&quot;&quot;&quot;</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span>
+
+        <span class="n">latex</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\\</span><span class="s2">begin</span><span class="se">{{</span><span class="s2">frame</span><span class="se">}}{{</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="se">}}</span>
+
+<span class="si">{</span><span class="n">elements</span><span class="si">}</span>
+
+<span class="se">\\</span><span class="s2">end</span><span class="se">{{</span><span class="s2">frame</span><span class="se">}}</span><span class="s2">&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">latex</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_latex_project</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the frame for project export, keeping comments for structure.&quot;&quot;&quot;</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">_to_latex_project</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span>
+
+        <span class="n">latex</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\\</span><span class="s2">begin</span><span class="se">{{</span><span class="s2">frame</span><span class="se">}}{{</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="se">}}</span><span class="si">{</span><span class="s2">&quot;%&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">30</span><span class="si">}</span>
+
+<span class="si">{</span><span class="n">elements</span><span class="si">}</span>
+
+<span class="se">\\</span><span class="s2">end</span><span class="se">{{</span><span class="s2">frame</span><span class="se">}}</span><span class="si">{</span><span class="s2">&quot;%&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">30</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">latex</span></div>
+
+
+
+<div class="viewcode-block" id="Caption">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.fragment.html#omd2tex.Caption">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Caption</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a caption wrapper from list or string content.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cap_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cap_text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Caption.attach_caption">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.fragment.html#omd2tex.Caption.attach_caption">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">attach_caption</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Attach caption objects to the preceding element as metadata.&quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">last_reference</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">Caption</span><span class="p">):</span>
+                <span class="n">last_reference</span> <span class="o">=</span> <span class="n">el</span>
+                <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                    <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">caption</span> <span class="o">=</span> <span class="n">last_reference</span><span class="o">.</span><span class="n">cap_text</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">last_reference</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

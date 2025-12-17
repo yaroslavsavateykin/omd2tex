@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.objects.file &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.objects.file</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.list</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.quote</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quote</span>
+
+
+<div class="viewcode-block" id="File">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.file.html#omd2tex.File">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">File</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">parrentdir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">filedepth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a file container for parsed markdown content.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: Name of the markdown file represented.</span>
+<span class="sd">            parrentdir: Directory where output should be written.</span>
+<span class="sd">            filedepth: Current recursion depth for nested files.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">MarkdownParser</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">=</span> <span class="n">parrentdir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span> <span class="o">=</span> <span class="n">filedepth</span>
+
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">and</span> <span class="n">parrentdir</span> <span class="ow">and</span> <span class="n">filedepth</span><span class="p">:</span>
+            <span class="n">parser</span> <span class="o">=</span> <span class="n">MarkdownParser</span><span class="p">(</span>
+                <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                <span class="n">parrentdir</span><span class="o">=</span><span class="n">parrentdir</span><span class="p">,</span>
+                <span class="n">filedepth</span><span class="o">=</span><span class="n">filedepth</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">elements</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="File.from_file">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.file.html#omd2tex.File.from_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;File&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse markdown from disk into this File instance.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">MarkdownParser</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">:</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">export_dir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="nb">dir</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">dir</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">dir</span><span class="p">)</span>
+
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">MarkdownParser</span><span class="p">(</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+            <span class="n">filedepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">elements</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="File.from_elements">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.file.html#omd2tex.File.from_elements">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">list</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;File&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Populate this file from an existing list of elements.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">MarkdownParser</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.document</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span><span class="mi">7</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">:</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">export_dir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="nb">dir</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">dir</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">dir</span><span class="p">)</span>
+
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">MarkdownParser</span><span class="p">(</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+            <span class="n">filedepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">dir_depended_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">File</span><span class="p">,</span> <span class="n">Quote</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t pass Document to File.from_elements() function&quot;</span><span class="p">)</span>
+
+            <span class="n">new_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dir_depended_classes</span><span class="p">:</span>
+                <span class="c1"># print(list[i].parrentdir)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+                    <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">new_filename</span>
+                <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">+=</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.md&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">filedepth</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># print(list[i].parrentdir)</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">from_elements</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">elements</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="File.from_text">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.file.html#omd2tex.File.from_text">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;File&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse markdown text directly into this File instance.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">MarkdownParser</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span><span class="mi">7</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">:</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">export_dir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="nb">dir</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">dir</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">dir</span><span class="p">)</span>
+
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">MarkdownParser</span><span class="p">(</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+            <span class="n">filedepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">elements</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="File.check">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.file.html#omd2tex.File.check">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print parsed elements and their LaTeX output for debugging.&quot;&quot;&quot;</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span>
+        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">el</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">el</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="File.to_latex">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.file.html#omd2tex.File.to_latex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_latex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render contained elements to a combined LaTeX string.&quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">elem</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">text</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_latex_project</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render contained elements for project export and write to disk.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            LaTeX input string referencing the generated file; may include page breaks depending on settings.</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            Writes TeX files into the parent directory and adjusts paths for nested exports.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">branching_project</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># print(self.elements)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">elem</span><span class="o">.</span><span class="n">_to_latex_project</span><span class="p">()</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+                <span class="n">filename_tex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.md&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.tex&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">filename_tex</span> <span class="o">=</span> <span class="s2">&quot;main.tex&quot;</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">filename_tex</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">File</span><span class="o">.</span><span class="n">divide_with_new_page</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">input</span><span class="se">{{</span><span class="si">{</span><span class="n">filename_tex</span><span class="si">}</span><span class="se">}}\\</span><span class="s2">newpage&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">input</span><span class="se">{{</span><span class="si">{</span><span class="n">filename_tex</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

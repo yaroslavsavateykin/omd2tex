@@ -4,7 +4,8 @@ import asyncio
 
 class Makefile:
     @classmethod
-    def to_string(cls):
+    def to_string(cls) -> str:
+        """Generate Makefile content tailored to citation and reference usage."""
         if Global.CITATION_INITIALIZED:
             biber = "\n\tbiber main # Используем имя файла БЕЗ расширения .tex!\n\tpdflatex -shell-escape main.tex\n\tpdflatex -shell-escape main.tex"
         elif Global.REFERENCE_DICT:
@@ -36,10 +37,19 @@ clean:
         return string
 
     @classmethod
-    def to_file(cls, directory="."):
-        """Записывает Makefile в указанную директорию"""
+    def to_file(cls, directory=".") -> str:
+        """Записывает Makefile в указанную директорию
+
+        Args:
+            directory: Target directory where Makefile should be written.
+
+        Returns:
+            Path to the generated Makefile.
+
+        Side Effects:
+            Writes a Makefile to disk.
+        """
         filepath = os.path.join(directory, "Makefile")
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(cls.to_string())
         return filepath
-

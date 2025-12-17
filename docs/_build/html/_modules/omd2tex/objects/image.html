@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.objects.image &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.objects.image</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span> <span class="k">as</span> <span class="n">PillowImage</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">omd2tex.tools.settings_preamble</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPreamble</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.paragraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Paragraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+
+<div class="viewcode-block" id="Image">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.image.html#omd2tex.Image">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Image</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">parrentdir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">height</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an image element with sizing and caption metadata.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: Image filename to locate or copy.</span>
+<span class="sd">            parrentdir: Parent directory for relative placement during export.</span>
+<span class="sd">            caption: Optional caption text for the figure.</span>
+<span class="sd">            width: Optional desired width in pixels.</span>
+<span class="sd">            height: Optional desired height in pixels.</span>
+<span class="sd">            dir: Optional explicit absolute path to the image file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">=</span> <span class="n">parrentdir</span>
+
+        <span class="k">if</span> <span class="nb">dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="n">find_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">search_dir</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="nb">dir</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">caption</span> <span class="o">=</span> <span class="n">caption</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_image_dimensions</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_identify_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register the image reference in the global reference dictionary.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">:</span>
+            <span class="n">Global</span><span class="o">.</span><span class="n">REFERENCE_DICT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;fig&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Global</span><span class="o">.</span><span class="n">REFERENCE_DICT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;not_found_fig&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the intrinsic width and height of the image if available.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">PillowImage</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="p">)</span> <span class="k">as</span> <span class="n">img</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">height</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Image.to_latex">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.image.html#omd2tex.Image.to_latex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_latex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the image as a LaTeX figure block respecting settings.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">caption</span><span class="p">:</span>
+            <span class="n">caption</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">caption</span><span class="se">{{</span><span class="si">{</span><span class="n">Paragraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caption</span><span class="p">)</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">:</span>
+            <span class="n">reference</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">label</span><span class="se">{{</span><span class="s2">fig:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">caption</span><span class="p">:</span>
+                <span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reference</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir</span>
+        <span class="k">if</span> <span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">documentclass</span> <span class="o">==</span> <span class="s2">&quot;beamer&quot;</span><span class="p">:</span>
+            <span class="n">image_include</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">adjustbox</span><span class="se">{{</span><span class="s2">max width=</span><span class="se">\\</span><span class="s2">textwidth, max height=</span><span class="se">\\</span><span class="s2">textheight, keepaspectratio</span><span class="se">}}{{\\</span><span class="s2">includegraphics[height = </span><span class="se">\\</span><span class="s2">textheight/(3/2), keepaspectratio]</span><span class="se">{{</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="se">}}}}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">:</span>
+                    <span class="n">scale_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_width</span>
+                    <span class="n">scale_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_height</span>
+
+                    <span class="n">image_include</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">includegraphics[width = </span><span class="se">{{</span><span class="si">{</span><span class="n">scale_width</span><span class="si">}</span><span class="se">}}\\</span><span class="s2">textwidth, height = </span><span class="se">{{</span><span class="si">{</span><span class="n">scale_height</span><span class="si">}</span><span class="se">}}\\</span><span class="s2">textheight]</span><span class="se">{{</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_width</span>
+                    <span class="n">image_include</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">includegraphics[scale = </span><span class="se">{{</span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="se">}}</span><span class="s2">,keepaspectratio]</span><span class="se">{{</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">wh_ratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_width</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_height</span>
+
+                <span class="k">if</span> <span class="n">wh_ratio</span> <span class="o">&lt;</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">wh_aspect_borders</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">image_include</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">includegraphics[height = </span><span class="se">\\</span><span class="s2">textheight, keepaspectratio]</span><span class="se">{{</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+                <span class="k">elif</span> <span class="n">wh_ratio</span> <span class="o">&lt;</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">wh_aspect_borders</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_width</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_height</span><span class="p">:</span>
+                        <span class="n">image_include</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">includegraphics[width = </span><span class="si">{</span><span class="n">Settings</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">default_width</span><span class="si">}</span><span class="s2">, keepaspectratio]</span><span class="se">{{</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">image_include</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">includegraphics[height = </span><span class="si">{</span><span class="n">Settings</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">default_height</span><span class="si">}</span><span class="s2">, keepaspectratio]</span><span class="se">{{</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">image_include</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">includegraphics[width = </span><span class="se">\\</span><span class="s2">textwidth, keepaspectratio]</span><span class="se">{{</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+
+        <span class="n">latex_lines</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\\</span><span class="s2">begin</span><span class="se">{{</span><span class="s2">figure</span><span class="se">}}</span><span class="s2">[H] </span>
+<span class="se">\\</span><span class="s2">centering</span>
+<span class="si">{</span><span class="n">image_include</span><span class="si">}</span>
+<span class="si">{</span><span class="n">caption</span><span class="si">}</span>
+<span class="si">{</span><span class="n">reference</span><span class="si">}</span>
+<span class="se">\\</span><span class="s2">end</span><span class="se">{{</span><span class="s2">figure</span><span class="se">}}</span><span class="s2">&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">latex_lines</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_copy_to_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy the source image into the export project images folder.&quot;&quot;&quot;</span>
+        <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="p">)</span>
+        <span class="n">destination</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">destination</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Файл </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="si">}</span><span class="s2"> не найден&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_relative_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjust paths to be relative for project export.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_latex_project</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the image for inclusion in a LaTeX project and manage assets.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            LaTeX string for the figure while ensuring relative paths and optional copying of the source file according to settings.</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            May copy image files to the project directory and mutate internal path attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">absolute_path_in_project_export</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_relative_paths</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">copy_to_folder_in_project_export</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_copy_to_folder</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ImageFrame">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.image.html#omd2tex.ImageFrame">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImageFrame</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

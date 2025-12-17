@@ -15,7 +15,19 @@ class Quote(BaseClass):
         parrentdir="",
         filedepth=0,
         quotedepth=0,
-    ):
+    ) -> None:
+        """Initialize a quote block with nested markdown parsing.
+
+        Args:
+            quotelines: Lines comprising the quote.
+            filename: Source filename for context.
+            parrentdir: Parent directory path for resolving includes.
+            filedepth: Current depth of file recursion.
+            quotedepth: Current depth of nested quotes.
+
+        Returns:
+            None
+        """
         super().__init__()
         self.quotelines = quotelines
 
@@ -32,7 +44,16 @@ class Quote(BaseClass):
         self.reference = None
 
     @staticmethod
-    def _tabulate_string(string: str, level: int):
+    def _tabulate_string(string: str, level: int) -> str:
+        """Indent each line of a string by a specified level.
+
+        Args:
+            string: Input multiline string.
+            level: Number of indentation levels (each equals four spaces).
+
+        Returns:
+            Indented string.
+        """
         new_string = []
         for line in string.splitlines():
             line = "    " * level + line
@@ -40,7 +61,15 @@ class Quote(BaseClass):
 
         return "\n".join(new_string)
 
-    def to_latex(self):
+    def to_latex(self) -> str:
+        """Convert the quote and its elements to LaTeX.
+
+        Args:
+            None
+
+        Returns:
+            LaTeX string for the quote environment with proper indentation.
+        """
         text = "\\\\\n".join([el.to_latex() for el in self.elements])
 
         text = f"""\\begin{{quote}}\\slshape\\noindent
@@ -49,10 +78,21 @@ class Quote(BaseClass):
 
         return self._tabulate_string(text, self.quotedepth - 1)
 
-    def _to_latex_project(self):
+    def _to_latex_project(self) -> str:
         return self.to_latex()
 
-    def _parse_quote_lines(self):
+    def _parse_quote_lines(self) -> None:
+        """Parse quote lines to determine quote type and nested elements.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Side Effects:
+            Populates quote metadata and element list.
+        """
         pattern = re.compile(r"^>\s*!?\[([^\]]+)\]\s*(.*)$")
 
         new_lines = []
@@ -97,7 +137,19 @@ class Quote(BaseClass):
         parrentdir="",
         filedepth=0,
         quotedepth=0,
-    ):
+    ) -> BaseClass:
+        """Factory to create and process quote content in one step.
+
+        Args:
+            quotelines: Raw quote lines including leading markers.
+            filename: Source filename for context.
+            parrentdir: Parent directory path for nested includes.
+            filedepth: Current file recursion depth.
+            quotedepth: Current quote recursion depth.
+
+        Returns:
+            Processed element resulting from quote interpretation.
+        """
         instance = cls.__new__(cls)
         instance.quotelines = quotelines
 
@@ -114,7 +166,15 @@ class Quote(BaseClass):
         instance.reference = None
         return instance._apply_quote_type()
 
-    def _apply_quote_type(self):
+    def _apply_quote_type(self) -> BaseClass:
+        """Apply quote-specific rendering rules and return a replacement element.
+
+        Args:
+            None
+
+        Returns:
+            Appropriate element corresponding to quote type, defaulting to a quoted paragraph.
+        """
         text = "\n\n".join([el.to_latex() for el in self.elements])
 
         functions = {
@@ -141,6 +201,14 @@ class Quote(BaseClass):
 
     @staticmethod
     def _default_quoteline(text: str):
+        """Fallback quote rendering when no specialized type is matched.
+
+        Args:
+            text: Raw text content to wrap in a quote environment.
+
+        Returns:
+            Paragraph element containing the default quote representation.
+        """
         text = f"""\\begin{{quote}}\\slshape\\noindent
 {text}
 \\end{{quote}}"""

@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.tools.markdown_parser &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.tools.markdown_parser</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">omd2tex.objects.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClass</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.search</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.globals</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.settings_preamble</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPreamble</span>
+
+
+<div class="viewcode-block" id="MarkdownParser">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.markdown_parser.html#omd2tex.MarkdownParser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MarkdownParser</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="n">re_text_files1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;!?\[\[([^|\[\]]+?(?:\.(?:md|tex|txt))?)(?:\|([^\[\]]+))?\]\]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">re_text_files2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;!?\[([^\[\]]*)\]\(([^)]*?)(?:\.(md|tex|txt))?\)&quot;</span><span class="p">)</span>
+
+    <span class="n">re_reference</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\^([a-zA-Z0-9_-]+)&quot;</span><span class="p">)</span>
+
+    <span class="n">image_extensions_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\.(?:png|jpg|jpeg|gif|bmp|svg|webp)(?=\s*|$|\|)&quot;</span>
+
+    <span class="n">re_markdown_image</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;!\[([^\]]*?)\]\(([^\)]+?)(?:\s+&quot;([^&quot;]*)&quot;)?\)(?:\s*\^([a-zA-Z0-9_-]+))?&#39;</span><span class="p">,</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">re_wiki_image</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;!?\[\[([^\]\n]+?)\]\]?(?:\s*\^([a-zA-Z0-9_-]+))?&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+    <span class="p">)</span>
+
+    <span class="n">re_heading</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(#{1,6})\s+(.*)&quot;</span><span class="p">)</span>
+
+    <span class="n">re_footnote</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\s*\[\^([^\]]+)\]:(.*)&quot;</span><span class="p">)</span>
+
+    <span class="n">enumerate_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^(\d+)[.)]\s+(.+)$&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parrentdir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">filedepth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">quotedepth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate a parser for a markdown document fragment.</span>
+
+<span class="sd">        Initializes bookkeeping for nested parsing contexts, YAML storage, and target filename metadata while respecting branching project settings.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parrentdir: Directory of the parent document for relative inclusion.</span>
+<span class="sd">            filename: Target markdown filename to parse.</span>
+<span class="sd">            filedepth: Current recursion depth for nested files.</span>
+<span class="sd">            quotedepth: Current recursion depth for nested quote parsing.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            None explicitly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">branching_project</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">parrentdir</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;.md&quot;</span><span class="p">))</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">=</span> <span class="n">parrentdir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;.md&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span> <span class="o">=</span> <span class="n">parrentdir</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span> <span class="o">=</span> <span class="n">filedepth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quotedepth</span> <span class="o">=</span> <span class="n">quotedepth</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">yaml</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="MarkdownParser.check">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.markdown_parser.html#omd2tex.MarkdownParser.check">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print parsed elements and their LaTeX representation.</span>
+
+<span class="sd">        Iterates over collected elements and prints their string representation followed by the rendered LaTeX output. Helpful for debugging parsing results.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            Writes diagnostic information to stdout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No elements found&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">el</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">el</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__parse_size_parameter</span><span class="p">(</span><span class="n">size_str</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a size specification string into width and height.</span>
+
+<span class="sd">        Accepts simple numeric strings like ``&quot;300&quot;`` for width-only or ``&quot;300x200&quot;`` for both dimensions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size_str: Raw size specification; may be None or empty.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of integers (width, height) where unspecified height is None; returns (None, None) when the input is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">size_str</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\d+(x\d+)?$&quot;</span><span class="p">,</span> <span class="n">size_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">size_parts</span> <span class="o">=</span> <span class="n">size_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">size_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">size_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">size_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+
+<div class="viewcode-block" id="MarkdownParser.from_file">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.markdown_parser.html#omd2tex.MarkdownParser.from_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MarkdownParser&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse markdown from a file into structured elements.</span>
+
+<span class="sd">        Resolves the file path via search settings, loads UTF-8 content, and delegates line parsing to the internal parser, preserving recursion metadata.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: Name of the markdown file to locate and parse.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Self instance for chaining regardless of whether parsing succeeded.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: Propagated if the search path does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dir_filename</span> <span class="o">=</span> <span class="n">find_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">search_path</span><span class="o">=</span><span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">search_dir</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_filename</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__parse</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="MarkdownParser.from_text">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.markdown_parser.html#omd2tex.MarkdownParser.from_text">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MarkdownParser&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse raw markdown text supplied as a string or list of lines.</span>
+
+<span class="sd">        Converts string input to lines when necessary and populates the element list by invoking the internal parser.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text: Markdown content as a single string or list of lines.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Self instance for chaining.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__parse</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="MarkdownParser.from_elements">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.markdown_parser.html#omd2tex.MarkdownParser.from_elements">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MarkdownParser&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize parser state from preconstructed element objects.</span>
+
+<span class="sd">        Validates elements to avoid unsupported document types and processes them through post-parsing normalization steps.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            list: Sequence of element instances to normalize.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Self instance with processed elements.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: If disallowed element types (Document or MarkdownParser) are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
+
+        <span class="n">not_pass</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="n">MarkdownParser</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">nel</span> <span class="ow">in</span> <span class="n">not_pass</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">nel</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Can&#39;t pass </span><span class="si">{</span><span class="n">nel</span><span class="si">}</span><span class="s2"> to MarkdownParser.from_elements() function&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_elements_list</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_elements_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-process parsed elements applying references, captions, and layout rules.</span>
+
+<span class="sd">        Applies reference attachment, caption propagation, list merging, and beamer-specific transformations depending on settings and recursion depth.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            elements: Raw list of parsed elements to normalize.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Updated list of elements respecting configured parsing behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">Caption</span><span class="p">,</span> <span class="n">Reference</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">SplitLine</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.globals</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span>
+
+        <span class="n">elements</span> <span class="o">=</span> <span class="n">Reference</span><span class="o">.</span><span class="n">attach_reference</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="n">Reference</span><span class="o">.</span><span class="n">identify_elements_reference</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="n">Caption</span><span class="o">.</span><span class="n">attach_caption</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Global</span><span class="o">.</span><span class="n">ERROR_CATCHER</span> <span class="ow">or</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Parse</span><span class="o">.</span><span class="n">merge_elements</span><span class="p">:</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">append_items</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">merge_items</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">documentclass</span> <span class="o">==</span> <span class="s2">&quot;beamer&quot;</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">quotedepth</span> <span class="o">&lt;</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span> <span class="o">&lt;</span> <span class="mi">1</span>
+        <span class="p">):</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">SplitLine</span><span class="o">.</span><span class="n">make_beamer</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">elements</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse markdown lines into element objects.</span>
+
+<span class="sd">        Implements a line-by-line stateful parser handling frontmatter, equations, code blocks, lists, images, references, tables, quotes, and paragraphs while respecting recursion guards and settings.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lines: Markdown file content as a list of lines.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RecursionError: When quote or file inclusion depth exceeds configured limits.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..objects</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+            <span class="n">SplitLine</span><span class="p">,</span>
+            <span class="n">Equation</span><span class="p">,</span>
+            <span class="n">Paragraph</span><span class="p">,</span>
+            <span class="n">CodeBlock</span><span class="p">,</span>
+            <span class="n">Reference</span><span class="p">,</span>
+            <span class="n">Headline</span><span class="p">,</span>
+            <span class="n">Table</span><span class="p">,</span>
+            <span class="n">Image</span><span class="p">,</span>
+            <span class="n">Quote</span><span class="p">,</span>
+            <span class="n">Footnote</span><span class="p">,</span>
+            <span class="n">Enumerate</span><span class="p">,</span>
+            <span class="n">Bullet</span><span class="p">,</span>
+            <span class="n">Check</span><span class="p">,</span>
+            <span class="n">File</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.frontmatter_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrontMatterParser</span>
+
+        <span class="n">non_md_extensions</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;.jpg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.jpeg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.svg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.gif&quot;</span><span class="p">,</span>  <span class="c1"># Изображения</span>
+            <span class="s2">&quot;.docx&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.pdf&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.xlsx&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.pptx&quot;</span><span class="p">,</span>  <span class="c1"># Документы</span>
+            <span class="s2">&quot;.zip&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.tar&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.gz&quot;</span><span class="p">,</span>  <span class="c1"># Архивы</span>
+            <span class="s2">&quot;.mp3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.mp4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.avi&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.mov&quot;</span><span class="p">,</span>  <span class="c1"># Медиа</span>
+        <span class="p">]</span>
+
+        <span class="n">image_extensions</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.jpg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.jpeg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.gif&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.bmp&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.tiff&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.webp&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.svg&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">not_file</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">in_yaml</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">in_code_block</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">in_equation</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">in_table</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">in_quote</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">footnote</span> <span class="o">=</span> <span class="n">Footnote</span><span class="p">()</span>
+
+        <span class="n">frontmatter</span> <span class="o">=</span> <span class="n">FrontMatterParser</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">Global</span><span class="o">.</span><span class="n">YAML_DICT</span> <span class="o">=</span> <span class="n">frontmatter</span><span class="o">.</span><span class="n">yaml</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yaml</span> <span class="o">=</span> <span class="n">frontmatter</span><span class="o">.</span><span class="n">yaml</span>
+
+        <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Frontmatter</span><span class="o">.</span><span class="n">parse</span><span class="p">:</span>
+            <span class="n">Settings</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">frontmatter</span><span class="o">.</span><span class="n">yaml</span><span class="p">)</span>
+            <span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">frontmatter</span><span class="o">.</span><span class="n">yaml</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="n">frontmatter</span><span class="o">.</span><span class="n">yaml_line_end</span>
+
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="c1"># Skipping &quot;&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># CHANGING FOOTNOTE KEYS</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">footnote</span><span class="o">.</span><span class="n">change_footnote_keys</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_footnote</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">footnote_key</span><span class="p">,</span> <span class="n">footnote_text</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+
+                <span class="n">Footnote</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">footnote_key</span><span class="p">,</span> <span class="n">footnote_text</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># READING YAML</span>
+            <span class="c1"># if Settings.Frontmatter.parse:</span>
+            <span class="c1">#     if i == 0 and line.startswith(&quot;---&quot;):</span>
+            <span class="c1">#         in_yaml = True</span>
+            <span class="c1">#         yaml_lines = []</span>
+            <span class="c1">#         i += 1</span>
+            <span class="c1">#         continue</span>
+            <span class="c1">#</span>
+            <span class="c1">#     if in_yaml:</span>
+            <span class="c1">#         if line.startswith(&quot;---&quot;):</span>
+            <span class="c1">#             in_yaml = False</span>
+            <span class="c1">#             if yaml_lines:</span>
+            <span class="c1">#                 yamles = yaml.safe_load(&quot;\n&quot;.join(yaml_lines))</span>
+            <span class="c1">#                 Settings.update(yamles)</span>
+            <span class="c1">#                 SettingsPreamble.update(yamles)</span>
+            <span class="c1">#                 for key in yamles:</span>
+            <span class="c1">#                     Global.YAML_DICT[key] = yamles[key]</span>
+            <span class="c1">#                 self.yaml = yamles</span>
+            <span class="c1">#             i += 1</span>
+            <span class="c1">#             continue</span>
+            <span class="c1">#         else:</span>
+            <span class="c1">#             yaml_lines.append(line)</span>
+            <span class="c1">#             i += 1</span>
+            <span class="c1">#             continue</span>
+
+            <span class="c1"># БЛОКИ КОДА</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;```&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">in_code_block</span><span class="p">:</span>
+                <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">blocktype</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;```&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">blocklines</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">in_code_block</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">in_code_block</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;```&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">blocklines</span><span class="p">:</span>
+                        <span class="n">el</span> <span class="o">=</span> <span class="n">CodeBlock</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">blocktype</span><span class="p">,</span> <span class="n">blocklines</span><span class="p">)</span>
+                        <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                    <span class="n">in_code_block</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">blocklines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># УРАВНЕНИЯ</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">eq</span> <span class="o">=</span> <span class="n">Equation</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">))</span>
+                    <span class="n">eq</span><span class="o">.</span><span class="n">_is_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">eq</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">in_equation</span><span class="p">:</span>
+                    <span class="n">equationlines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">)]</span>
+                    <span class="n">in_equation</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">equationlines</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">equationlines</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+                            <span class="n">eq</span> <span class="o">=</span> <span class="n">Equation</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">equationlines</span><span class="p">))</span>
+
+                            <span class="n">eq</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                            <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
+                    <span class="n">in_equation</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">in_equation</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">in_equation</span><span class="p">:</span>
+                    <span class="n">equationlines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">)]</span>
+                    <span class="n">in_equation</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+
+                    <span class="k">if</span> <span class="n">equationlines</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">equationlines</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+                            <span class="n">eq</span> <span class="o">=</span> <span class="n">Equation</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">equationlines</span><span class="p">))</span>
+
+                            <span class="n">eq</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                            <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
+                    <span class="n">in_equation</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">in_equation</span><span class="p">:</span>
+                <span class="n">equationlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">))</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Fragment</span><span class="o">.</span><span class="n">Splitline</span><span class="o">.</span><span class="n">parse</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">):</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">el</span> <span class="o">=</span> <span class="n">SplitLine</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+                    <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+            <span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">line</span>
+            <span class="k">while</span> <span class="n">stripped_line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;    &quot;</span><span class="p">):</span>
+                <span class="n">depth</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+
+            <span class="n">reference</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">reference_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\^([a-zA-Z0-9]</span><span class="si">{6}</span><span class="s2">)$&quot;</span><span class="p">,</span> <span class="n">stripped_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">reference_match</span><span class="p">:</span>
+                <span class="n">reference</span> <span class="o">=</span> <span class="n">reference_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="p">[:</span> <span class="n">reference_match</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+
+            <span class="n">enumerate_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(\d+)[.)]\s+(.+)$&quot;</span><span class="p">,</span> <span class="n">stripped_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">enumerate_match</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">enumerate_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">enumerate_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="c1"># print(i)</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">Enumerate</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">if</span> <span class="n">reference</span><span class="p">:</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span>
+                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">elif</span> <span class="n">stripped_line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;- [&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">stripped_line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">complete</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;x&quot;</span>
+                <span class="n">text_start</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;] &quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">text_start</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="p">[</span><span class="n">text_start</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">:]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">Check</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">complete</span><span class="o">=</span><span class="n">complete</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
+                <span class="c1"># print(i)</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">if</span> <span class="n">reference</span><span class="p">:</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span>
+                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">elif</span> <span class="n">stripped_line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;- &quot;</span><span class="p">):</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+                <span class="c1"># print(i)</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">Bullet</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">if</span> <span class="n">reference</span><span class="p">:</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span>
+                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">parse</span><span class="p">:</span>
+                <span class="c1"># Обновленные регулярные выражения с проверкой расширений</span>
+
+                <span class="c1"># Обработка Markdown изображений</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_markdown_image</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span> <span class="ow">and</span> <span class="n">not_file</span><span class="p">:</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">alt_text</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ref_link</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+
+                    <span class="c1"># Проверяем расширение файла</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">image_extensions_pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+                    <span class="p">):</span>
+                        <span class="n">not_file</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#^&quot;</span><span class="p">):</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># Парсим параметры размера из alt text или title</span>
+                    <span class="n">size_param</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="s2">&quot;|&quot;</span> <span class="ow">in</span> <span class="n">alt_text</span><span class="p">:</span>
+                        <span class="n">alt_parts</span> <span class="o">=</span> <span class="n">alt_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="n">alt_text</span><span class="p">,</span> <span class="n">size_param</span> <span class="o">=</span> <span class="n">alt_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">alt_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="n">title</span> <span class="ow">and</span> <span class="s2">&quot;x&quot;</span> <span class="ow">in</span> <span class="n">title</span><span class="p">:</span>
+                        <span class="n">size_param</span> <span class="o">=</span> <span class="n">title</span>
+
+                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_size_parameter</span><span class="p">(</span><span class="n">size_param</span><span class="p">)</span>
+                    <span class="n">caption</span> <span class="o">=</span> <span class="n">alt_text</span> <span class="k">if</span> <span class="n">alt_text</span> <span class="k">else</span> <span class="kc">None</span>
+
+                    <span class="n">image_obj</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                        <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+                        <span class="n">caption</span><span class="o">=</span><span class="n">caption</span><span class="p">,</span>
+                        <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+                        <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="n">image_obj</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+
+                    <span class="k">if</span> <span class="n">ref_link</span><span class="p">:</span>
+                        <span class="n">image_obj</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">ref_link</span>
+
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image_obj</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Обработка Wiki изображений (Obsidian)</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_wiki_image</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">not_file</span><span class="p">:</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">content</span><span class="p">,</span> <span class="n">ref_link</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+
+                    <span class="c1"># Разделяем содержимое на части</span>
+                    <span class="n">parts</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="c1"># Проверяем расширение файла</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">image_extensions_pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+                    <span class="p">):</span>
+                        <span class="n">not_file</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#^&quot;</span><span class="p">):</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># Обрабатываем дополнительные параметры</span>
+                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+                    <span class="n">caption</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">size_param</span> <span class="o">=</span> <span class="kc">None</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="c1"># Проверяем каждый параметр</span>
+                        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                            <span class="c1"># Если параметр похож на размер</span>
+                            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\d+(x\d+)?$&quot;</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+                                <span class="n">size_param</span> <span class="o">=</span> <span class="n">param</span>
+                            <span class="c1"># Иначе считаем это подписью</span>
+                            <span class="k">elif</span> <span class="n">caption</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">caption</span> <span class="o">=</span> <span class="n">param</span>
+
+                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_size_parameter</span><span class="p">(</span><span class="n">size_param</span><span class="p">)</span>
+
+                    <span class="n">image_obj</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                        <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+                        <span class="n">caption</span><span class="o">=</span><span class="n">caption</span><span class="p">,</span>
+                        <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+                        <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="n">image_obj</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                    <span class="k">if</span> <span class="n">ref_link</span><span class="p">:</span>
+                        <span class="n">image_obj</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">ref_link</span>
+
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image_obj</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">File</span><span class="o">.</span><span class="n">parse</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_text_files1</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span> <span class="o">&gt;=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">File</span><span class="o">.</span><span class="n">max_file_recursion</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RecursionError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Maximum file nesting filedepth (</span><span class="si">{</span><span class="n">Settings</span><span class="o">.</span><span class="n">File</span><span class="o">.</span><span class="n">max_file_recursion</span><span class="si">}</span><span class="s2">) exceeded&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">filename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">image_extensions</span><span class="p">):</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">non_md_extensions</span><span class="p">):</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#^&quot;</span><span class="p">):</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+
+                    <span class="n">el</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.md&quot;</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.md&quot;</span><span class="p">)</span>
+                        <span class="k">else</span> <span class="n">filename</span><span class="p">,</span>
+                        <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+                        <span class="n">filedepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+                <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_text_files2</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">n</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span> <span class="o">&gt;=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">File</span><span class="o">.</span><span class="n">max_file_recursion</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RecursionError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Maximum file nesting filedepth (</span><span class="si">{</span><span class="n">Settings</span><span class="o">.</span><span class="n">File</span><span class="o">.</span><span class="n">max_file_recursion</span><span class="si">}</span><span class="s2">) exceeded&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">image_extensions</span><span class="p">):</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#^&quot;</span><span class="p">):</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">non_md_extensions</span><span class="p">):</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">extension</span><span class="p">:</span>
+                        <span class="n">full_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">full_filename</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.md&quot;</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.md&quot;</span><span class="p">)</span>
+                            <span class="k">else</span> <span class="n">filename</span>
+                        <span class="p">)</span>
+
+                    <span class="n">el</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
+                        <span class="n">full_filename</span><span class="p">,</span>
+                        <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+                        <span class="n">filedepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filedepth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># Переделываем ссылки на другие элементы</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_reference</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">el</span> <span class="o">=</span> <span class="n">Reference</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">()[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="n">next_is_table</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">in_table</span><span class="p">:</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">in_table</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">tablelines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tablelines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">next_is_table</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tablelines</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">tab</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">tablelines</span><span class="p">)</span>
+                        <span class="n">tab</span><span class="o">.</span><span class="n">_is_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">tab</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+                        <span class="n">in_table</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">tablelines</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">in_table</span><span class="p">:</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tablelines</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">tab</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">tablelines</span><span class="p">)</span>
+                        <span class="n">tab</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                        <span class="n">tab</span><span class="o">.</span><span class="n">_is_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+                    <span class="n">in_table</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">tablelines</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+            <span class="n">next_is_quote</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">in_quote</span><span class="p">:</span>
+                    <span class="n">in_quote</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">quotelines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">quotelines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">next_is_quote</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quotedepth</span> <span class="o">&gt;=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Quote</span><span class="o">.</span><span class="n">max_quote_recursion</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RecursionError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Maximum quote nesting quotedepth (</span><span class="si">{</span><span class="n">Settings</span><span class="o">.</span><span class="n">Quote</span><span class="o">.</span><span class="n">max_quote_recursion</span><span class="si">}</span><span class="s2">) exceeded&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+
+                    <span class="n">el</span> <span class="o">=</span> <span class="n">Quote</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                        <span class="n">quotelines</span><span class="o">=</span><span class="n">quotelines</span><span class="p">,</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                        <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+                        <span class="n">quotedepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quotedepth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                    <span class="n">in_quote</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">quotelines</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">in_quote</span><span class="p">:</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quotedepth</span> <span class="o">&gt;=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Quote</span><span class="o">.</span><span class="n">max_quote_recursion</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RecursionError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Maximum quote nesting quotedepth (</span><span class="si">{</span><span class="n">Settings</span><span class="o">.</span><span class="n">Quote</span><span class="o">.</span><span class="n">max_quote_recursion</span><span class="si">}</span><span class="s2">) exceeded&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">el</span> <span class="o">=</span> <span class="n">Quote</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                        <span class="n">quotelines</span><span class="o">=</span><span class="n">quotelines</span><span class="p">,</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                        <span class="n">parrentdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parrentdir</span><span class="p">,</span>
+                        <span class="n">quotedepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quotedepth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                    <span class="n">in_quote</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">quotelines</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># ЗАГОЛОВКИ</span>
+
+            <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Headline</span><span class="o">.</span><span class="n">parse</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_heading</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">n</span><span class="p">:</span>
+                    <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">level</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                    <span class="n">el</span> <span class="o">=</span> <span class="n">Headline</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">level</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                    <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+            <span class="n">START</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">el</span><span class="o">.</span><span class="n">_start_line</span> <span class="o">=</span> <span class="n">START</span>
+            <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+
+            <span class="c1"># Параграф</span>
+            <span class="n">paragraph_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="p">(</span>
+                <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$$&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;```&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">paragraph_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">joined</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">paragraph_lines</span><span class="p">)</span>
+            <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="n">joined</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_elements_list</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

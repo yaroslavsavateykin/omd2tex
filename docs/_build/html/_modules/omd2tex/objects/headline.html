@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.objects.headline &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.objects.headline</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.equation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Equation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.paragraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Paragraph</span>
+
+
+
+<div class="viewcode-block" id="Headline">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.headline.html#omd2tex.Headline">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Headline</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a headline with level and raw text.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__identify_level</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_identify_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register headline reference and align levels globally.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_initialized</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__global_level_align</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Headline</span><span class="o">.</span><span class="n">numeration</span><span class="p">:</span>
+                <span class="n">ref_type</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s2">&quot;sec&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;subsec&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;subsubsec&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;par&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;txt&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;txt&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;txt&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;txt&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="n">Global</span><span class="o">.</span><span class="n">REFERENCE_DICT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_type</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__identify_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Track the minimum headline level for global alignment.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">&lt;</span> <span class="n">Global</span><span class="o">.</span><span class="n">MIN_HEADLINE_LEVEL</span><span class="p">:</span>
+            <span class="n">Global</span><span class="o">.</span><span class="n">MIN_HEADLINE_LEVEL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__global_level_align</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjust level relative to the minimum headline level when enabled.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+        <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Headline</span><span class="o">.</span><span class="n">global_level_align</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">-=</span> <span class="n">Global</span><span class="o">.</span><span class="n">MIN_HEADLINE_LEVEL</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pick_surround</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Choose LaTeX wrapper function based on settings and level.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Callable that wraps provided text in the appropriate LaTeX heading construct.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+        <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Headline</span><span class="o">.</span><span class="n">numeration</span><span class="p">:</span>
+            <span class="n">latex_command</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;section&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;subsection&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;subsubsection&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;paragraph&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;textbf&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;textbf&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;textbf&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;textbf&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">:</span>
+                <span class="n">ref_type</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s2">&quot;sec&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;subsec&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;subsubsec&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;par&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;txt&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;txt&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;txt&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;txt&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="n">latex_function</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="si">{</span><span class="n">latex_command</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">]</span><span class="si">}</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="se">}}\\</span><span class="s2">label</span><span class="se">{{</span><span class="si">{</span><span class="n">ref_type</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">latex_function</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="si">{</span><span class="n">latex_command</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">]</span><span class="si">}</span><span class="se">{{</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">latex_command</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">Large&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">large&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">normalsize&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">normalsize&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">normalsize&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">normalsize&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">normalsize&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">normalsize&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+
+            <span class="n">latex_function</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\\</span><span class="s2">noindent</span><span class="se">\\</span><span class="s2">textbf</span><span class="se">{{</span><span class="si">{</span><span class="n">latex_command</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="se">}}\\</span><span class="s2">newline&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">latex_function</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clean_markdown_numeration</span><span class="p">(</span><span class="n">heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove numbering markers from the beginning of a markdown heading.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            heading: Raw markdown heading string.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Heading text stripped of leading numbering or bullet markers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">heading</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">heading</span>
+
+        <span class="c1"># Более консервативное регулярное выражение - удаляет только явную нумерацию</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># Арабские цифры с точкой и пробелом: &quot;1. &quot;, &quot;1.1. &quot;, &quot;1.1.1. &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*\d+(?:\.\d+)*\.\s+&quot;</span><span class="p">,</span>
+            <span class="c1"># Арабские цифры со скобкой: &quot;1) &quot;, &quot;1.1) &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*\d+(?:\.\d+)*\)\s+&quot;</span><span class="p">,</span>
+            <span class="c1"># Римские цифры с точкой: &quot;IV. &quot;, &quot;vii. &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*[ivxlcdmIVXLCDM]+\.\s+&quot;</span><span class="p">,</span>
+            <span class="c1"># Римские цифры со скобкой: &quot;IV) &quot;, &quot;vii) &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*[ivxlcdmIVXLCDM]+\)\s+&quot;</span><span class="p">,</span>
+            <span class="c1"># Буквы с точкой: &quot;a. &quot;, &quot;A. &quot;, &quot;б. &quot;, &quot;Б. &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*[a-zA-Zа-яА-ЯёЁ]\.\s+&quot;</span><span class="p">,</span>
+            <span class="c1"># Буквы со скобкой: &quot;a) &quot;, &quot;A) &quot;, &quot;б) &quot;, &quot;Б) &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*[a-zA-Zа-яА-ЯёЁ]\)\s+&quot;</span><span class="p">,</span>
+            <span class="c1"># В скобках: &quot;[1] &quot;, &quot;(1) &quot;, &quot;[a] &quot;, &quot;(a) &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*[\[({][a-zA-Zа-яА-ЯёЁ0-9ivxlcdmIVXLCDM]+[\])}]\s+&quot;</span><span class="p">,</span>
+            <span class="c1"># Маркеры списков: &quot;• &quot;, &quot;◦ &quot;, &quot;› &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*[•◦›]\s+&quot;</span><span class="p">,</span>
+            <span class="c1"># Сложные комбинации в скобках: &quot;[1.A.iii] &quot;, &quot;(2.б) &quot;</span>
+            <span class="sa">r</span><span class="s2">&quot;^\s*[\[({]\w+(?:[\.\-]\w+)*[\])}]\s+&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">heading</span>
+
+        <span class="c1"># Применяем паттерны по очереди, останавливаемся на первом совпадении</span>
+        <span class="k">for</span> <span class="n">pattern_str</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern_str</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span> <span class="o">|</span> <span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span><span class="p">)</span>
+            <span class="n">new_result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_result</span> <span class="o">!=</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">new_result</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sanitize and render heading text according to settings.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span><span class="p">,</span> <span class="n">Settings</span>
+        <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Headline</span><span class="o">.</span><span class="n">clean_all_highlight</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">Paragraph</span><span class="o">.</span><span class="n">_remove_all_highlight</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Headline</span><span class="o">.</span><span class="n">clean_markdown_numeration</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">Headline</span><span class="o">.</span><span class="n">_clean_markdown_numeration</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">text</span>
+
+<div class="viewcode-block" id="Headline.to_latex">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.headline.html#omd2tex.Headline.to_latex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_latex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Headline is not initialized! Firstly call _identify_reference()&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pick_surround</span><span class="p">()(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_latex_project</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -5,7 +5,18 @@ from .base import BaseClass
 class Citation(BaseClass):
     citation_list = []
 
-    def __init__(self, key):
+    def __init__(self, key: str) -> None:
+        """Initialize citation metadata and resolve bibtex content.
+
+        Args:
+            key: Citation key (may include @) used to locate markdown source.
+
+        Returns:
+            None
+
+        Side Effects:
+            Sets global citation initialization flag and appends to class registry.
+        """
 
         from ..tools import Global
         super().__init__()
@@ -15,7 +26,8 @@ class Citation(BaseClass):
         self.text = self._found_citation()
         self.__class__.citation_list.append(self)
 
-    def _found_citation(self):
+    def _found_citation(self) -> str:
+        """Locate and parse citation text from a markdown file."""
         from ..tools import find_file
         from ..tools import Settings
         path = find_file(
@@ -32,7 +44,8 @@ class Citation(BaseClass):
         return text
 
     @staticmethod
-    def _parse_citation(text):
+    def _parse_citation(text: str) -> str:
+        """Normalize raw citation text extracted from markdown."""
         objects = [
             r"{{title}}",
             r"{{author}}",
@@ -56,7 +69,8 @@ class Citation(BaseClass):
 
         return text
 
-    def to_latex(self):
+    def to_latex(self) -> str:
+        """Render citation content into LaTeX filecontents and bibliography declaration."""
         if self.text:
             key = self.key.strip(".md").strip("@")
 
@@ -68,7 +82,8 @@ class Citation(BaseClass):
         return text
 
     @classmethod
-    def to_latex_preamble(cls):
+    def to_latex_preamble(cls) -> str:
+        """Concatenate LaTeX preamble entries for all registered citations."""
         citation_text = "\n\n".join(cit.to_latex() for cit in cls.citation_list)
 
         return citation_text

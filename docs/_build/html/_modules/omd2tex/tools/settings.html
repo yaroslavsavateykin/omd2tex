@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.tools.settings &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.tools.settings</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">.config_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigBase</span>
+
+<div class="viewcode-block" id="Settings">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+<div class="viewcode-block" id="Settings.Parse">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Parse">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Parse</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">merge_elements</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize parse-related settings with class defaults.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge_elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">merge_elements</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Export">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Export">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Export</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">search_dir</span> <span class="o">=</span> <span class="s1">&#39;~/Obsidian/&#39;</span>
+        <span class="n">search_ignore_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.trash&#39;</span><span class="p">,</span> <span class="s1">&#39;.obsidian&#39;</span><span class="p">,</span> <span class="s1">&#39;.plugins&#39;</span><span class="p">,</span> <span class="s1">&#39;.smart-env&#39;</span><span class="p">,</span> <span class="s1">&#39;.reference-map&#39;</span><span class="p">]</span>
+        <span class="n">makefile</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">export_dir</span> <span class="o">=</span> <span class="s1">&#39;./test/&#39;</span>
+        <span class="n">branching_project</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize export settings including search paths and project behavior.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">search_dir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search_ignore_dirs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">search_ignore_dirs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">makefile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">makefile</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">export_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">export_dir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">branching_project</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">branching_project</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Frontmatter">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Frontmatter">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Frontmatter</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">parse</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize frontmatter parsing toggle.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">parse</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Beamer">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Beamer">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Beamer</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">divide_element</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;splitline&#39;</span><span class="p">,</span> <span class="s1">&#39;headline&#39;</span><span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize beamer-specific split configuration.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">divide_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">divide_element</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Paragraph">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Paragraph">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Paragraph</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">latinify</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">latinify_probability</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="n">latinify_json</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">formulas_json</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize paragraph parsing options such as latinify behavior.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latinify</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">latinify</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latinify_probability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">latinify_probability</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latinify_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">latinify_json</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formulas_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">formulas_json</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Preamble">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Preamble">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Preamble</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">create_preamble</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">settings_json</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize preamble generation settings.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_preamble</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">create_preamble</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">settings_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">settings_json</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.File">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.File">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">File</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">parse</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">max_file_recursion</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">pass_if_not_found</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">divide_with_new_page</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">parse</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_file_recursion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">max_file_recursion</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pass_if_not_found</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">pass_if_not_found</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">divide_with_new_page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">divide_with_new_page</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Headline">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Headline">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Headline</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">parse</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">global_level_align</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">numeration</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">clean_markdown_numeration</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">clean_all_highlight</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">parse</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_level_align</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">global_level_align</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numeration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">numeration</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clean_markdown_numeration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">clean_markdown_numeration</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clean_all_highlight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">clean_all_highlight</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Image">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Image">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Image</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">parse</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">absolute_path_in_project_export</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">copy_to_folder_in_project_export</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">wh_aspect_borders</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">]</span>
+        <span class="n">default_width</span> <span class="o">=</span> <span class="s1">&#39;8cm&#39;</span>
+        <span class="n">default_height</span> <span class="o">=</span> <span class="s1">&#39;8cm&#39;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize image handling defaults and copy strategies.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">parse</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">absolute_path_in_project_export</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">absolute_path_in_project_export</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copy_to_folder_in_project_export</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">copy_to_folder_in_project_export</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wh_aspect_borders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">wh_aspect_borders</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">default_width</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">default_height</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Quote">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Quote">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Quote</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">parse</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">max_quote_recursion</span> <span class="o">=</span> <span class="mi">5</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize quote parsing limits and toggles.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">parse</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_quote_recursion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">max_quote_recursion</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.List">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.List">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">List</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">itemsep</span> <span class="o">=</span> <span class="s1">&#39;0pt&#39;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize list spacing defaults.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">itemsep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">itemsep</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Codeblock">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Codeblock">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Codeblock</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+        <span class="n">parse</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize code block parsing toggle.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">parse</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Fragment">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Fragment">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Fragment</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+<div class="viewcode-block" id="Settings.Fragment.Splitline">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Fragment.Splitline">[docs]</a>
+        <span class="k">class</span><span class="w"> </span><span class="nc">Splitline</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+            <span class="n">parse</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="s1">&#39;0.5pt&#39;</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Initialize splitline fragment parameters.&quot;&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">parse</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">width</span>
+                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Settings.Fragment.Caption">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.settings.html#omd2tex.Settings.Fragment.Caption">[docs]</a>
+        <span class="k">class</span><span class="w"> </span><span class="nc">Caption</span><span class="p">(</span><span class="n">ConfigBase</span><span class="p">):</span>
+            <span class="n">parse</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Initialize caption parsing toggle.&quot;&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">parse</span>
+                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Initialize fragment configuration grouping nested options.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">splitline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Splitline</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">caption</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Caption</span><span class="p">()</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the global settings container with section defaults.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Parse</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Export</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frontmatter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Frontmatter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beamer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Beamer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paragraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Paragraph</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preamble</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Preamble</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">File</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Headline</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quote</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Quote</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">List</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">codeblock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Codeblock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fragment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">Fragment</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

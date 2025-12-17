@@ -1,6 +1,6 @@
 import shutil
 import time
-from typing import Union, List, Any
+from typing import Any, List, Optional, Union
 import subprocess
 import os
 
@@ -26,7 +26,18 @@ class ConsoleColors:
     END = "\033[0m"
 
     @staticmethod
-    def true_false_color(statement: bool):
+    def true_false_color(statement: bool) -> str:
+        """Return colored string representation of a boolean.
+
+        Args:
+            statement: Boolean value to represent.
+
+        Returns:
+            Colorized string literal ``"True"`` or ``"False"``.
+
+        Raises:
+            None
+        """
         if statement:
             return f"{ConsoleColors.GREEN}True{ConsoleColors.END}"
         else:
@@ -34,14 +45,35 @@ class ConsoleColors:
 
 
 class ObjectImage:
-    def __init__(self, md_object, filename="", source_str=""):
+    def __init__(self, md_object, filename: str = "", source_str: str = "") -> None:
+        """Wrap a markdown object with metadata for compilation analysis.
+
+        Args:
+            md_object: Underlying markdown-derived object to inspect.
+            filename: Source filename associated with the object.
+            source_str: Human-readable source description for diagnostics.
+
+        Returns:
+            None
+
+        Raises:
+            None explicitly.
+
+        Side Effects:
+            Initializes mutable attributes for later population.
+        """
         self.object = md_object
         self.filename = filename
         self.source_str = source_str
         self.compile_success = "Not compiled"
         self.stdout = ""
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Format diagnostic information about the wrapped object.
+
+        Returns:
+            Human-readable multi-line status message describing compilation state.
+        """
         status = f"""
 CompileError:
     Compile status: {ConsoleColors.RED}{self.compile_success}{ConsoleColors.END}
@@ -61,7 +93,12 @@ CompileError:
         #     LaTeX:\n{self.object.to_latex()}"""
         return status
 
-    def __dict__(self):
+    def __dict__(self) -> dict:
+        """Return a mapping representation of the wrapper state.
+
+        Returns:
+            Dictionary containing the wrapped object and compilation metadata.
+        """
         obj_dict = {
             "object": self.object,
             "filename": self.filename,
@@ -74,7 +111,20 @@ CompileError:
 
 
 class ErrorCompileCatcher:
-    def __init__(self, md_object: Union[Document, File, MarkdownParser, List[Any]]):
+    def __init__(self, md_object: Union[Document, File, MarkdownParser, List[Any]]) -> None:
+        """Prepare an error catcher for provided markdown-derived objects.
+
+        Accepts a document, file, parser, single object, or list of objects and normalizes them into a File container for compilation testing.
+
+        Args:
+            md_object: Object or collection to compile for diagnostics.
+
+        Returns:
+            None
+
+        Raises:
+            TypeError: If provided list items are not BaseClass subclasses.
+        """
         # self.objects = []
 
         self.file = None
@@ -126,7 +176,18 @@ class ErrorCompileCatcher:
         )
 
     @staticmethod
-    def _recursive_opener(objects: Union[ObjectImage, List[ObjectImage]]):
+    def _recursive_opener(objects: Union[ObjectImage, List[ObjectImage]]) -> List[ObjectImage]:
+        """Flatten nested document structures into a flat list of ObjectImage.
+
+        Args:
+            objects: Single wrapper or list of wrappers possibly containing nested documents.
+
+        Returns:
+            Flat list of ObjectImage instances representing all nested elements.
+
+        Raises:
+            None
+        """
         if isinstance(objects, ObjectImage):
             objects = [objects]
 
@@ -241,13 +302,41 @@ class ErrorCompileCatcher:
     @staticmethod
     def _recursive_compiler(
         objects: List[ObjectImage],
-        batch: int = None,
-        total_errors=1,
-        rmdir=False,
-        print_analyzing=True,
-        timeout=15,
-    ):
+        batch: Optional[int] = None,
+        total_errors: int = 1,
+        rmdir: bool = False,
+        print_analyzing: bool = True,
+        timeout: int = 15,
+    ) -> List[ObjectImage]:
+        """Compile markdown objects in batches until errors are found or completed.
+
+        Args:
+            objects: List of wrapped markdown objects to compile.
+            batch: Optional batch size; defaults to 30% of items or 1.
+            total_errors: Maximum number of errors to collect before stopping.
+            rmdir: Whether to remove temporary export directory after completion.
+            print_analyzing: Whether to print compilation progress.
+            timeout: Maximum seconds for each pdflatex invocation.
+
+        Returns:
+            List of objects annotated with compilation results.
+
+        Raises:
+            subprocess.SubprocessError: Propagated from pdflatex failures beyond handled cases.
+
+        Side Effects:
+            Writes LaTeX files and compilation artifacts to a temporary directory and may remove it based on parameters.
+        """
         def chunk_list(lst, chunk_size):
+            """Split a list into chunks of fixed size.
+
+            Args:
+                lst: Sequence to split.
+                chunk_size: Maximum size of each chunk.
+
+            Returns:
+                List of list chunks preserving order.
+            """
             return [lst[i : i + chunk_size] for i in range(0, len(lst), chunk_size)]
 
         length = len(objects)
@@ -432,11 +521,28 @@ class ErrorCompileCatcher:
 
     def analyze(
         self,
-        batch: int = None,
-        total_errors=1,
-        rmdir=True,
-        print_analyzing=True,
-    ):
+        batch: Optional[int] = None,
+        total_errors: int = 1,
+        rmdir: bool = True,
+        print_analyzing: bool = True,
+    ) -> List[ObjectImage]:
+        """Analyze provided objects by compiling them and collecting errors.
+
+        Args:
+            batch: Optional batch size for grouped compilation.
+            total_errors: Maximum errors to gather before early exit.
+            rmdir: Whether to delete the temporary export directory afterward.
+            print_analyzing: Toggle for progress output to stdout.
+
+        Returns:
+            List of ObjectImage instances that failed compilation; empty list if none.
+
+        Raises:
+            None explicitly; subprocess errors may propagate.
+
+        Side Effects:
+            Alters global error catcher flag, writes temporary files, and prints diagnostics.
+        """
         from .globals import Global
 
         old_gl_error_catcher = Global.ERROR_CATCHER

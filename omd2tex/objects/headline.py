@@ -1,4 +1,5 @@
 import re
+from typing import Callable
 
 from .base import BaseClass
 
@@ -9,6 +10,7 @@ from .paragraph import Paragraph
 
 class Headline(BaseClass):
     def __init__(self, level: int, text: str) -> None:
+        """Initialize a headline with level and raw text."""
         super().__init__()
         self.level = level
         self.__identify_level()
@@ -18,6 +20,7 @@ class Headline(BaseClass):
         self.reference = None
 
     def _identify_reference(self) -> None:
+        """Register headline reference and align levels globally."""
         from ..tools import Global, Settings
         self._is_initialized = True
         self.__global_level_align()
@@ -37,16 +40,23 @@ class Headline(BaseClass):
                 Global.REFERENCE_DICT[self.reference] = ref_type[self.level]
 
     def __identify_level(self) -> None:
+        """Track the minimum headline level for global alignment."""
         from ..tools import Global, Settings
         if self.level < Global.MIN_HEADLINE_LEVEL:
             Global.MIN_HEADLINE_LEVEL = self.level
 
     def __global_level_align(self) -> None:
+        """Adjust level relative to the minimum headline level when enabled."""
         from ..tools import Global, Settings
         if Settings.Headline.global_level_align:
             self.level -= Global.MIN_HEADLINE_LEVEL
 
-    def _pick_surround(self):
+    def _pick_surround(self) -> Callable[[str], str]:
+        """Choose LaTeX wrapper function based on settings and level.
+
+        Returns:
+            Callable that wraps provided text in the appropriate LaTeX heading construct.
+        """
         from ..tools import Global, Settings
         if Settings.Headline.numeration:
             latex_command = [
@@ -96,20 +106,13 @@ class Headline(BaseClass):
 
     @staticmethod
     def _clean_markdown_numeration(heading: str) -> str:
-        """
-        Удаляет все форматы нумерации из начала строки заголовка Markdown.
-        Поддерживает:
-        - Арабские цифры (1, 1.1, 1.1.1)
-        - Римские цифры (IV, vii, ХХ)
-        - Буквенные обозначения (a, A, б, Б)
-        - Разделители (., ), ], •, ◦, ›)
-        - Скобки (круглые, квадратные)
-        - Многоуровневые комбинации (1.A.iii, [IV.б])
+        """Remove numbering markers from the beginning of a markdown heading.
 
-        Параметры:
-            heading (str): Строка заголовка Markdown
-        Возвращает:
-            str: Очищенная строка без нумерации
+        Args:
+            heading: Raw markdown heading string.
+
+        Returns:
+            Heading text stripped of leading numbering or bullet markers.
         """
         if not heading:
             return heading
@@ -150,6 +153,7 @@ class Headline(BaseClass):
 
     @staticmethod
     def _parse_text(text):
+        """Sanitize and render heading text according to settings."""
         from ..tools import Global, Settings
         if Settings.Headline.clean_all_highlight:
             text = Paragraph._remove_all_highlight(text)
@@ -159,7 +163,7 @@ class Headline(BaseClass):
 
         return text
 
-    def to_latex(self):
+    def to_latex(self) -> str:
         if not self._is_initialized:
             raise RuntimeError(
                 "Headline is not initialized! Firstly call _identify_reference()"
@@ -167,5 +171,5 @@ class Headline(BaseClass):
 
         return self._pick_surround()(self._parse_text(self.text))
 
-    def _to_latex_project(self):
+    def _to_latex_project(self) -> str:
         return self.to_latex()

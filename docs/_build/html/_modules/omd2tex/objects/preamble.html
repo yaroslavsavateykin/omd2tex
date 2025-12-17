@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.objects.preamble &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.objects.preamble</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClass</span>
+
+
+<div class="viewcode-block" id="NewComands">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.preamble.html#omd2tex.NewComands">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NewComands</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+<div class="viewcode-block" id="NewComands.fill">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.preamble.html#omd2tex.NewComands.fill">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fill</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom LaTeX command definitions for the preamble.&quot;&quot;&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">\newcommand{\dashboxed}[1]{%</span>
+<span class="s2">    \tikz[baseline=(X.base)]\node[draw,dashed,inner sep=5pt] (X) {$#1$};%</span>
+<span class="s2">}</span>
+
+<span class="s2">\newcommand{\dotboxed}[1]{%</span>
+<span class="s2">    \tikz[baseline=(X.base)]\node[draw,dotted,inner sep=5pt] (X) {$#1$};%</span>
+<span class="s2">}</span>
+
+<span class="s2">\newcommand{\ph}{\text</span><span class="si">{pH}</span><span class="s2">}</span>
+<span class="s2">\newcommand{\poh}{\text</span><span class="si">{pOH}</span><span class="s2">}</span>
+<span class="s2">\newcommand{\p}[1]{\text</span><span class="si">{p}</span><span class="s2">\mathrm{#1}}</span>
+<span class="s2">\newcommand{\chemb}[1]{\left[\ce{#1}\right]}</span>
+<span class="s2">%\renewcommand{\ce}[1]{{\ce{#1}}}</span>
+
+<span class="s2">\tcbuselibrary</span><span class="si">{breakable}</span>
+
+<span class="s2">\newtcolorbox</span><span class="si">{breakableframe}</span><span class="s2">{</span>
+<span class="s2">    sharp corners,</span>
+<span class="s2">    boxrule=0.5pt,</span>
+<span class="s2">    colback=white,</span>
+<span class="s2">    colframe=black,</span>
+<span class="s2">    width=\linewidth,</span>
+<span class="s2">    breakable=true,</span>
+<span class="s2">    before upper={\parindent15pt}</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">string</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Preamble">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.preamble.html#omd2tex.Preamble">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Preamble</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize preamble builder with defaults.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># self.config = self._load_config()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beamer_titlepage</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># SettingsPreamble.update(self.config)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load preamble configuration from JSON file.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPreamble</span>
+
+        <span class="k">if</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Preamble</span><span class="o">.</span><span class="n">settings_json</span><span class="p">:</span>
+            <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">Settings</span><span class="o">.</span><span class="n">Preamble</span><span class="o">.</span><span class="n">settings_json</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">config_path</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;/../default/preamble.json&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Конфигурационный файл не найден: </span><span class="si">{</span><span class="n">config_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Некорректный JSON файл: </span><span class="si">{</span><span class="n">config_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Preamble.to_latex">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.preamble.html#omd2tex.Preamble.to_latex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_latex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate LaTeX preamble string based on document class.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPreamble</span>
+
+        <span class="n">documentclass</span> <span class="o">=</span> <span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">documentclass</span>
+
+        <span class="k">if</span> <span class="n">documentclass</span> <span class="o">==</span> <span class="s2">&quot;beamer&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_beamer_preamble</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_article_preamble</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_article_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compose LaTeX preamble for article documents.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPreamble</span>
+
+        <span class="n">string</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">\documentclass[</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Article</span><span class="o">.</span><span class="n">fontsize</span><span class="si">}</span><span class="s2">]</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">documentclass</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">\linespread</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Article</span><span class="o">.</span><span class="n">linespread</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">mathtext</span><span class="se">}}</span>
+
+<span class="s2">% Шрифты и кодировка</span>
+<span class="s2">\usepackage[T2A]</span><span class="se">{{</span><span class="s2">fontenc</span><span class="se">}}</span>
+<span class="s2">\usepackage[utf8]</span><span class="se">{{</span><span class="s2">inputenc</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">cmap</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">textcomp</span><span class="se">}}</span>
+<span class="s2">\usepackage[russian]</span><span class="se">{{</span><span class="s2">babel</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">extsizes</span><span class="se">}}</span>
+
+<span class="s2">%------------------------------Packages---------------------------------</span>
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">geometry</span><span class="se">}}</span><span class="s2">    % Настройка отступов</span>
+<span class="s2">\usepackage[version = 4]</span><span class="se">{{</span><span class="s2">mhchem</span><span class="se">}}</span><span class="s2">      % Химические формулы через \ce</span><span class="se">{{}}</span><span class="s2">   </span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">chemgreek</span><span class="se">}}</span>
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">xcolor</span><span class="se">}}</span><span class="s2">      % Выделение цветом</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">tcolorbox</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">soul</span><span class="se">}}</span><span class="s2">        % Выделение цветов</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">pdflscape</span><span class="se">}}</span><span class="s2">   % Для горизонтальной ориентации</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">cancel</span><span class="se">}}</span><span class="s2">      % Зачеркивание</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">amsmath</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">ulem</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">amsmath</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">amssymb</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">gensymb</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">graphicx</span><span class="se">}}</span><span class="s2">    % Вставка картинок </span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">subcaption</span><span class="se">}}</span><span class="s2">    % Подписи к картинкам </span>
+<span class="s2">\counterwithin</span><span class="se">{{</span><span class="s2">subfigure</span><span class="se">}}{{</span><span class="s2">figure</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">caption</span><span class="se">}}</span>
+<span class="s2">\captionsetup[figure]</span><span class="se">{{</span><span class="s2">skip=1pt</span><span class="se">}}</span>
+<span class="s2">\captionsetup[subfigure]</span><span class="se">{{</span><span class="s2">skip=1pt</span><span class="se">}}</span>
+<span class="s2">\captionsetup[table]</span><span class="se">{{</span><span class="s2">skip=1pt</span><span class="se">}}</span>
+<span class="s2">\captionsetup[longtblr]</span><span class="se">{{</span><span class="s2">skip=1pt</span><span class="se">}}</span>
+<span class="s2">\renewcommand</span><span class="se">{{</span><span class="s2">\thesubfigure</span><span class="se">}}{{</span><span class="s2">Рис \thefigure.\arabic</span><span class="se">{{</span><span class="s2">figure</span><span class="se">}}</span><span class="s2">.</span><span class="se">}}</span><span class="s2"> </span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">floatrow</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">underscore</span><span class="se">}}</span><span class="s2">  % Чтобы подчеркивания нормально вставлялись</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">svg</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">collectbox</span><span class="se">}}</span>
+
+<span class="s2">\usepackage[backend=biber, style=ieee]</span><span class="se">{{</span><span class="s2">biblatex</span><span class="se">}}</span>
+<span class="s2">\usepackage[hidelinks]</span><span class="se">{{</span><span class="s2">hyperref</span><span class="se">}}</span>
+<span class="s2">\usepackage[capitalize]</span><span class="se">{{</span><span class="s2">cleveref</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">figure</span><span class="se">}}{{</span><span class="s2">рис.</span><span class="se">}}{{</span><span class="s2">рис.</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">figure</span><span class="se">}}{{</span><span class="s2">Рис.</span><span class="se">}}{{</span><span class="s2">Рис.</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">subfigure</span><span class="se">}}{{</span><span class="s2">рис.</span><span class="se">}}{{</span><span class="s2">рис.</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">subfigure</span><span class="se">}}{{</span><span class="s2">Рис.</span><span class="se">}}{{</span><span class="s2">Рис.</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}{{}}{{}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}{{}}{{}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">longtblr</span><span class="se">}}{{</span><span class="s2">табл.</span><span class="se">}}{{</span><span class="s2">табл.</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">longtblr</span><span class="se">}}{{</span><span class="s2">Табл.</span><span class="se">}}{{</span><span class="s2">Табл.</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">table</span><span class="se">}}{{</span><span class="s2">табл.</span><span class="se">}}{{</span><span class="s2">табл.</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">table</span><span class="se">}}{{</span><span class="s2">Табл.</span><span class="se">}}{{</span><span class="s2">Табл.</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">section</span><span class="se">}}{{</span><span class="s2">раздел</span><span class="se">}}{{</span><span class="s2">раздел</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">section</span><span class="se">}}{{</span><span class="s2">Раздел</span><span class="se">}}{{</span><span class="s2">Раздел</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">subsection</span><span class="se">}}{{</span><span class="s2">подраздел</span><span class="se">}}{{</span><span class="s2">подраздел</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">subsection</span><span class="se">}}{{</span><span class="s2">Подраздел</span><span class="se">}}{{</span><span class="s2">Подраздел</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">subsubsection</span><span class="se">}}{{</span><span class="s2">пункт</span><span class="se">}}{{</span><span class="s2">пункт</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">subsubsection</span><span class="se">}}{{</span><span class="s2">Пункт</span><span class="se">}}{{</span><span class="s2">Пункт</span><span class="se">}}</span>
+
+<span class="s2">% Пакет для настройки заголовков</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">titlesec</span><span class="se">}}</span>
+<span class="s2">\titleformat</span><span class="se">{{</span><span class="s2">\section</span><span class="se">}}</span>
+<span class="s2">    </span><span class="se">{{</span><span class="s2">\normalfont\Large\bfseries</span><span class="se">}}{{</span><span class="s2">\thesection</span><span class="se">}}{{</span><span class="s2">1em</span><span class="se">}}{{}}</span>
+<span class="s2">\titleformat</span><span class="se">{{</span><span class="s2">\subsection</span><span class="se">}}</span>
+<span class="s2">    </span><span class="se">{{</span><span class="s2">\normalfont\large\bfseries</span><span class="se">}}{{</span><span class="s2">\thesubsection</span><span class="se">}}{{</span><span class="s2">1em</span><span class="se">}}{{}}</span>
+<span class="s2">\titleformat</span><span class="se">{{</span><span class="s2">\subsubsection</span><span class="se">}}</span>
+<span class="s2">    </span><span class="se">{{</span><span class="s2">\normalfont\normalsize\bfseries</span><span class="se">}}{{</span><span class="s2">\thesubsubsection</span><span class="se">}}{{</span><span class="s2">1em</span><span class="se">}}{{}}</span>
+
+<span class="s2">% Настройка отступов для заголовков</span>
+<span class="s2">\titlespacing*</span><span class="se">{{</span><span class="s2">\section</span><span class="se">}}{{</span><span class="s2">0pt</span><span class="se">}}{{</span><span class="s2">3.5ex plus 1ex minus .2ex</span><span class="se">}}{{</span><span class="s2">2.3ex plus .2ex</span><span class="se">}}</span>
+<span class="s2">\titlespacing*</span><span class="se">{{</span><span class="s2">\subsection</span><span class="se">}}{{</span><span class="s2">0pt</span><span class="se">}}{{</span><span class="s2">3.25ex plus 1ex minus .2ex</span><span class="se">}}{{</span><span class="s2">1.5ex plus .2ex</span><span class="se">}}</span>
+<span class="s2">\titlespacing*</span><span class="se">{{</span><span class="s2">\subsubsection</span><span class="se">}}{{</span><span class="s2">0pt</span><span class="se">}}{{</span><span class="s2">3.25ex plus 1ex minus .2ex</span><span class="se">}}{{</span><span class="s2">1.5ex plus .2ex</span><span class="se">}}</span>
+
+<span class="s2">\DeclareFieldFormat</span><span class="se">{{</span><span class="s2">author</span><span class="se">}}{{</span><span class="s2">\textit</span><span class="se">{{</span><span class="s2">#1</span><span class="se">}}}}</span>
+<span class="s2">\DeclareFieldFormat</span><span class="se">{{</span><span class="s2">journaltitle</span><span class="se">}}{{</span><span class="s2">#1</span><span class="se">}}</span>
+<span class="s2">\DeclareFieldFormat</span><span class="se">{{</span><span class="s2">title</span><span class="se">}}{{</span><span class="s2">#1</span><span class="se">}}</span>
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">indentfirst</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">minted</span><span class="se">}}</span><span class="s2"> % Выделение кода   </span>
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">tabularx,ragged2e</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">float</span><span class="se">}}</span>
+
+<span class="s2">\makeatletter</span>
+<span class="s2">\newcommand</span><span class="se">{{</span><span class="s2">\keepwithnext</span><span class="se">}}{{</span><span class="s2">\@beginparpenalty 10000</span><span class="se">}}</span>
+<span class="s2">\makeatother</span>
+
+<span class="s2">% УСОВЕРШЕНСТВОВАННЫЕ ТАБЛИЦЫ</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">tabularray</span><span class="se">}}</span>
+<span class="s2">\UseTblrLibrary</span><span class="se">{{</span><span class="s2">booktabs</span><span class="se">}}</span>
+<span class="s2">\DefTblrTemplate</span><span class="se">{{</span><span class="s2">contfoot-text</span><span class="se">}}{{</span><span class="s2">default</span><span class="se">}}{{</span><span class="s2">Продолжение на следующей странице</span><span class="se">}}</span>
+<span class="s2">\DefTblrTemplate</span><span class="se">{{</span><span class="s2">conthead-text</span><span class="se">}}{{</span><span class="s2">default</span><span class="se">}}{{</span><span class="s2">(Продолжение)</span><span class="se">}}</span>
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">tocbibind</span><span class="se">}}</span>
+
+<span class="s2">% TIKZ</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">pgfplots</span><span class="se">}}</span>
+<span class="s2">\DeclareUnicodeCharacter</span><span class="se">{{</span><span class="s2">2212</span><span class="se">}}{{</span><span class="s2">−</span><span class="se">}}</span>
+<span class="s2">\usepgfplotslibrary</span><span class="se">{{</span><span class="s2">groupplots,dateplot</span><span class="se">}}</span>
+<span class="s2">\usetikzlibrary</span><span class="se">{{</span><span class="s2">patterns,shapes.arrows</span><span class="se">}}</span>
+<span class="s2">\pgfplotsset</span><span class="se">{{</span><span class="s2">compat=newest</span><span class="se">}}</span>
+<span class="s2">\usetikzlibrary</span><span class="se">{{</span><span class="s2">shapes.geometric, arrows, positioning</span><span class="se">}}</span>
+<span class="s2">\tikzstyle</span><span class="se">{{</span><span class="s2">block</span><span class="se">}}</span><span class="s2"> = [rectangle, draw, text centered, text width=10.5cm, minimum height=1.5cm, align=center]</span>
+<span class="s2">\tikzstyle</span><span class="se">{{</span><span class="s2">line</span><span class="se">}}</span><span class="s2"> = [draw, -latex&#39;]</span>
+
+
+
+<span class="s2">%-------------------------------Settings--------------------------------</span>
+
+<span class="s2">% Настройки отступов</span>
+<span class="s2">\geometry</span><span class="se">{{</span>
+<span class="s2">    a4paper, </span>
+<span class="s2">    left=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Article</span><span class="o">.</span><span class="n">left</span><span class="si">}</span><span class="s2">, </span>
+<span class="s2">    right=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Article</span><span class="o">.</span><span class="n">right</span><span class="si">}</span><span class="s2">, </span>
+<span class="s2">    top=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Article</span><span class="o">.</span><span class="n">top</span><span class="si">}</span><span class="s2">, </span>
+<span class="s2">    bottom=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Article</span><span class="o">.</span><span class="n">bottom</span><span class="si">}</span>
+<span class="se">}}</span>
+
+<span class="s2">% Настройки нумерации уравнений. </span>
+<span class="s2">% Честно, совсем не понимаю, как оно работает, и пусть.</span>
+<span class="s2">%\numberwithin</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}{{</span><span class="s2">subsubsection</span><span class="se">}}</span>
+
+<span class="s2">% В преамбуле</span>
+
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">xpatch</span><span class="se">}}</span>
+<span class="s2">\xapptocmd\normalsize</span><span class="se">{{</span><span class="s2">%</span>
+<span class="s2"> \abovedisplayskip=-10pt plus 15pt minus 5pt</span>
+<span class="s2"> \abovedisplayshortskip=-10pt plus 15pt minus 5pt</span>
+<span class="s2"> \belowdisplayskip=3pt plus 5pt minus 5pt</span>
+<span class="s2"> \belowdisplayshortskip=3pt plus 5pt minus 5pt</span>
+<span class="se">}}{{}}{{}}</span>
+
+
+<span class="s2">% Adjust spacing for equation environment</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">etoolbox</span><span class="se">}}</span>
+<span class="s2">%\BeforeBeginEnvironment</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}{{</span><span class="s2">\vspace</span><span class="se">{{</span><span class="s2">0pt</span><span class="se">}}}}</span>
+<span class="s2">%\AfterEndEnvironment</span><span class="se">{{</span><span class="s2">itemize</span><span class="se">}}{{</span><span class="s2">\vspace</span><span class="se">{{</span><span class="s2">-10pt</span><span class="se">}}}}</span>
+
+
+<span class="si">{</span><span class="n">NewComands</span><span class="o">.</span><span class="n">fill</span><span class="p">()</span><span class="si">}</span>
+
+<span class="s2">%\let\oldsection\section% Store \section</span>
+<span class="s2">%\renewcommand</span><span class="se">{{</span><span class="s2">\section</span><span class="se">}}{{</span><span class="s2">% Update \section</span>
+<span class="s2">%  \renewcommand</span><span class="se">{{</span><span class="s2">\theequation</span><span class="se">}}{{</span><span class="s2">\thesection.\arabic</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}}}</span><span class="s2">% Update equation number</span>
+<span class="s2">%  \oldsection</span><span class="se">}}</span><span class="s2">% Regular \section</span>
+<span class="s2">%\let\oldsubsection\subsection% Store \subsection</span>
+<span class="s2">%\renewcommand</span><span class="se">{{</span><span class="s2">\subsection</span><span class="se">}}{{</span><span class="s2">% Update \subsection</span>
+<span class="s2">%  \renewcommand</span><span class="se">{{</span><span class="s2">\theequation</span><span class="se">}}{{</span><span class="s2">\thesubsection.\arabic</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}}}</span><span class="s2">% Update equation number</span>
+<span class="s2">%  \oldsubsection</span><span class="se">}}</span><span class="s2">% Regular \subsubsection </span>
+<span class="s2">%\let\oldsubsubsection\subsubsection% Store \subsubsection </span>
+<span class="s2">%\renewcommand</span><span class="se">{{</span><span class="s2">\subsubsection</span><span class="se">}}{{</span><span class="s2">% Update \subsubsection </span>
+<span class="s2">%  \renewcommand</span><span class="se">{{</span><span class="s2">\theequation</span><span class="se">}}{{</span><span class="s2">\thesubsubsection.\arabic</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}}}</span><span class="s2">% Update equation number</span>
+<span class="s2">%  \oldsubsubsection</span><span class="se">}}</span><span class="s2">% Regular \subsubsection </span>
+
+
+<span class="s2">\tikzset</span><span class="se">{{</span><span class="s2">&gt;=latex</span><span class="se">}}</span>
+<span class="s2">\definecolor</span><span class="se">{{</span><span class="s2">mintgreen</span><span class="se">}}{{</span><span class="s2">RGB</span><span class="se">}}{{</span><span class="s2">220,255,220</span><span class="se">}}</span>
+<span class="s2">\DeclareUnicodeCharacter</span><span class="se">{{</span><span class="s2">202F</span><span class="se">}}{{</span><span class="s2">\,</span><span class="se">}}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">string</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_beamer_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compose LaTeX preamble for beamer presentations.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPreamble</span>
+
+        <span class="n">title_line</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">title</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">title</span>
+            <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">author_line</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">author</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">author</span>
+            <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">institute_line</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">institute</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">institute</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">institute</span>
+            <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">date_line</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">date</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">date</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">date</span>
+            <span class="k">else</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">setbeamertemplate</span><span class="si">{date}{}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">title_line</span><span class="p">,</span> <span class="n">author_line</span><span class="p">,</span> <span class="n">institute_line</span><span class="p">,</span> <span class="n">date_line</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beamer_titlepage</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># SettingsPreamble.Beamer.check()</span>
+
+        <span class="n">string</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">\documentclass[</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">fontsize</span><span class="si">}</span><span class="s2">]</span><span class="se">{{</span><span class="s2">beamer</span><span class="se">}}</span>
+
+<span class="s2">%-------------------------Basic Packages-----------------------------</span>
+<span class="s2">%\usepackage</span><span class="se">{{</span><span class="s2">mathtext</span><span class="se">}}</span>
+<span class="s2">\usepackage[T2A]</span><span class="se">{{</span><span class="s2">fontenc</span><span class="se">}}</span>
+<span class="s2">\usepackage[utf8]</span><span class="se">{{</span><span class="s2">inputenc</span><span class="se">}}</span>
+<span class="s2">\usepackage[russian]</span><span class="se">{{</span><span class="s2">babel</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">amsmath</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">amssymb</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">graphicx</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">isomath</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">arevtext,arevmath</span><span class="se">}}</span>
+
+<span class="s2">%\geometry</span><span class="se">{{</span>
+<span class="s2">%    left=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">left</span><span class="si">}</span><span class="s2">, </span>
+<span class="s2">%    right=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">right</span><span class="si">}</span><span class="s2">, </span>
+<span class="s2">%    top=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">top</span><span class="si">}</span><span class="s2">, </span>
+<span class="s2">%    bottom=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">bottom</span><span class="si">}</span>
+<span class="s2">%</span><span class="se">}}</span>
+
+<span class="s2">\setlength</span><span class="se">{{</span><span class="s2">\topmargin</span><span class="se">}}{{</span><span class="s2">-2cm</span><span class="se">}}</span>
+<span class="s2">\setlength</span><span class="se">{{</span><span class="s2">\headheight</span><span class="se">}}{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">top</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">%\setlength</span><span class="se">{{</span><span class="s2">\topmargin</span><span class="se">}}{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">top</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">\setbeamersize</span><span class="se">{{</span><span class="s2">text margin left=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">left</span><span class="si">}</span><span class="s2">, text margin right=</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">right</span><span class="si">}</span><span class="se">}}</span>
+
+<span class="s2">%----------------------Scientific Packages---------------------------</span>
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">geometry</span><span class="se">}}</span><span class="s2">    % Настройка отступов</span>
+<span class="s2">\usepackage[version = 4]</span><span class="se">{{</span><span class="s2">mhchem</span><span class="se">}}</span><span class="s2">      % Химические формулы через \ce</span><span class="se">{{}}</span><span class="s2">   </span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">chemgreek</span><span class="se">}}</span>
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">xcolor</span><span class="se">}}</span><span class="s2">      % Выделение цветом</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">tcolorbox</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">soul</span><span class="se">}}</span><span class="s2">        % Выделение цветов</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">pdflscape</span><span class="se">}}</span><span class="s2">   % Для горизонтальной ориентации</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">cancel</span><span class="se">}}</span><span class="s2">      % Зачеркивание</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">ulem</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">gensymb</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">subcaption</span><span class="se">}}</span><span class="s2">    % Подписи к картинкам </span>
+<span class="s2">\counterwithin</span><span class="se">{{</span><span class="s2">subfigure</span><span class="se">}}{{</span><span class="s2">figure</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">caption</span><span class="se">}}</span>
+<span class="s2">\captionsetup[figure]</span><span class="se">{{</span><span class="s2">skip=1pt</span><span class="se">}}</span>
+<span class="s2">\captionsetup[subfigure]</span><span class="se">{{</span><span class="s2">skip=1pt</span><span class="se">}}</span>
+<span class="s2">\captionsetup[table]</span><span class="se">{{</span><span class="s2">skip=1pt</span><span class="se">}}</span>
+<span class="s2">\captionsetup[longtblr]</span><span class="se">{{</span><span class="s2">skip=1pt</span><span class="se">}}</span>
+<span class="s2">\renewcommand</span><span class="se">{{</span><span class="s2">\thesubfigure</span><span class="se">}}{{</span><span class="s2">Рис \thefigure.\arabic</span><span class="se">{{</span><span class="s2">figure</span><span class="se">}}</span><span class="s2">.</span><span class="se">}}</span><span class="s2"> </span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">floatrow</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">underscore</span><span class="se">}}</span><span class="s2">  % Чтобы подчеркивания нормально вставлялись</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">svg</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">collectbox</span><span class="se">}}</span>
+
+<span class="s2">%\usepackage[backend=biber, style=ieee]</span><span class="se">{{</span><span class="s2">biblatex</span><span class="se">}}</span>
+<span class="s2">%\usepackage[hidelinks]</span><span class="se">{{</span><span class="s2">hyperref</span><span class="se">}}</span>
+<span class="s2">\usepackage[capitalize]</span><span class="se">{{</span><span class="s2">cleveref</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">figure</span><span class="se">}}{{</span><span class="s2">рис.</span><span class="se">}}{{</span><span class="s2">рис.</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">figure</span><span class="se">}}{{</span><span class="s2">Рис.</span><span class="se">}}{{</span><span class="s2">Рис.</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">subfigure</span><span class="se">}}{{</span><span class="s2">рис.</span><span class="se">}}{{</span><span class="s2">рис.</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">subfigure</span><span class="se">}}{{</span><span class="s2">Рис.</span><span class="se">}}{{</span><span class="s2">Рис.</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}{{}}{{}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">equation</span><span class="se">}}{{}}{{}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">longtblr</span><span class="se">}}{{</span><span class="s2">табл.</span><span class="se">}}{{</span><span class="s2">табл.</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">longtblr</span><span class="se">}}{{</span><span class="s2">Табл.</span><span class="se">}}{{</span><span class="s2">Табл.</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">table</span><span class="se">}}{{</span><span class="s2">табл.</span><span class="se">}}{{</span><span class="s2">табл.</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">table</span><span class="se">}}{{</span><span class="s2">Табл.</span><span class="se">}}{{</span><span class="s2">Табл.</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">section</span><span class="se">}}{{</span><span class="s2">раздел</span><span class="se">}}{{</span><span class="s2">раздел</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">section</span><span class="se">}}{{</span><span class="s2">Раздел</span><span class="se">}}{{</span><span class="s2">Раздел</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">subsection</span><span class="se">}}{{</span><span class="s2">подраздел</span><span class="se">}}{{</span><span class="s2">подраздел</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">subsection</span><span class="se">}}{{</span><span class="s2">Подраздел</span><span class="se">}}{{</span><span class="s2">Подраздел</span><span class="se">}}</span>
+<span class="s2">\crefname</span><span class="se">{{</span><span class="s2">subsubsection</span><span class="se">}}{{</span><span class="s2">пункт</span><span class="se">}}{{</span><span class="s2">пункт</span><span class="se">}}</span>
+<span class="s2">\Crefname</span><span class="se">{{</span><span class="s2">subsubsection</span><span class="se">}}{{</span><span class="s2">Пункт</span><span class="se">}}{{</span><span class="s2">Пункт</span><span class="se">}}</span>
+
+<span class="s2">% Пакет для настройки заголовков</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">titlesec</span><span class="se">}}</span>
+
+<span class="s2">\usepackage[version=4]</span><span class="se">{{</span><span class="s2">mhchem</span><span class="se">}}</span>
+
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">tabularray</span><span class="se">}}</span>
+<span class="s2">\UseTblrLibrary</span><span class="se">{{</span><span class="s2">booktabs</span><span class="se">}}</span>
+<span class="s2">\DefTblrTemplate</span><span class="se">{{</span><span class="s2">contfoot-text</span><span class="se">}}{{</span><span class="s2">default</span><span class="se">}}{{</span><span class="s2">Продолжение на следующей странице</span><span class="se">}}</span>
+<span class="s2">\DefTblrTemplate</span><span class="se">{{</span><span class="s2">conthead-text</span><span class="se">}}{{</span><span class="s2">default</span><span class="se">}}{{</span><span class="s2">(Продолжение)</span><span class="se">}}</span>
+
+<span class="si">{</span><span class="n">NewComands</span><span class="o">.</span><span class="n">fill</span><span class="p">()</span><span class="si">}</span>
+
+<span class="s2">%----------------------Code Highlighting-----------------------------</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">minted</span><span class="se">}}</span>
+<span class="s2">\usepackage</span><span class="se">{{</span><span class="s2">adjustbox</span><span class="se">}}</span>
+<span class="s2">%----------------------Style Settings--------------------------------</span>
+<span class="s2">\usetheme</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">theme</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">\usecolortheme</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">colortheme</span><span class="si">}</span><span class="se">}}</span>
+<span class="s2">%\usefonttheme</span><span class="se">{{</span><span class="si">{</span><span class="n">SettingsPreamble</span><span class="o">.</span><span class="n">Beamer</span><span class="o">.</span><span class="n">fonttheme</span><span class="si">}</span><span class="se">}}</span>
+
+<span class="s2">\setbeamertemplate</span><span class="se">{{</span><span class="s2">navigation symbols</span><span class="se">}}{{}}</span><span class="s2"> % Эта команда УДАЛЯЕТ все навигационные символы</span>
+<span class="s2">\setbeamertemplate</span><span class="se">{{</span><span class="s2">caption</span><span class="se">}}</span><span class="s2">[numbered]</span>
+<span class="s2">%----------------------Presentation Info-----------------------------</span>
+
+<span class="si">{</span><span class="n">title_line</span><span class="si">}</span>
+<span class="si">{</span><span class="n">author_line</span><span class="si">}</span>
+<span class="si">{</span><span class="n">institute_line</span><span class="si">}</span>
+<span class="si">{</span><span class="n">date_line</span><span class="si">}</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">string</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_latex_project</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return preamble string for project export context.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_latex</span><span class="p">()</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

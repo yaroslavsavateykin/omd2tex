@@ -9,7 +9,8 @@ class SettingsPreamble(ConfigBase):
         top = '2cm'
         bottom = '2cm'
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize article layout parameters with defaults."""
             self.fontsize = self.__class__.fontsize
             self.linespread = self.__class__.linespread
             self.left = self.__class__.left
@@ -34,7 +35,8 @@ class SettingsPreamble(ConfigBase):
         institute = ''
         date = ''
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize beamer presentation parameters with defaults."""
             self.fontsize = self.__class__.fontsize
             self.linespread = self.__class__.linespread
             self.left = self.__class__.left
@@ -53,9 +55,9 @@ class SettingsPreamble(ConfigBase):
 
     documentclass = 'article'
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize preamble settings with nested article and beamer configs."""
         self.documentclass = self.__class__.documentclass
         self.article = self.__class__.Article()
         self.beamer = self.__class__.Beamer()
         super().__init__()
-

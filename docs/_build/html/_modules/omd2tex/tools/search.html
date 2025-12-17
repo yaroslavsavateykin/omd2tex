@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.tools.search &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.tools.search</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+
+<div class="viewcode-block" id="find_file">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.search.html#omd2tex.find_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">search_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Locate a file by name within a search path honoring ignore rules.</span>
+
+<span class="sd">    Performs a recursive walk starting from the configured or provided directory, skipping ignored directories, and returns the first path matching the target filename (case-sensitive first, then case-insensitive).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename: Target filename; path segments are stripped, and trailing whitespace is trimmed.</span>
+<span class="sd">        search_path: Optional root directory to search; defaults to `Settings.Export.search_dir`, expanded to user home. Falls back to CWD if None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Absolute path to the first matching file, or None if not found.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If the search directory does not exist.</span>
+
+<span class="sd">    Side Effects:</span>
+<span class="sd">        Prints a not-found message to stdout if no match is located; prints comparison errors if they occur.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">exclude_dirs</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">search_ignore_dirs</span>
+
+    <span class="k">if</span> <span class="n">search_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">search_path</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">search_dir</span>
+
+    <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">search_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">search_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">search_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">search_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">search_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directory doesn&#39;t exist: </span><span class="si">{</span><span class="n">search_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">target_filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">target_filename_lower</span> <span class="o">=</span> <span class="n">target_filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">exclude_dirs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">exclude_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">exclude_dirs_lower</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">exclude_dirs</span> <span class="k">if</span> <span class="n">d</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">search_path</span><span class="p">):</span>
+        <span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">current_dir</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">exclude_dirs_lower</span><span class="p">:</span>
+            <span class="n">dirs</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">excluded_dir</span> <span class="ow">in</span> <span class="n">exclude_dirs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">excluded_dir</span> <span class="ow">and</span> <span class="n">excluded_dir</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+                <span class="n">dirs</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="n">target_filename</span><span class="p">:</span>
+                    <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">full_path</span>
+
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">target_filename_lower</span><span class="p">:</span>
+                    <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">full_path</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ошибка при сравнении файла </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39; not found&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="find_file_flexible">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.search.html#omd2tex.find_file_flexible">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_file_flexible</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">search_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search for a file using multiple case variants and Unicode normalization.</span>
+
+<span class="sd">    Recursively walks the provided directory (or the current working directory by default) and compares several case and normalization variants of the target to discover matches.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename: Filename to search for; whitespace is preserved except for trailing and leading characters handled externally.</span>
+<span class="sd">        search_path: Optional root directory; defaults to the current working directory if None. Path is expanded for user home.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Absolute path of the first matched file, or None if no match is found.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If the search directory does not exist.</span>
+
+<span class="sd">    Side Effects:</span>
+<span class="sd">        Prints progress and results to stdout during the search.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">search_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">search_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">search_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">search_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">search_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directory doesn&#39;t exist: </span><span class="si">{</span><span class="n">search_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">target_filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ищу файл: &#39;</span><span class="si">{</span><span class="n">target_filename</span><span class="si">}</span><span class="s2">&#39; в директории: </span><span class="si">{</span><span class="n">search_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">search_variants</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">target_filename</span><span class="p">,</span>
+        <span class="n">target_filename</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+        <span class="n">target_filename</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">search_path</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">file_variants</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">f</span><span class="p">,</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+            <span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">target_filename</span> <span class="ow">in</span> <span class="n">file_variants</span> <span class="ow">or</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">search_variants</span><span class="p">:</span>
+                <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Найден файл: </span><span class="si">{</span><span class="n">full_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">full_path</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">unicodedata</span>
+
+                <span class="n">normalized_target</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">&quot;NFC&quot;</span><span class="p">,</span> <span class="n">target_filename</span><span class="p">)</span>
+                <span class="n">normalized_file</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">&quot;NFC&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">normalized_target</span> <span class="o">==</span> <span class="n">normalized_file</span><span class="p">:</span>
+                    <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Найден файл: </span><span class="si">{</span><span class="n">full_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">full_path</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Файл &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39; не найден&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="list_files_in_directory">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.search.html#omd2tex.list_files_in_directory">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_files_in_directory</span><span class="p">(</span><span class="n">search_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print directory tree contents for debugging.</span>
+
+<span class="sd">    Walks the provided directory (or CWD) and prints folders and files with indentation reflecting depth to stdout.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        search_path: Optional directory to list; expanded for user home. Defaults to CWD when None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Side Effects:</span>
+<span class="sd">        Writes directory listings to stdout.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">search_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">search_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">search_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">search_path</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Содержимое директории </span><span class="si">{</span><span class="n">search_path</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">search_path</span><span class="p">):</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">search_path</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">level</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+        <span class="n">subindent</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subindent</span><span class="si">}{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_image_dimensions">
+<a class="viewcode-back" href="../../../_api/omd2tex.tools.search.html#omd2tex.get_image_dimensions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_image_dimensions</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return width and height of an image file if available.</span>
+
+<span class="sd">    Attempts to open the file with Pillow and extract its dimensions; returns None if the file is missing or cannot be opened.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_path: Absolute or relative path to the image file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of (width, height) in pixels when the file is readable, otherwise None.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        None explicitly; FileNotFoundError is caught and suppressed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">img</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">height</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

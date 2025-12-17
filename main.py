@@ -1,8 +1,27 @@
+from typing import Any, Callable
+
 from omd2tex.tools.globals import Global
 
 
-def time(func):
-    def wrapper(*args, **kwargs):
+def time(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Decorator that measures and prints execution time.
+
+    Wraps the provided callable, measuring wall-clock duration and printing the elapsed seconds to stdout without altering the wrapped function's behavior.
+
+    Args:
+        func: Arbitrary callable to measure; positional and keyword arguments are forwarded unchanged.
+
+    Returns:
+        Callable that proxies the original callable and prints the elapsed time before returning the original result.
+
+    Raises:
+        Any exception raised by the wrapped callable is propagated unchanged.
+
+    Side Effects:
+        Prints timing information to stdout.
+    """
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """Execute the wrapped callable and print its duration."""
         import time
 
         start = time.time()
@@ -16,7 +35,28 @@ def time(func):
 
 
 @time
-def main():
+def main() -> None:
+    """Run the demo conversion pipeline using current settings.
+
+    Locates the current markdown filename, adjusts export/search settings, constructs a document, parses it, performs validation, and renders a LaTeX project. Paths and filenames are hardcoded for demonstration and should be adapted for real workflows.
+
+    Args:
+        None
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the current file marker cannot be opened.
+        ValueError: Propagated from document processing if initialization fails.
+
+    Side Effects:
+        Reads configuration from disk, prints validation output, and writes LaTeX project files to the export directory.
+
+    Examples:
+        >>> if __name__ == "__main__":
+        ...     main()
+    """
     from omd2tex.objects.document import Document
     from omd2tex.tools.settings import Settings
 

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>omd2tex.objects.makefile &#8212; omd2tex 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for omd2tex.objects.makefile</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">..tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">Global</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<div class="viewcode-block" id="Makefile">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.makefile.html#omd2tex.Makefile">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Makefile</span><span class="p">:</span>
+<div class="viewcode-block" id="Makefile.to_string">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.makefile.html#omd2tex.Makefile.to_string">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate Makefile content tailored to citation and reference usage.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Global</span><span class="o">.</span><span class="n">CITATION_INITIALIZED</span><span class="p">:</span>
+            <span class="n">biber</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">biber main # Используем имя файла БЕЗ расширения .tex!</span><span class="se">\n\t</span><span class="s2">pdflatex -shell-escape main.tex</span><span class="se">\n\t</span><span class="s2">pdflatex -shell-escape main.tex&quot;</span>
+        <span class="k">elif</span> <span class="n">Global</span><span class="o">.</span><span class="n">REFERENCE_DICT</span><span class="p">:</span>
+            <span class="n">biber</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">pdflatex -shell-escape main.tex&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">biber</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;all: compile</span>
+
+<span class="s2">python:</span>
+<span class="se">\t</span><span class="s2">rm -f main.tex</span>
+<span class="se">\t</span><span class="s2">python main.py</span>
+
+<span class="s2">compile:</span>
+<span class="se">\t</span><span class="s2">rm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml</span>
+<span class="se">\t</span><span class="s2">pdflatex -shell-escape main.tex</span><span class="si">{</span><span class="n">biber</span><span class="si">}</span>
+<span class="se">\t</span><span class="s2">rm -rf _minted*</span>
+<span class="se">\t</span><span class="s2">rm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml</span>
+<span class="se">\t</span><span class="s2">mv main.pdf &quot;</span><span class="si">{</span><span class="n">Global</span><span class="o">.</span><span class="n">DOCUMENT_NAME</span><span class="si">}</span><span class="s2">.pdf&quot;</span>
+
+<span class="s2">open:</span>
+<span class="se">\t</span><span class="s2">xdg-open &quot;</span><span class="si">{</span><span class="n">Global</span><span class="o">.</span><span class="n">DOCUMENT_NAME</span><span class="si">}</span><span class="s2">.pdf&quot;</span>
+
+<span class="s2">clean:</span>
+<span class="se">\t</span><span class="s2">rm -f main.pdf *.aux *.log *.out *.toc *.ps</span>
+<span class="se">\t</span><span class="s2">rm -rf _minted*</span>
+<span class="se">\t</span><span class="s2">rm -f *.bib *.bcf *.run.xml *.bbl *.blg</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">string</span></div>
+
+
+<div class="viewcode-block" id="Makefile.to_file">
+<a class="viewcode-back" href="../../../_api/omd2tex.objects.makefile.html#omd2tex.Makefile.to_file">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Записывает Makefile в указанную директорию</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            directory: Target directory where Makefile should be written.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Path to the generated Makefile.</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            Writes a Makefile to disk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;Makefile&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">filepath</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">omd2tex</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, omd2tex contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

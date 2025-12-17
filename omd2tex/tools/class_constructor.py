@@ -10,12 +10,26 @@ from config_base import ConfigBase
 
 
 class ClassConstructor:
-    def __init__(self, class_name: str = "Config"):
+    def __init__(self, class_name: str = "Config") -> None:
+        """Initialize the dynamic class constructor with a target class name."""
         self.class_name = class_name
         self.config_instance = None
         self._source_data = None
 
     def from_file(self, file_path: str) -> ConfigBase:
+        """Create a configuration instance from a JSON or YAML file.
+
+        Args:
+            file_path: Path to the configuration file.
+
+        Returns:
+            Instantiated ConfigBase subclass populated with file contents.
+
+        Raises:
+            FileNotFoundError: If the file is absent.
+            ValueError: If the file has an unsupported extension.
+            json.JSONDecodeError or yaml.YAMLError: If parsing fails.
+        """
         file_path = Path(file_path)
         if not file_path.exists():
             raise FileNotFoundError(f"Файл {file_path} не найден")
@@ -33,6 +47,7 @@ class ClassConstructor:
         return self.config_instance
 
     def from_dict(self, data: Dict[str, Any]) -> ConfigBase:
+        """Create a configuration instance directly from a dictionary."""
         self._source_data = data
         self.config_instance = self._create_config_from_dict(data, self.class_name)
         return self.config_instance
@@ -40,6 +55,7 @@ class ClassConstructor:
     def _create_config_from_dict(
         self, data: Dict[str, Any], class_name: str
     ) -> ConfigBase:
+        """Recursively build ConfigBase subclasses from nested dictionaries."""
         class_attrs = {}
 
         for key, value in data.items():
@@ -56,7 +72,19 @@ class ClassConstructor:
 
         return config_instance
 
-    def to_py_file(self, file_path: str):
+    def to_py_file(self, file_path: str) -> None:
+        """Serialize the generated configuration class to a Python file.
+
+        Args:
+            file_path: Destination path; ``.py`` is appended if missing.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If configuration has not been built prior to writing.
+            IOError: Propagated on file write errors.
+        """
         if self.config_instance is None:
             raise ValueError(
                 "Сначала создайте конфигурацию с помощью from_file() или from_dict()"
@@ -79,6 +107,7 @@ class ClassConstructor:
     def _generate_python_code(
         self, data: Dict[str, Any], class_name: str, indent_level: int = 0
     ) -> str:
+        """Generate Python source code for the dynamic configuration classes."""
         indent = "    " * indent_level
         code = ""
 

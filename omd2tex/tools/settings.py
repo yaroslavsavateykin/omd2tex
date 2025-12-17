@@ -4,7 +4,8 @@ class Settings(ConfigBase):
     class Parse(ConfigBase):
         merge_elements = True
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize parse-related settings with class defaults."""
             self.merge_elements = self.__class__.merge_elements
             super().__init__()
 
@@ -16,7 +17,8 @@ class Settings(ConfigBase):
         export_dir = './test/'
         branching_project = False
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize export settings including search paths and project behavior."""
             self.search_dir = self.__class__.search_dir
             self.search_ignore_dirs = self.__class__.search_ignore_dirs
             self.makefile = self.__class__.makefile
@@ -28,7 +30,8 @@ class Settings(ConfigBase):
     class Frontmatter(ConfigBase):
         parse = True
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize frontmatter parsing toggle."""
             self.parse = self.__class__.parse
             super().__init__()
 
@@ -36,7 +39,8 @@ class Settings(ConfigBase):
     class Beamer(ConfigBase):
         divide_element = ['splitline', 'headline']
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize beamer-specific split configuration."""
             self.divide_element = self.__class__.divide_element
             super().__init__()
 
@@ -47,7 +51,8 @@ class Settings(ConfigBase):
         latinify_json = ''
         formulas_json = ''
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize paragraph parsing options such as latinify behavior."""
             self.latinify = self.__class__.latinify
             self.latinify_probability = self.__class__.latinify_probability
             self.latinify_json = self.__class__.latinify_json
@@ -59,7 +64,8 @@ class Settings(ConfigBase):
         create_preamble = True
         settings_json = ''
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize preamble generation settings."""
             self.create_preamble = self.__class__.create_preamble
             self.settings_json = self.__class__.settings_json
             super().__init__()
@@ -103,7 +109,8 @@ class Settings(ConfigBase):
         default_width = '8cm'
         default_height = '8cm'
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize image handling defaults and copy strategies."""
             self.parse = self.__class__.parse
             self.absolute_path_in_project_export = self.__class__.absolute_path_in_project_export
             self.copy_to_folder_in_project_export = self.__class__.copy_to_folder_in_project_export
@@ -117,7 +124,8 @@ class Settings(ConfigBase):
         parse = True
         max_quote_recursion = 5
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize quote parsing limits and toggles."""
             self.parse = self.__class__.parse
             self.max_quote_recursion = self.__class__.max_quote_recursion
             super().__init__()
@@ -126,7 +134,8 @@ class Settings(ConfigBase):
     class List(ConfigBase):
         itemsep = '0pt'
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize list spacing defaults."""
             self.itemsep = self.__class__.itemsep
             super().__init__()
 
@@ -134,7 +143,8 @@ class Settings(ConfigBase):
     class Codeblock(ConfigBase):
         parse = True
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize code block parsing toggle."""
             self.parse = self.__class__.parse
             super().__init__()
 
@@ -144,7 +154,8 @@ class Settings(ConfigBase):
             parse = True
             width = '0.5pt'
 
-            def __init__(self):
+            def __init__(self) -> None:
+                """Initialize splitline fragment parameters."""
                 self.parse = self.__class__.parse
                 self.width = self.__class__.width
                 super().__init__()
@@ -153,18 +164,21 @@ class Settings(ConfigBase):
         class Caption(ConfigBase):
             parse = True
 
-            def __init__(self):
+            def __init__(self) -> None:
+                """Initialize caption parsing toggle."""
                 self.parse = self.__class__.parse
                 super().__init__()
 
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize fragment configuration grouping nested options."""
             self.splitline = self.__class__.Splitline()
             self.caption = self.__class__.Caption()
             super().__init__()
 
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the global settings container with section defaults."""
         self.parse = self.__class__.Parse()
         self.export = self.__class__.Export()
         self.frontmatter = self.__class__.Frontmatter()
@@ -179,4 +193,3 @@ class Settings(ConfigBase):
         self.codeblock = self.__class__.Codeblock()
         self.fragment = self.__class__.Fragment()
         super().__init__()
-

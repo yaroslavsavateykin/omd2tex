@@ -9,7 +9,8 @@ from .paragraph import Paragraph
 
 
 class Table(BaseClass):
-    def __init__(self, lines: List[str]):
+    def __init__(self, lines: List[str]) -> None:
+        """Initialize a table parser with raw markdown lines."""
         super().__init__()
         self.lines = lines
 
@@ -25,10 +26,12 @@ class Table(BaseClass):
         self._is_initialized = True
 
     def _identify_reference(self) -> None:
+        """Register table reference and mark initialization."""
         self._is_initialized = True
         Global.REFERENCE_DICT[self.reference] = "tab"
 
     def to_latex(self) -> str:
+        """Render the table to LaTeX longtblr format."""
         if not self._is_initialized:
             raise RuntimeError(
                 "Table is not initialized! Firstly call _identify_reference()"
@@ -39,7 +42,8 @@ class Table(BaseClass):
     def _to_latex_project(self) -> str:
         return self.to_latex()
 
-    def _parse_lines(self) -> List[str]:
+    def _parse_lines(self) -> List[List[str]]:
+        """Parse markdown table lines into cell contents and alignments."""
         new_lines = []
         for i, line in enumerate(self.lines):
             line = [Paragraph(x).to_latex() for x in line.strip("|").split("|")]
@@ -62,6 +66,7 @@ class Table(BaseClass):
 
     @staticmethod
     def _convert_to_latex_symbols(line: str) -> str:
+        """Strip LaTeX markup to count effective symbols for sizing."""
         latex_line = (
             LatexNodes2Text()
             .latex_to_text(line)
@@ -73,7 +78,8 @@ class Table(BaseClass):
 
         return latex_line
 
-    def _define_width_parms(self):
+    def _define_width_parms(self) -> np.ndarray:
+        """Calculate column width parameters based on content lengths."""
         lines = self._parse_lines()
 
         symbol_lines = []
@@ -90,7 +96,8 @@ class Table(BaseClass):
 
         return width_parms
 
-    def _define_colspec_parms(self):
+    def _define_colspec_parms(self) -> str:
+        """Determine colspec for longtblr based on widths and count."""
         colspec = ""
         if (
             self.ilen > 6
@@ -105,7 +112,8 @@ class Table(BaseClass):
 
         return colspec
 
-    def _to_longtblr(self):
+    def _to_longtblr(self) -> str:
+        """Render the table as a longtblr environment."""
         lines = self._parse_lines()
 
         if self.reference:

@@ -1,12 +1,30 @@
 import os
 import sys
+from typing import List, Optional, Tuple
 
 
 import os
 from .settings import Settings
 
 
-def find_file(filename, search_path=None):
+def find_file(filename: str, search_path: Optional[str] = None) -> Optional[str]:
+    """Locate a file by name within a search path honoring ignore rules.
+
+    Performs a recursive walk starting from the configured or provided directory, skipping ignored directories, and returns the first path matching the target filename (case-sensitive first, then case-insensitive).
+
+    Args:
+        filename: Target filename; path segments are stripped, and trailing whitespace is trimmed.
+        search_path: Optional root directory to search; defaults to `Settings.Export.search_dir`, expanded to user home. Falls back to CWD if None.
+
+    Returns:
+        Absolute path to the first matching file, or None if not found.
+
+    Raises:
+        FileNotFoundError: If the search directory does not exist.
+
+    Side Effects:
+        Prints a not-found message to stdout if no match is located; prints comparison errors if they occur.
+    """
     exclude_dirs = Settings.Export.search_ignore_dirs
 
     if search_path is None:
@@ -61,7 +79,24 @@ def find_file(filename, search_path=None):
     return None
 
 
-def find_file_flexible(filename, search_path=None):
+def find_file_flexible(filename: str, search_path: Optional[str] = None) -> Optional[str]:
+    """Search for a file using multiple case variants and Unicode normalization.
+
+    Recursively walks the provided directory (or the current working directory by default) and compares several case and normalization variants of the target to discover matches.
+
+    Args:
+        filename: Filename to search for; whitespace is preserved except for trailing and leading characters handled externally.
+        search_path: Optional root directory; defaults to the current working directory if None. Path is expanded for user home.
+
+    Returns:
+        Absolute path of the first matched file, or None if no match is found.
+
+    Raises:
+        FileNotFoundError: If the search directory does not exist.
+
+    Side Effects:
+        Prints progress and results to stdout during the search.
+    """
     if search_path is None:
         search_path = os.getcwd()
     else:
@@ -109,7 +144,20 @@ def find_file_flexible(filename, search_path=None):
     return None
 
 
-def list_files_in_directory(search_path=None):
+def list_files_in_directory(search_path: Optional[str] = None) -> None:
+    """Print directory tree contents for debugging.
+
+    Walks the provided directory (or CWD) and prints folders and files with indentation reflecting depth to stdout.
+
+    Args:
+        search_path: Optional directory to list; expanded for user home. Defaults to CWD when None.
+
+    Returns:
+        None
+
+    Side Effects:
+        Writes directory listings to stdout.
+    """
     if search_path is None:
         search_path = os.getcwd()
     else:
@@ -125,7 +173,20 @@ def list_files_in_directory(search_path=None):
             print(f"{subindent}{f}")
 
 
-def get_image_dimensions(file_path):
+def get_image_dimensions(file_path: str) -> Optional[Tuple[int, int]]:
+    """Return width and height of an image file if available.
+
+    Attempts to open the file with Pillow and extract its dimensions; returns None if the file is missing or cannot be opened.
+
+    Args:
+        file_path: Absolute or relative path to the image file.
+
+    Returns:
+        Tuple of (width, height) in pixels when the file is readable, otherwise None.
+
+    Raises:
+        None explicitly; FileNotFoundError is caught and suppressed.
+    """
     try:
         with Image.open(file_path) as img:
             return img.width, img.height
