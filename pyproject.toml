@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "omd2tex"
+dynamic = ["version"]
+description = "Markdown to LaTeX converter specified for use with Obsidian"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+authors = [{name = "Savateykin Yaroslav", email = "yaroslavsavateykin@yandex.ru"}]
+dependencies = [
+  "numpy==2.3.2",
+  "pandas",
+  "pillow==11.3.0",
+  "pylatexenc==2.10",
+  "PyYAML==6.0.2",
+  "rdkit==2025.9.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black==25.1.0",
+  "flake8==7.3.0",
+  "mypy==1.17.1",
+]
+test = [
+  "pytest==8.4.1",
+]
+docs = [
+  "sphinx>=7.0,<8.0",
+  "pydata-sphinx-theme>=0.14,<0.15",
+]
+
+[tool.hatch.version]
+path = "omd2tex/__init__.py"
+
+[tool.hatch.build]
+exclude = [
+  "/build",
+  "/docs/_build",
+  "/venv",
+  "/.venv",
+  "/omd2tex.egg-info",
+  "/__pycache__",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["omd2tex"]
+include = ["LICENSE", "omd2tex/default/**"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "LICENSE",
+  "README.md",
+  "pyproject.toml",
+  "docs/**",
+  "tests/**",
+  "omd2tex/**",
+]

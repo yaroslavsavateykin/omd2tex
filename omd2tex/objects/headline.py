@@ -16,7 +16,7 @@ class Headline(BaseClass):
         self.__identify_level()
         self.text = text
 
-        self._is_initialized = False
+        self._is_initialized = True
         self.reference = None
 
     def _identify_reference(self) -> None:
@@ -117,7 +117,6 @@ class Headline(BaseClass):
         if not heading:
             return heading
 
-        # Более консервативное регулярное выражение - удаляет только явную нумерацию
         patterns = [
             # Арабские цифры с точкой и пробелом: "1. ", "1.1. ", "1.1.1. "
             r"^\s*\d+(?:\.\d+)*\.\s+",
@@ -141,7 +140,6 @@ class Headline(BaseClass):
 
         result = heading
 
-        # Применяем паттерны по очереди, останавливаемся на первом совпадении
         for pattern_str in patterns:
             pattern = re.compile(pattern_str, re.IGNORECASE | re.UNICODE)
             new_result = pattern.sub("", result, count=1)

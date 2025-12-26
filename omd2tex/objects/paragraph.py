@@ -64,6 +64,7 @@ class Paragraph(BaseClass):
             text = text.replace(key, surround_func(change_dict[key]))
 
         return text
+
     _change_letters_for_equations = change_letters_for_equations
 
     @staticmethod
@@ -82,6 +83,7 @@ class Paragraph(BaseClass):
                 text,
             )
         return text
+
     _highlight_text1 = highlight_text1
 
     @staticmethod
@@ -104,6 +106,7 @@ class Paragraph(BaseClass):
                 text,
             )
         return text
+
     _highlight_text2 = highlight_text2
 
     @staticmethod
@@ -118,6 +121,7 @@ class Paragraph(BaseClass):
         text = re.sub(r"`(.*?)`", replace_inline, text)
 
         return text, inline_codes
+
     _replace_inline_code = replace_inline_code
 
     @staticmethod
@@ -131,6 +135,7 @@ class Paragraph(BaseClass):
 
         text = re.sub(r"\$(.*?)\$", replace_inline, text)
         return text, inline_equations
+
     _replace_inline_equation = replace_inline_equation
 
     @staticmethod
@@ -144,6 +149,7 @@ class Paragraph(BaseClass):
 
         text = re.sub(r"\$\$(.*?)\$\$", replace_inline, text)
         return text, outline_equations
+
     _replace_outline_equation = replace_outline_equation
 
     @staticmethod
@@ -178,6 +184,7 @@ class Paragraph(BaseClass):
                 )
 
         return text
+
     _restore_placeholders = restore_placeholders
 
     @staticmethod
@@ -211,6 +218,7 @@ class Paragraph(BaseClass):
             return "".join(result_chars)
 
         return "".join([replace_in_string(line) for line in lines])
+
     _latinify_lines = latinify_lines
 
     @staticmethod
@@ -258,6 +266,7 @@ class Paragraph(BaseClass):
                 new_text.append(letter)
 
         return "".join(new_text)
+
     _eq_ru_letter_workaround = eq_ru_letter_workaround
 
     @staticmethod
@@ -268,6 +277,7 @@ class Paragraph(BaseClass):
             text = text.replace(key, change_dict[key])
 
         return text
+
     _text_errors_workaround = text_errors_workaround
 
     @staticmethod
@@ -297,6 +307,7 @@ class Paragraph(BaseClass):
         text = ref_pattern.sub(process_ref_match, text)
 
         return text
+
     _process_references = process_references
 
     def _process_footnotes(self, text: str) -> str:
@@ -363,6 +374,7 @@ class Paragraph(BaseClass):
         result = re.sub(pattern2, replace_pattern2, result)
 
         return result
+
     _process_citations = process_citations
 
     def _parse_text(self) -> str:
@@ -488,6 +500,7 @@ class Paragraph(BaseClass):
                 text,
             )
         return text
+
     _remove_all_highlight = remove_all_highlight
 
     @staticmethod

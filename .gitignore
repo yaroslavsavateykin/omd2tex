@@ -4,6 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 venv/
+.venv/
 .env
 *.log
 *.ipynb
@@ -15,5 +16,6 @@ tools/.ipynb_checkpoints/
 test_projects/
 
 build/
+dist/
 !tests/
 omd2tex.egg-info/

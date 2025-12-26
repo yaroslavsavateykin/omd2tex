@@ -12,7 +12,7 @@
       ".reference-map"
     ],
     "makefile": true,
-    "export_dir": "./test/",
+    "export_dir": "./",
     "branching_project": false
   },
   "frontmatter":{

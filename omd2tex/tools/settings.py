@@ -14,7 +14,7 @@ class Settings(ConfigBase):
         search_dir = '~/Obsidian/'
         search_ignore_dirs = ['.trash', '.obsidian', '.plugins', '.smart-env', '.reference-map']
         makefile = True
-        export_dir = './test/'
+        export_dir = './'
         branching_project = False
 
         def __init__(self) -> None:
