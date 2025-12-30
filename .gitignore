@@ -7,7 +7,7 @@ venv/
 .venv/
 .env
 *.log
-*.ipynb
+!*.ipynb
 
 .ipynb_checkpoints/
 tools/.ipynb_checkpoints/
