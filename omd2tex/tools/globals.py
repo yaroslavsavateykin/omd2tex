@@ -14,3 +14,5 @@ class Global(ConfigBase):
     DOCUMENT_NAME = ""
 
     ERROR_CATCHER = True
+
+    NEW_COMMANDS_PREAMBLE = []

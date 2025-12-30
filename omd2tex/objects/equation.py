@@ -15,12 +15,14 @@ class Equation(BaseClass):
     def _identify_reference(self) -> None:
         """Register equation reference globally and mark initialization."""
         from ..tools import Global, Settings
+
         self._is_initialized = True
         Global.REFERENCE_DICT[self.reference] = "eq"
 
     def to_latex(self) -> str:
         """Render the equation to LaTeX with or without numbering."""
         from ..tools import Global, Settings
+
         if not self._is_initialized:
             raise RuntimeError(
                 "Equation is not initialized! Firstly call _identify_reference()"

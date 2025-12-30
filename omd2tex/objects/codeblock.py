@@ -207,6 +207,12 @@ class CodeBlock(BaseClass):
 
         return image
 
+    @staticmethod
+    def _add_preamble_commands(lines: list):
+        Global.NEW_COMMANDS_PREAMBLE.append("\n".join(lines))
+
+        return Paragraph("")
+
     def _apply_blocktype(self) -> BaseClass:
         """Dispatch block rendering based on the specified block type."""
         functions = {
@@ -224,6 +230,7 @@ class CodeBlock(BaseClass):
             "java": self._minted_python,
             "bash": self._minted_python,
             "smiles": self._create_picture_from_smiles,
+            "preamble": self._add_preamble_commands,
         }
         if self.blocktype in functions:
             return functions[self.blocktype](self.blocklines)

@@ -127,7 +127,7 @@ class Quote(BaseClass):
 
         parser.from_text(new_lines)
 
-        self.elements = parser.elements
+        self.elements = parser.process_elements_list()
 
     @classmethod
     def create(

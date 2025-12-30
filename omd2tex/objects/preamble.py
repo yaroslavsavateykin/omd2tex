@@ -2,6 +2,8 @@ import json
 import os
 from typing import Dict, Any
 
+from omd2tex.tools.globals import Global
+
 from .base import BaseClass
 
 
@@ -37,6 +39,8 @@ class NewComands(BaseClass):
     before upper={\parindent15pt}
 }
 """
+        string += "\n\n".join(Global.NEW_COMMANDS_PREAMBLE)
+
         return string
 
 

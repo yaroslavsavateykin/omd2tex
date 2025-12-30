@@ -112,9 +112,18 @@ class Table(BaseClass):
 
         return colspec
 
+    def _to_basic_table(self):
+        lines = self._parse_lines()
+
+        new_lines = ""
+        for line in lines:
+            line = " & ".join(line) + " \\\\"
+            new_lines += line + "\n"
+
+        return new_lines
+
     def _to_longtblr(self) -> str:
         """Render the table as a longtblr environment."""
-        lines = self._parse_lines()
 
         if self.reference:
             reference = f"label={{tab:{self.reference}}},"
@@ -127,16 +136,11 @@ class Table(BaseClass):
         else:
             caption = ""
 
-        new_lines = ""
-        for line in lines:
-            line = " & ".join(line) + " \\\\"
-            new_lines += line + "\n"
-
         string = f"""\\begingroup
 \\centering
 %\\captionsetup{{width=\\linewidth}}
 \\begin{{longtblr}}[{reference} {caption}]{{colspec={{{self.colspec}}}, hlines,vlines}}
-{new_lines}
+{self._to_basic_table()}
 \\end{{longtblr}}
 \\endgroup"""
         return string

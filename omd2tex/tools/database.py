@@ -48,7 +48,9 @@ class MdDataBase:
                     continue
                 abs_file = os.path.join(root, file)
                 fmp = FrontMatterParser(abs_path=abs_file)
-                fmp_dict = fmp.yaml
+
+                fmp_dict = {}
+                fmp_dict.update(fmp.yaml)
                 fmp_dict["filename"] = file
                 fmp_dict["abs_path"] = abs_file
 

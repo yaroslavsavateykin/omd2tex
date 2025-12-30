@@ -203,7 +203,7 @@ class Document(BaseClass):
 
         Global.to_default()
 
-    def to_latex_project(self, filename="") -> None:
+    def to_latex_project(self) -> None:
         """Create a full LaTeX project directory with includes and assets.
 
         Args:
@@ -220,6 +220,10 @@ class Document(BaseClass):
         """
         from ..tools import SettingsPreamble, Settings, Global
         # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
+
+        # if save_dir:
+        #     self.dir = save_dir
+        #     self.file.parrentdir = save_dir
 
         if not self.filename or not self.file:
             raise ValueError("Document must be initialized")

@@ -56,9 +56,8 @@ class File(BaseClass):
             parrentdir=self.parrentdir,
             filedepth=self.filedepth,
         )
-        parser.from_file(filename)
-        if parser.elements:
-            self.elements = parser.elements
+        parser = parser.from_file(filename)
+        self.elements = parser.process_elements_list()
 
         return self
 
@@ -97,8 +96,10 @@ class File(BaseClass):
                 list[i].filedepth += 1
                 # print(list[i].parrentdir)
 
-        parser.from_elements(list)
-        self.elements = parser.elements
+        parser = parser.from_elements(list)
+        # print(list)
+        self.elements = parser.process_elements_list()
+        # print(self.elements)
 
         return self
 
@@ -118,8 +119,8 @@ class File(BaseClass):
             parrentdir=self.parrentdir,
             filedepth=self.filedepth,
         )
-        parser.from_text(text)
-        self.elements = parser.elements
+        parser = parser.from_text(text)
+        self.elements = parser.process_elements_list()
 
         return self
 

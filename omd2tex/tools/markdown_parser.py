@@ -99,7 +99,9 @@ class MarkdownParser(BaseClass):
             print(f"\n{el}\n{el.to_latex()}")
 
     @staticmethod
-    def __parse_size_parameter(size_str: Optional[str]) -> Tuple[Optional[int], Optional[int]]:
+    def __parse_size_parameter(
+        size_str: Optional[str],
+    ) -> Tuple[Optional[int], Optional[int]]:
         """Parse a size specification string into width and height.
 
         Accepts simple numeric strings like ``"300"`` for width-only or ``"300x200"`` for both dimensions.
@@ -181,17 +183,16 @@ class MarkdownParser(BaseClass):
 
         not_pass = [Document, MarkdownParser]
 
+        new_list = []
         for i, el in enumerate(list):
-            for nel in not_pass:
-                if isinstance(el, nel):
-                    raise TypeError(
-                        f"Can't pass {nel} to MarkdownParser.from_elements() function"
-                    )
-
-        self.elements = self._process_elements_list(list)
+            if type(el) in not_pass:
+                raise TypeError(
+                    f"Can't pass {nel} to MarkdownParser.from_elements() function"
+                )
+        self.elements = list
         return self
 
-    def _process_elements_list(self, elements: list) -> list:
+    def process_elements_list(self, elements: list = None) -> list:
         """Post-process parsed elements applying references, captions, and layout rules.
 
         Applies reference attachment, caption propagation, list merging, and beamer-specific transformations depending on settings and recursion depth.
@@ -205,6 +206,10 @@ class MarkdownParser(BaseClass):
         from ..objects import Caption, Reference, List, SplitLine
         from .globals import Global
 
+        if elements is None:
+            elements = self.elements
+
+        # print(elements)
         elements = Reference.attach_reference(elements)
         elements = Reference.identify_elements_reference(elements)
         elements = Caption.attach_caption(elements)
@@ -801,4 +806,4 @@ class MarkdownParser(BaseClass):
             joined = "\n".join(line.strip() for line in paragraph_lines)
             elements.append(Paragraph(joined))
 
-        self.elements = self._process_elements_list(elements)
+        self.elements = self.process_elements_list(elements)
