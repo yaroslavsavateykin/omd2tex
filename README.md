@@ -31,10 +31,6 @@ uv run twine upload dist/*
 
 ## Documentation
 
-```bash
-uv pip install -e ".[docs]"
-uv run sphinx-build -b html docs/source docs/_build/html
-```
 
 ## References
 
