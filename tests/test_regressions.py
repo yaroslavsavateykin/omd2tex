@@ -240,3 +240,57 @@ def test_task_quote_rule_is_customizable():
 
     assert "\\newtheorem{exercise}{Упражнение}" in preamble
     assert "\\begin{exercise}[Custom title]" in task.to_latex()
+
+
+def test_task_quote_can_be_referenced_via_cref():
+    text = (
+        "> [!task]\n"
+        "> Тело упражнения\n"
+        "^ex0001\n\n"
+        "См. [[#^ex0001|упражнение]].\n"
+    )
+
+    latex = Document().from_text(text).to_latex()
+
+    assert "\\label{exercise:ex0001}" in latex
+    assert "\\cref{exercise:ex0001}" in latex
+
+
+def test_cross_file_block_reference_with_filename_prefix(tmp_path):
+    sub_dir = tmp_path / "sub"
+    sub_dir.mkdir()
+
+    (sub_dir / "b.md").write_text("$$x = 1$$\n^eq1111\n", encoding="utf-8")
+    (tmp_path / "root.md").write_text(
+        "![[sub/b.md]]\nСм. [[sub/b#^eq1111|формулу]] и [[b#^eq1111|еще раз]].\n",
+        encoding="utf-8",
+    )
+
+    Settings.Export.search_dir = str(tmp_path)
+    latex = Document().from_file("root.md").to_latex()
+
+    assert latex.count("\\cref{eq:eq1111}") == 2
+
+
+def test_task_quote_reference_resolves_when_target_is_below():
+    text = (
+        "> [!task]\n"
+        "> См. [[#^eq123|уравнение]]\n\n"
+        "$$x = 1$$\n"
+        "^eq123\n"
+    )
+
+    latex = Document().from_text(text).to_latex()
+
+    assert "\\cref{eq:eq123}" in latex
+
+
+def test_image_inside_quote_is_parsed_as_image(tmp_path):
+    image_path = tmp_path / "pic.png"
+    PillowImage.new("RGB", (16, 16), "red").save(image_path)
+    Settings.Export.search_dir = str(tmp_path)
+
+    latex = Document().from_text("> [!task]\n> ![[pic.png]]\n").to_latex()
+
+    assert "\\includegraphics" in latex
+    assert "pic.png" in latex

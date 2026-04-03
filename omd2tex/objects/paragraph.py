@@ -289,16 +289,50 @@ class Paragraph(BaseClass):
             r"\[\[(?:([^\|\]#]+)?#)?\^([^\|\]]+)(?:\|([^\]]+))?\]\]"
         )
 
+        def filename_variants(filename: str) -> list:
+            if not filename:
+                return []
+
+            normalized = str(filename).strip().replace("\\", "/")
+            if not normalized:
+                return []
+
+            variants = [normalized]
+            if normalized.startswith("./"):
+                variants.append(normalized[2:])
+            if normalized.endswith(".md"):
+                variants.append(normalized[:-3])
+
+            base = normalized.rsplit("/", 1)[-1]
+            variants.append(base)
+            if base.endswith(".md"):
+                variants.append(base[:-3])
+
+            uniq = []
+            seen = set()
+            for item in variants:
+                if item and item not in seen:
+                    uniq.append(item)
+                    seen.add(item)
+            return uniq
+
         def process_ref_match(match):
             file_reference = match.group(1) or ""
             ref_id = match.group(2)
             text = match.group(3)
 
-            if ref_id in Global.REFERENCE_DICT:
-                latex_ref = f"\\cref{{{Global.REFERENCE_DICT[ref_id]}:{ref_id}}}"
-            else:
-                latex_ref = ""
-                # print(f"Reference {ref_id} not found in Global.REFERENCE_DICT")
+            ref_type = None
+            if file_reference:
+                for variant in filename_variants(file_reference):
+                    key = f"{variant}#^{ref_id}"
+                    if key in Global.REFERENCE_DICT:
+                        ref_type = Global.REFERENCE_DICT[key]
+                        break
+
+            if ref_type is None and ref_id in Global.REFERENCE_DICT:
+                ref_type = Global.REFERENCE_DICT[ref_id]
+
+            latex_ref = f"\\cref{{{ref_type}:{ref_id}}}" if ref_type else ""
 
             if text:
                 return text + " " + latex_ref

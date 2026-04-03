@@ -136,6 +136,7 @@ class Settings(ConfigBase):
         task_rule = (
             "\\begin{breakableframe}\n"
             "\\begin{exercise}\n"
+            "%(label)s\n"
             "%(content)s\n"
             "\\end{exercise}\n"
             "\\end{breakableframe}"

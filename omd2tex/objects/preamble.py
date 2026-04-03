@@ -162,6 +162,8 @@ class Preamble(BaseClass):
 \Crefname{{subsection}}{{Подраздел}}{{Подраздел}}
 \crefname{{subsubsection}}{{пункт}}{{пункт}}
 \Crefname{{subsubsection}}{{Пункт}}{{Пункт}}
+\crefname{{exercise}}{{упражнение}}{{упражнения}}
+\Crefname{{exercise}}{{Упражнение}}{{Упражнения}}
 
 % Пакет для настройки заголовков
 \usepackage{{titlesec}}
@@ -246,10 +248,10 @@ class Preamble(BaseClass):
 
 {NewComands.fill()}
 
-%\let\oldsection\section% Store \section
-%\renewcommand{{\section}}{{% Update \section
-%  \renewcommand{{\theequation}}{{\thesection.\arabic{{equation}}}}% Update equation number
-%  \oldsection}}% Regular \section
+\let\oldsection\section% Store \section
+\renewcommand{{\section}}{{% Update \section
+  \renewcommand{{\theequation}}{{\thesection.\arabic{{equation}}}}% Update equation number
+  \oldsection}}% Regular \section
 %\let\oldsubsection\subsection% Store \subsection
 %\renewcommand{{\subsection}}{{% Update \subsection
 %  \renewcommand{{\theequation}}{{\thesubsection.\arabic{{equation}}}}% Update equation number
@@ -368,6 +370,8 @@ class Preamble(BaseClass):
 \Crefname{{subsection}}{{Подраздел}}{{Подраздел}}
 \crefname{{subsubsection}}{{пункт}}{{пункт}}
 \Crefname{{subsubsection}}{{Пункт}}{{Пункт}}
+\crefname{{exercise}}{{упражнение}}{{упражнения}}
+\Crefname{{exercise}}{{Упражнение}}{{Упражнения}}
 
 % Пакет для настройки заголовков
 \usepackage{{titlesec}}

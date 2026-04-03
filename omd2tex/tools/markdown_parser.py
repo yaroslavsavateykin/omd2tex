@@ -209,6 +209,10 @@ class MarkdownParser(BaseClass):
         if elements is None:
             elements = self.elements
 
+        for el in elements:
+            if not hasattr(el, "_source_filename"):
+                el._source_filename = self.filename
+
         # print(elements)
         elements = Reference.attach_reference(elements)
         elements = Reference.identify_elements_reference(elements)

@@ -56,7 +56,7 @@
     "parse": true,
     "max_quote_recursion": 5,
     "task_preamble": "\\newcounter{exercise}[section]\n\\renewcommand{\\theexercise}{\\thesection.\\arabic{exercise}}\n\n\\newenvironment{exercise}\n{\n  \\refstepcounter{exercise}\n  \\par\\noindent\\textbf{Упражнение \\theexercise.}\n}\n{\\par}",
-    "task_rule": "\\begin{breakableframe}\n\\begin{exercise}\n%(content)s\n\\end{exercise}\n\\end{breakableframe}"
+    "task_rule": "\\begin{breakableframe}\n\\begin{exercise}\n%(label)s\n%(content)s\n\\end{exercise}\n\\end{breakableframe}"
   },
 
   "list": {

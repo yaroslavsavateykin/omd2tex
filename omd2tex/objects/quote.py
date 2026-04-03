@@ -70,16 +70,16 @@ class Quote(BaseClass):
         Returns:
             LaTeX string for the quote environment with proper indentation.
         """
-        text = "\\\\\n".join([el.to_latex() for el in self.elements])
-
-        text = f"""\\begin{{quote}}\\slshape\\noindent
-{text}
-\\end{{quote}}"""
-
-        return self._tabulate_string(text, self.quotedepth - 1)
+        return self._apply_quote_type().to_latex()
 
     def _to_latex_project(self) -> str:
         return self.to_latex()
+
+    def _identify_reference(self) -> None:
+        from ..tools import Global
+
+        if self.reference and self.quotetype == "task":
+            Global.REFERENCE_DICT[self.reference] = "exercise"
 
     def _parse_quote_lines(self) -> None:
         """Parse quote lines to determine quote type and nested elements.
@@ -112,7 +112,10 @@ class Quote(BaseClass):
                         self.heading = self.quotetype
                 continue
 
-            new_lines.append(line[1:])
+            content_line = line[1:]
+            if content_line.startswith(" "):
+                content_line = content_line[1:]
+            new_lines.append(content_line)
 
         from ..tools.markdown_parser import MarkdownParser
 
@@ -164,7 +167,7 @@ class Quote(BaseClass):
         instance._parse_quote_lines()
 
         instance.reference = None
-        return instance._apply_quote_type()
+        return instance
 
     def _apply_quote_type(self) -> BaseClass:
         """Apply quote-specific rendering rules and return a replacement element.
@@ -183,11 +186,15 @@ class Quote(BaseClass):
             task_title = ""
         if task_title:
             task_title = Paragraph(task_title).to_latex()
+        task_label = ""
+        if self.reference and self.quotetype == "task":
+            task_label = f"\\label{{exercise:{self.reference}}}"
 
         try:
             task_text = Settings.Quote.task_rule % {
                 "title": task_title,
                 "content": text,
+                "label": task_label,
             }
         except (KeyError, TypeError, ValueError):
             task_text = (
