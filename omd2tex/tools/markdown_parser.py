@@ -6,6 +6,7 @@ import uuid
 from omd2tex.objects.base import BaseClass
 
 
+from .dict_loader import DictLoader
 from .settings import Settings
 from .search import find_file
 from .globals import Global
@@ -183,13 +184,12 @@ class MarkdownParser(BaseClass):
 
         not_pass = [Document, MarkdownParser]
 
-        new_list = []
-        for i, el in enumerate(list):
+        for el in list:
             if type(el) in not_pass:
                 raise TypeError(
-                    f"Can't pass {nel} to MarkdownParser.from_elements() function"
+                    f"Can't pass {el} to MarkdownParser.from_elements() function"
                 )
-        self.elements = list
+        self.elements = self.process_elements_list(list)
         return self
 
     def process_elements_list(self, elements: list = None) -> list:
@@ -290,7 +290,6 @@ class MarkdownParser(BaseClass):
         ]
 
         i = 0
-        not_file = True
         in_yaml = False
         in_code_block = False
         in_equation = False
@@ -306,8 +305,9 @@ class MarkdownParser(BaseClass):
         self.yaml = frontmatter.yaml
 
         if Settings.Frontmatter.parse:
-            Settings.update(frontmatter.yaml)
-            SettingsPreamble.update(frontmatter.yaml)
+            frontmatter_dict = DictLoader().load_dict(frontmatter.yaml).from_obs_dict().dict
+            Settings.update(frontmatter_dict)
+            SettingsPreamble.update(frontmatter_dict)
 
         i = frontmatter.yaml_line_end
 
@@ -498,7 +498,7 @@ class MarkdownParser(BaseClass):
 
                 # Обработка Markdown изображений
                 m = self.re_markdown_image.match(line)
-                if m and not_file:
+                if m:
                     START = i
                     alt_text, filename, title, ref_link = m.groups()
 
@@ -506,44 +506,42 @@ class MarkdownParser(BaseClass):
                     if not re.search(
                         self.image_extensions_pattern, filename, re.IGNORECASE
                     ):
-                        not_file = False
+                        pass
+                    elif filename.startswith("#^"):
+                        i += 1
                         continue
+                    else:
+                        # Парсим параметры размера из alt text или title
+                        size_param = None
+                        if "|" in alt_text:
+                            alt_parts = alt_text.split("|", 1)
+                            alt_text, size_param = alt_parts[0], alt_parts[1]
+                        elif title and "x" in title:
+                            size_param = title
 
-                    if filename.startswith("#^"):
+                        width, height = self.__parse_size_parameter(size_param)
+                        caption = alt_text if alt_text else None
+
+                        image_obj = Image(
+                            filename=filename.strip(),
+                            parrentdir=self.parrentdir,
+                            caption=caption,
+                            width=width,
+                            height=height,
+                        )
+
+                        image_obj._start_line = START
+
+                        if ref_link:
+                            image_obj.reference = ref_link
+
+                        elements.append(image_obj)
                         i += 1
                         continue
 
-                    # Парсим параметры размера из alt text или title
-                    size_param = None
-                    if "|" in alt_text:
-                        alt_parts = alt_text.split("|", 1)
-                        alt_text, size_param = alt_parts[0], alt_parts[1]
-                    elif title and "x" in title:
-                        size_param = title
-
-                    width, height = self.__parse_size_parameter(size_param)
-                    caption = alt_text if alt_text else None
-
-                    image_obj = Image(
-                        filename=filename.strip(),
-                        parrentdir=self.parrentdir,
-                        caption=caption,
-                        width=width,
-                        height=height,
-                    )
-
-                    image_obj._start_line = START
-
-                    if ref_link:
-                        image_obj.reference = ref_link
-
-                    elements.append(image_obj)
-                    i += 1
-                    continue
-
                 # Обработка Wiki изображений (Obsidian)
                 n = self.re_wiki_image.match(line)
-                if n and not_file:
+                if n:
                     START = i
                     content, ref_link = n.groups()
 
@@ -555,45 +553,43 @@ class MarkdownParser(BaseClass):
                     if not re.search(
                         self.image_extensions_pattern, filename, re.IGNORECASE
                     ):
-                        not_file = False
-                        continue
-
-                    if filename.startswith("#^"):
+                        pass
+                    elif filename.startswith("#^"):
                         i += 1
                         continue
+                    else:
+                        # Обрабатываем дополнительные параметры
+                        width, height = None, None
+                        caption = None
+                        size_param = None
 
-                    # Обрабатываем дополнительные параметры
-                    width, height = None, None
-                    caption = None
-                    size_param = None
+                        if len(parts) > 1:
+                            # Проверяем каждый параметр
+                            for param in parts[1:]:
+                                # Если параметр похож на размер
+                                if re.match(r"^\d+(x\d+)?$", param):
+                                    size_param = param
+                                # Иначе считаем это подписью
+                                elif caption is None:
+                                    caption = param
 
-                    if len(parts) > 1:
-                        # Проверяем каждый параметр
-                        for param in parts[1:]:
-                            # Если параметр похож на размер
-                            if re.match(r"^\d+(x\d+)?$", param):
-                                size_param = param
-                            # Иначе считаем это подписью
-                            elif caption is None:
-                                caption = param
+                        width, height = self.__parse_size_parameter(size_param)
 
-                    width, height = self.__parse_size_parameter(size_param)
+                        image_obj = Image(
+                            filename=filename.strip(),
+                            parrentdir=self.parrentdir,
+                            caption=caption,
+                            width=width,
+                            height=height,
+                        )
 
-                    image_obj = Image(
-                        filename=filename.strip(),
-                        parrentdir=self.parrentdir,
-                        caption=caption,
-                        width=width,
-                        height=height,
-                    )
+                        image_obj._start_line = START
+                        if ref_link:
+                            image_obj.reference = ref_link
 
-                    image_obj._start_line = START
-                    if ref_link:
-                        image_obj.reference = ref_link
-
-                    elements.append(image_obj)
-                    i += 1
-                    continue
+                        elements.append(image_obj)
+                        i += 1
+                        continue
 
             if Settings.File.parse:
                 m = self.re_text_files1.match(line)
@@ -634,6 +630,7 @@ class MarkdownParser(BaseClass):
 
                 n = self.re_text_files2.match(line)
                 if n:
+                    START = i
                     if self.filedepth >= Settings.File.max_file_recursion:
                         raise RecursionError(
                             f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"

@@ -32,7 +32,9 @@ class Equation(BaseClass):
             self.equation.strip("\n"),
             dict_file=Settings.Paragraph.formulas_json,
         )
-        equation = Paragraph.eq_ru_letter_workaround(equation)
+        equation = Paragraph.eq_ru_letter_workaround(
+            equation
+        ).strip()  # .replace(" ", " ")
         if self.reference:
             equation = rf"""
 \begin{{equation}}

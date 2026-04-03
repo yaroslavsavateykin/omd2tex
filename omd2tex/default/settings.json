@@ -54,7 +54,9 @@
   },
   "quote": {
     "parse": true,
-    "max_quote_recursion": 5
+    "max_quote_recursion": 5,
+    "task_preamble": "\\newtcbtheorem[auto counter]{omdtask}{Задача}{enhanced, sharp corners, boxrule=0.5pt, colback=white, colframe=black, width=\\linewidth, breakable, before upper={\\parindent15pt}}{task}",
+    "task_rule": "\\begin{omdtask}{%(title)s}{}\n%(content)s\n\\end{omdtask}"
   },
 
   "list": {

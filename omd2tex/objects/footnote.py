@@ -29,6 +29,7 @@ class Footnote(BaseClass):
 
         cls.collection[key] = Paragraph(text).to_latex()
 
+    @classmethod
     def to_default(cls) -> None:
         """Reset the shared footnote collection to defaults."""
         cls.collection = {}

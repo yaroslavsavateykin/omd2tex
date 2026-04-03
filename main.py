@@ -1,6 +1,6 @@
+import re
+from pathlib import Path
 from typing import Any, Callable
-
-from omd2tex.tools.globals import Global
 
 
 def time(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -36,50 +36,58 @@ def time(func: Callable[..., Any]) -> Callable[..., Any]:
 
 @time
 def main() -> None:
-    """Run the demo conversion pipeline using current settings.
-
-    Locates the current markdown filename, adjusts export/search settings, constructs a document, parses it, performs validation, and renders a LaTeX project. Paths and filenames are hardcoded for demonstration and should be adapted for real workflows.
-
-    Args:
-        None
-
-    Returns:
-        None
-
-    Raises:
-        FileNotFoundError: If the current file marker cannot be opened.
-        ValueError: Propagated from document processing if initialization fails.
-
-    Side Effects:
-        Reads configuration from disk, prints validation output, and writes LaTeX project files to the export directory.
-
-    Examples:
-        >>> if __name__ == "__main__":
-        ...     main()
-    """
     from omd2tex.objects.document import Document
     from omd2tex.tools.settings import Settings
 
-    with open("omd2tex/default/current", "r") as f:
-        filename = f.read().strip()
+    project_dir = Path(__file__).resolve().parent
+    translation_dir = project_dir / "Translation"
+    export_dir = project_dir / "Scripts"
 
-    Settings.Export.search_dir = "~/vzlet_vault/"
-    Settings.Export.export_dir = "~/vzlet_vault/LaTeX/"
+    Settings.Export.search_dir = str(translation_dir)
+    Settings.Export.export_dir = str(export_dir)
+    Settings.Image.absolute_path_in_project_export = True
     Settings.Paragraph.latinify = False
-    Settings.Headline.clean_markdown_numeration = True
-
-    filename = "2025-10-05.md"
-    filename = "Методичка.md"
 
     doc = Document()
-    doc.from_file(filename)
-    doc.check()
-
-    # Settings.Export.check()
-
-    # doc.check()
-    # Global.check()
+    doc.from_file("Translation.md")
     doc.to_latex_project()
+    cleanup_generated_tex(export_dir / "Translation")
+
+
+DISPLAY_MATH_BEGIN = re.compile(
+    r"^\s*\\begin\{(align\*?|displaymath|equation\*?|gather\*?|multline\*?)\}\s*$"
+)
+DISPLAY_MATH_END = re.compile(
+    r"^\s*\\end\{(align\*?|displaymath|equation\*?|gather\*?|multline\*?)\}\s*$"
+)
+
+
+def cleanup_generated_tex(output_dir: Path) -> None:
+    """Remove blank lines inside display-math environments in generated TeX."""
+    for tex_file in output_dir.glob("*.tex"):
+        lines = tex_file.read_text(encoding="utf-8").splitlines()
+        cleaned_lines = []
+        in_display_math = False
+
+        for line in lines:
+            stripped = line.strip()
+
+            if DISPLAY_MATH_BEGIN.match(stripped):
+                in_display_math = True
+                cleaned_lines.append(line)
+                continue
+
+            if DISPLAY_MATH_END.match(stripped):
+                in_display_math = False
+                cleaned_lines.append(line)
+                continue
+
+            if in_display_math and not stripped:
+                continue
+
+            cleaned_lines.append(line)
+
+        tex_file.write_text("\n".join(cleaned_lines) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

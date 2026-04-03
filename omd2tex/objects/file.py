@@ -57,7 +57,8 @@ class File(BaseClass):
             filedepth=self.filedepth,
         )
         parser = parser.from_file(filename)
-        self.elements = parser.process_elements_list()
+        self.elements = parser.elements
+        # self.elements = parser.process_elements_list()
 
         return self
 
@@ -92,13 +93,21 @@ class File(BaseClass):
 
                 if not list[i].filename:
                     list[i].filename = new_filename
-                list[i].parrentdir += "/" + self.filename.replace(".md", "")
+                if list[i].parrentdir:
+                    list[i].parrentdir = os.path.join(
+                        list[i].parrentdir, self.filename.replace(".md", "")
+                    )
+                else:
+                    list[i].parrentdir = os.path.join(
+                        self.parrentdir, self.filename.replace(".md", "")
+                    )
                 list[i].filedepth += 1
                 # print(list[i].parrentdir)
 
         parser = parser.from_elements(list)
         # print(list)
-        self.elements = parser.process_elements_list()
+        self.elements = parser.elements
+        # self.elements = parser.process_elements_list()
         # print(self.elements)
 
         return self
@@ -120,7 +129,8 @@ class File(BaseClass):
             filedepth=self.filedepth,
         )
         parser = parser.from_text(text)
-        self.elements = parser.process_elements_list()
+        self.elements = parser.elements
+        # self.elements = parser.process_elements_list()
 
         return self
 
@@ -145,21 +155,18 @@ class File(BaseClass):
         Side Effects:
             Writes TeX files into the parent directory and adjusts paths for nested exports.
         """
-        if Settings.Export.branching_project:
-            pass
+        # print(self.elements)
+        text = "\n\n".join([elem._to_latex_project() for elem in self.elements])
+
+        if self.filename:
+            filename_tex = self.filename.replace(".md", "") + ".tex"
         else:
-            # print(self.elements)
-            text = "\n\n".join([elem._to_latex_project() for elem in self.elements])
+            filename_tex = "main.tex"
 
-            if self.filename:
-                filename_tex = self.filename.replace(".md", "") + ".tex"
-            else:
-                filename_tex = "main.tex"
+        with open(self.parrentdir + "/" + filename_tex, "w") as f:
+            f.write(text)
 
-            with open(self.parrentdir + "/" + filename_tex, "w") as f:
-                f.write(text)
-
-            if Settings.File.divide_with_new_page:
-                return f"\\input{{{filename_tex}}}\\newpage"
-            else:
-                return f"\\input{{{filename_tex}}}"
+        if Settings.File.divide_with_new_page:
+            return f"\\input{{{filename_tex}}}\\newpage"
+        else:
+            return f"\\input{{{filename_tex}}}"

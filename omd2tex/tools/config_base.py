@@ -8,6 +8,11 @@ from typing import Any, Dict, Union
 class ConfigBase:
     _class_original_values: Dict[str, Any] = None
 
+    def __init_subclass__(cls, **kwargs) -> None:
+        super().__init_subclass__(**kwargs)
+        cls._class_original_values = None
+        cls._save_class_original_values()
+
     @classmethod
     def _save_class_original_values(cls) -> None:
         """Snapshot class attribute defaults for later restoration.
@@ -24,7 +29,7 @@ class ConfigBase:
         if cls._class_original_values is None:
             cls._class_original_values = {}
             for name in dir(cls):
-                if name.startswith("_") or callable(getattr(cls, name)):
+                if name.startswith("_"):
                     continue
                 value = getattr(cls, name)
                 if isinstance(value, type) and issubclass(value, ConfigBase):
@@ -32,6 +37,8 @@ class ConfigBase:
                     cls._class_original_values[name] = copy.deepcopy(
                         value._class_original_values
                     )
+                elif callable(value):
+                    continue
                 else:
                     cls._class_original_values[name] = copy.deepcopy(value)
 

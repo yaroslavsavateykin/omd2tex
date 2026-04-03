@@ -43,6 +43,7 @@ class Image(BaseClass):
             self.dir = find_file(filename, Settings.Export.search_dir)
         else:
             self.dir = dir
+        self.source_dir = self.dir
 
         self.caption = caption
 
@@ -82,34 +83,49 @@ class Image(BaseClass):
             reference = ""
 
         dir = self.dir
+
         if SettingsPreamble.documentclass == "beamer":
-            image_include = f"\\adjustbox{{max width=\\textwidth, max height=\\textheight, keepaspectratio}}{{\\includegraphics[height = \\textheight/(3/2), keepaspectratio]{{{dir}}}}}"
+            image_include = "\\adjustbox{max width=\\textwidth, max height=\\textheight, keepaspectratio}{\\includegraphics[height = \\textheight/(3/2), keepaspectratio]"
+
+            latex_lines = f"\\begin{{figure}}[H]\n\\centering\n{image_include}{{{dir}}}}}\n{caption}\n{reference}\n\\end{{figure}}"
+
+            return latex_lines
+
         else:
             if self.width:
                 if self.height:
                     scale_width = self.width / self.original_width
                     scale_height = self.height / self.original_height
 
-                    image_include = f"\\includegraphics[width = {{{scale_width}}}\\textwidth, height = {{{scale_height}}}\\textheight]{{{dir}}}"
+                    # print(self.width, self.height)
+                    # print(self.original_width, self.original_height)
+                    # print(scale_width, scale_height)
+                    image_include = f"\\includegraphics[width = {{{scale_width}}}\\textwidth, height = {{{scale_height}}}\\textheight]"
                 else:
                     scale = self.width / self.original_width
-                    image_include = f"\\includegraphics[scale = {{{scale}}},keepaspectratio]{{{dir}}}"
+                    image_include = (
+                        f"\\includegraphics[scale = {{{scale}}},keepaspectratio]"
+                    )
             else:
                 wh_ratio = self.original_width / self.original_height
 
                 if wh_ratio < Settings.Image.wh_aspect_borders[0]:
-                    image_include = f"\\includegraphics[height = \\textheight, keepaspectratio]{{{dir}}}"
+                    image_include = (
+                        f"\\includegraphics[height = \\textheight, keepaspectratio]"
+                    )
                 elif wh_ratio < Settings.Image.wh_aspect_borders[1]:
                     if self.original_width < self.original_height:
-                        image_include = f"\\includegraphics[width = {Settings.Image.default_width}, keepaspectratio]{{{dir}}}"
+                        image_include = f"\\includegraphics[width = {Settings.Image.default_width}, keepaspectratio]"
                     else:
-                        image_include = f"\\includegraphics[height = {Settings.Image.default_height}, keepaspectratio]{{{dir}}}"
+                        image_include = f"\\includegraphics[height = {Settings.Image.default_height}, keepaspectratio]"
                 else:
-                    image_include = f"\\includegraphics[width = \\textwidth, keepaspectratio]{{{dir}}}"
+                    image_include = (
+                        f"\\includegraphics[width = \\textwidth, keepaspectratio]"
+                    )
 
         latex_lines = f"""\\begin{{figure}}[H] 
 \\centering
-{image_include}
+{image_include}{{{dir}}}
 {caption}
 {reference}
 \\end{{figure}}"""
@@ -121,16 +137,22 @@ class Image(BaseClass):
         dir_path = os.path.join(self.parrentdir, "images")
         os.makedirs(dir_path, exist_ok=True)
 
-        filename = os.path.basename(self.dir)
+        filename = self.filename
         destination = os.path.join(dir_path, filename)
+        source = self.source_dir or self.dir
 
         if os.path.exists(destination):
             os.remove(destination)
 
-        if os.path.isfile(self.dir):
-            shutil.copy2(self.dir, destination)
+        if not os.path.isfile(source):
+            found = find_file(self.filename, Settings.Export.search_dir)
+            if found:
+                source = found
+
+        if os.path.isfile(source):
+            shutil.copy2(source, destination)
         else:
-            raise FileNotFoundError(f"Файл {self.dir} не найден")
+            raise FileNotFoundError(f"Файл {source} не найден")
 
     def _relative_paths(self) -> None:
         """Adjust paths to be relative for project export."""
@@ -146,15 +168,15 @@ class Image(BaseClass):
         Side Effects:
             May copy image files to the project directory and mutate internal path attributes.
         """
-        if not Settings.Image.absolute_path_in_project_export:
-            self._relative_paths()
-
-            self.dir = os.path.join(self.parrentdir, "images", self.filename)
-
         if Settings.Image.copy_to_folder_in_project_export:
             self._copy_to_folder()
+        old_dir = self.dir
+        if not Settings.Image.absolute_path_in_project_export:
+            self.dir = os.path.join(".", "images", self.filename)
+        latex = self.to_latex()
+        self.dir = old_dir
 
-        return self.to_latex()
+        return latex
 
 
 class ImageFrame:

@@ -16,3 +16,13 @@ class Global(ConfigBase):
     ERROR_CATCHER = True
 
     NEW_COMMANDS_PREAMBLE = []
+
+    @classmethod
+    def to_default(cls) -> None:
+        super().to_default()
+
+        from ..objects.citation import Citation
+        from ..objects.footnote import Footnote
+
+        Citation.citation_list = []
+        Footnote.collection = {}

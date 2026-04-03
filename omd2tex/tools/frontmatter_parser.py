@@ -4,8 +4,13 @@ import re
 from collections import OrderedDict
 
 
+class FrontMatterLoader(yaml.SafeLoader):
+    pass
+
+
+FrontMatterLoader.yaml_implicit_resolvers = {}
 for ch, resolvers in list(yaml.SafeLoader.yaml_implicit_resolvers.items()):
-    yaml.SafeLoader.yaml_implicit_resolvers[ch] = [
+    FrontMatterLoader.yaml_implicit_resolvers[ch] = [
         (tag, regexp)
         for tag, regexp in resolvers
         if tag != "tag:yaml.org,2002:timestamp"
@@ -71,16 +76,19 @@ class FrontMatterParser:
         from .search import find_file
 
         self.yaml = {}
+        self.yaml_line_end = 0
 
         in_frontmatter = False
 
-        if isinstance(text, list):
-            if text[0].startswith("---"):
-                in_frontmatter = True
-        elif isinstance(text, str):
-            if text.startswith("---"):
-                in_frontmatter = True
+        if isinstance(text, str):
             text = text.splitlines()
+        elif text is None:
+            text = []
+        else:
+            text = list(text)
+
+        if text and text[0].startswith("---"):
+            in_frontmatter = True
 
         if filename:
             self.filename = filename
@@ -102,27 +110,31 @@ class FrontMatterParser:
                     text = text.splitlines()
 
         yaml_lines = []
+        closed_frontmatter = False
 
         i = 1
         j = 0
 
-        while in_frontmatter:
+        while in_frontmatter and i < len(text):
             line = text[i]
 
             i += 1
 
             if line.startswith("---"):
                 in_frontmatter = False
+                closed_frontmatter = True
                 j = i
             else:
                 yaml_lines.append(line)
 
         # print(yaml_lines)
-        if yaml_lines:
+        if closed_frontmatter and yaml_lines:
             yaml_lines = "\n".join(yaml_lines)
             yaml_lines = self.quote_sensitive_yaml_values(yaml_lines)
-            self.yaml = yaml.safe_load(yaml_lines)
-        self.yaml_line_end = j
+            self.yaml = yaml.load(yaml_lines, Loader=FrontMatterLoader) or {}
+        elif closed_frontmatter:
+            self.yaml = {}
+        self.yaml_line_end = j if closed_frontmatter else 0
 
     def update(self, new_dict: Dict) -> "FrontMatterParser":
         """Update the stored YAML dictionary with new keys and values.

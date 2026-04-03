@@ -71,6 +71,7 @@ class Citation(BaseClass):
 
     def to_latex(self) -> str:
         """Render citation content into LaTeX filecontents and bibliography declaration."""
+        text = ""
         if self.text:
             key = self.key.strip(".md").strip("@")
 

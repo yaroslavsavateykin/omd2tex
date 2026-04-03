@@ -2,6 +2,7 @@ import json
 import os
 from typing import Dict, Any
 
+from omd2tex.tools.dict_loader import DictLoader
 from omd2tex.tools.globals import Global
 
 from .base import BaseClass
@@ -11,6 +12,8 @@ class NewComands(BaseClass):
     @staticmethod
     def fill():
         """Return custom LaTeX command definitions for the preamble."""
+        from ..tools import Settings
+
         string = r"""
 
 \newcommand{\dashboxed}[1]{%
@@ -27,7 +30,7 @@ class NewComands(BaseClass):
 \newcommand{\chemb}[1]{\left[\ce{#1}\right]}
 %\renewcommand{\ce}[1]{{\ce{#1}}}
 
-\tcbuselibrary{breakable}
+\tcbuselibrary{breakable,theorems}
 
 \newtcolorbox{breakableframe}{
     sharp corners,
@@ -39,6 +42,8 @@ class NewComands(BaseClass):
     before upper={\parindent15pt}
 }
 """
+        if Settings.Quote.task_preamble:
+            string += "\n" + Settings.Quote.task_preamble + "\n"
         string += "\n\n".join(Global.NEW_COMMANDS_PREAMBLE)
 
         return string
@@ -55,7 +60,6 @@ class Preamble(BaseClass):
     def _load_config(self) -> Dict[str, Any]:
         """Load preamble configuration from JSON file."""
         from ..tools import Settings
-        from ..tools import SettingsPreamble
 
         if Settings.Preamble.settings_json:
             config_path = os.path.expanduser(Settings.Preamble.settings_json)
@@ -65,18 +69,25 @@ class Preamble(BaseClass):
             )
 
         try:
-            with open(config_path, "r", encoding="utf-8") as f:
-                return json.load(f)
+            loader = DictLoader().load_json_file(config_path).from_obs_dict()
+            return loader.dict
         except FileNotFoundError:
             raise FileNotFoundError(f"Конфигурационный файл не найден: {config_path}")
         except json.JSONDecodeError:
             raise ValueError(f"Некорректный JSON файл: {config_path}")
 
-    def to_latex(self) -> str:
-        """Generate LaTeX preamble string based on document class."""
+    def _apply_config(self) -> None:
         from ..tools import Settings
         from ..tools import SettingsPreamble
 
+        if Settings.Preamble.settings_json:
+            SettingsPreamble.update(self._load_config())
+
+    def to_latex(self) -> str:
+        """Generate LaTeX preamble string based on document class."""
+        from ..tools import SettingsPreamble
+
+        self._apply_config()
         documentclass = SettingsPreamble.documentclass
 
         if documentclass == "beamer":
@@ -248,7 +259,7 @@ class Preamble(BaseClass):
 %  \renewcommand{{\theequation}}{{\thesubsubsection.\arabic{{equation}}}}% Update equation number
 %  \oldsubsubsection}}% Regular \subsubsection 
 
-
+\usetikzlibrary{{arrows.meta, positioning}}
 \tikzset{{>=latex}}
 \definecolor{{mintgreen}}{{RGB}}{{220,255,220}}
 \DeclareUnicodeCharacter{{202F}}{{\,}}
@@ -373,6 +384,7 @@ class Preamble(BaseClass):
 %----------------------Code Highlighting-----------------------------
 \usepackage{{minted}}
 \usepackage{{adjustbox}}
+\usepackage{{tikz}}
 %----------------------Style Settings--------------------------------
 \usetheme{{{SettingsPreamble.Beamer.theme}}}
 \usecolortheme{{{SettingsPreamble.Beamer.colortheme}}}
@@ -380,6 +392,9 @@ class Preamble(BaseClass):
 
 \setbeamertemplate{{navigation symbols}}{{}} % Эта команда УДАЛЯЕТ все навигационные символы
 \setbeamertemplate{{caption}}[numbered]
+
+\usetikzlibrary{{arrows.meta, positioning}}
+
 %----------------------Presentation Info-----------------------------
 
 {title_line}

@@ -23,11 +23,13 @@ jobs:
       - name: Install documentation dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r docs/requirements.txt
-          pip install -e .
+          pip install -e ".[docs,test]"
 
       - name: Import check
         run: python -c "import omd2tex"
+
+      - name: Run tests
+        run: pytest -q
 
       - name: Clean build directory
         run: rm -rf docs/_build/html

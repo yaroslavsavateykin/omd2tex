@@ -8,6 +8,7 @@ class SplitLine(BaseClass):
     def __init__(self, text: str = "") -> None:
         """Initialize a split line marker optionally carrying text."""
         # Counter.Splitline += 1
+        super().__init__()
         self.text = text
 
     def to_latex(self) -> str:
@@ -30,7 +31,7 @@ class SplitLine(BaseClass):
 
         divide_list = Settings.Beamer.divide_element
 
-        if isinstance(divide_list, List):
+        if isinstance(divide_list, list):
             divide_els = []
             if "splitline" in divide_list:
                 divide_els.append("splitline")
@@ -59,6 +60,9 @@ class SplitLine(BaseClass):
                     break  # важный момент — прекращаем проверку после нахождения разделителя
             if not is_divider:
                 current_frame_elements.append(el)
+
+        if current_frame_elements:
+            frames.append(Frame(elements=current_frame_elements.copy(), title=frame_title))
 
         return frames
 

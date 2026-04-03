@@ -56,7 +56,9 @@ class Document(BaseClass):
 
         export = os.path.expanduser(Settings.Export.export_dir)
         search = os.path.expanduser(Settings.Export.search_dir)
-        Settings.Export.search_ignore_dirs.append(os.path.relpath(export, search))
+        export_rel = os.path.relpath(export, search)
+        if export_rel not in Settings.Export.search_ignore_dirs:
+            Settings.Export.search_ignore_dirs.append(export_rel)
 
     def from_file(self, filename: str) -> "Document":
         """Load and parse a markdown file into a Document."""
@@ -116,7 +118,7 @@ class Document(BaseClass):
                 )
             if type(el) in dir_depended_classes:
                 if not list[i].parrentdir:
-                    list[i].parrentdir += "/" + self.filename.replace(".md", "")
+                    list[i].parrentdir = self.dir
                 list[i].filedepth += 1
 
         file.from_elements(list)
@@ -156,13 +158,15 @@ class Document(BaseClass):
             citations = ""
             bibliography = ""
 
+        beamer_titlepage = getattr(self.preamble, "beamer_titlepage", False)
+
         document = rf"""
 {preamble}
 
 {citations}
 
 \begin{{document}}
-{"\\frame{\\titlepage}" if self.preamble.beamer_titlepage and self.preamble else ""}
+{"\\frame{\\titlepage}" if beamer_titlepage and self.preamble else ""}
 
 {file}
 
@@ -251,13 +255,15 @@ class Document(BaseClass):
             citations = ""
             bibliography = ""
 
+        beamer_titlepage = getattr(self.preamble, "beamer_titlepage", False)
+
         document = f"""
 {self.preamble._to_latex_project()}
 
 {citations}
 
 \\begin{{document}}
-{"\\frame{\\titlepage}" if self.preamble.beamer_titlepage and self.preamble else ""}
+{"\\frame{\\titlepage}" if beamer_titlepage and self.preamble else ""}
 
 {main}
 

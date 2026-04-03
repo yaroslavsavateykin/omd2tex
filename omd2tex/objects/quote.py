@@ -100,7 +100,7 @@ class Quote(BaseClass):
             match = pattern.match(line)
             if match and i == 0:
                 self.quotetype, self.heading = match.groups()
-                self.quotetype = self.quotetype.strip("!")
+                self.quotetype = self.quotetype.strip("!").strip().lower()
 
                 if not self.heading:
                     heading = self.quotetype
@@ -175,7 +175,24 @@ class Quote(BaseClass):
         Returns:
             Appropriate element corresponding to quote type, defaulting to a quoted paragraph.
         """
+        from ..tools import Settings
+
         text = "\n\n".join([el.to_latex() for el in self.elements])
+        task_title = self.heading or ""
+        if task_title.strip().lower() == self.quotetype:
+            task_title = ""
+        if task_title:
+            task_title = Paragraph(task_title).to_latex()
+
+        try:
+            task_text = Settings.Quote.task_rule % {
+                "title": task_title,
+                "content": text,
+            }
+        except (KeyError, TypeError, ValueError):
+            task_text = (
+                f"\\begin{{breakableframe}}\n{text}\n\\end{{breakableframe}}"
+            )
 
         functions = {
             "example": lambda content: Paragraph(
@@ -183,7 +200,8 @@ class Quote(BaseClass):
             ),
             "hidden": lambda content: Paragraph("", parse=False),
             "text": lambda content: Paragraph(content, parse=False),
-            "task": lambda content: Paragraph(
+            "task": lambda content: Paragraph(task_text, parse=False),
+            "boxed": lambda content: Paragraph(
                 f"\\begin{{breakableframe}}\n{content}\n\\end{{breakableframe}}",
                 parse=False,
             ),
