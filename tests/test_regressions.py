@@ -223,11 +223,12 @@ def test_quote_type_is_case_insensitive():
 def test_task_quote_uses_numbered_environment_by_default():
     preamble = Preamble().to_latex()
     task = Quote.create(["> [!task] Build", "> body"])
-    untitled = Quote.create(["> [!task]", "> body"])
 
-    assert "\\newtcbtheorem[auto counter]{omdtask}{Задача}" in preamble
-    assert "\\begin{omdtask}{Build}{}" in task.to_latex()
-    assert "\\begin{omdtask}{}{}" in untitled.to_latex()
+    assert "\\newcounter{exercise}[section]" in preamble
+    assert "\\renewcommand{\\theexercise}{\\thesection.\\arabic{exercise}}" in preamble
+    assert "\\newenvironment{exercise}" in preamble
+    assert "\\begin{breakableframe}" in task.to_latex()
+    assert "\\begin{exercise}" in task.to_latex()
 
 
 def test_task_quote_rule_is_customizable():

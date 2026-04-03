@@ -124,12 +124,22 @@ class Settings(ConfigBase):
         parse = True
         max_quote_recursion = 5
         task_preamble = (
-            r"\newtcbtheorem[auto counter]{omdtask}{Задача}"
-            r"{enhanced, sharp corners, boxrule=0.5pt, colback=white, "
-            r"colframe=black, width=\linewidth, breakable, "
-            r"before upper={\parindent15pt}}{task}"
+            "\\newcounter{exercise}[section]\n"
+            "\\renewcommand{\\theexercise}{\\thesection.\\arabic{exercise}}\n\n"
+            "\\newenvironment{exercise}\n"
+            "{\n"
+            "  \\refstepcounter{exercise}\n"
+            "  \\par\\noindent\\textbf{Упражнение \\theexercise.}\n"
+            "}\n"
+            "{\\par}"
         )
-        task_rule = "\\begin{omdtask}{%(title)s}{}\n%(content)s\n\\end{omdtask}"
+        task_rule = (
+            "\\begin{breakableframe}\n"
+            "\\begin{exercise}\n"
+            "%(content)s\n"
+            "\\end{exercise}\n"
+            "\\end{breakableframe}"
+        )
 
         def __init__(self) -> None:
             """Initialize quote parsing limits and toggles."""
