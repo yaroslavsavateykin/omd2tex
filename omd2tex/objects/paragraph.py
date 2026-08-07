@@ -31,7 +31,17 @@ class Paragraph(BaseClass):
 
     def to_latex(self) -> str:
         """Render the paragraph to LaTeX, optionally parsing markdown constructs."""
-        return self._parse_text()
+        text = self._parse_text()
+        if self.reference:
+            return text + f"\\label{{par:{self.reference}}}"
+        return text
+
+    def _identify_reference(self) -> None:
+        """Register an Obsidian block identifier attached to this paragraph."""
+        if self.reference:
+            from ..tools import Global
+
+            Global.REFERENCE_DICT[self.reference] = "par"
 
     def _to_latex_project(self) -> str:
         return self.to_latex()
@@ -339,7 +349,7 @@ class Paragraph(BaseClass):
             r"(?<!\\)\[\[(?:([^\|\]#]+)?#)?\^([^\|\]]+)(?:\|([^\]]+))?\]\]"
         )
         heading_ref_pattern = re.compile(
-            r"(?<!\\)\[\[([^\|\]#]+)#(?!\^)([^\|\]]+)(?:\|([^\]]+))?\]\]"
+            r"(?<!\\)\[\[(?:([^\|\]#]+))?#(?!\^)([^\|\]]+)(?:\|([^\]]+))?\]\]"
         )
 
         def filename_variants(filename: str) -> list:
@@ -408,8 +418,9 @@ class Paragraph(BaseClass):
 
             ref_id = None
             heading_key = heading_lookup_key(heading)
-            if file_reference and heading_key:
-                for variant in filename_variants(file_reference):
+            if heading_key:
+                reference_file = file_reference or Global.DOCUMENT_NAME
+                for variant in filename_variants(reference_file):
                     key = f"{variant}#{heading_key}"
                     if key in Global.HEADING_REFERENCE_DICT:
                         ref_id = Global.HEADING_REFERENCE_DICT[key]
@@ -435,7 +446,7 @@ class Paragraph(BaseClass):
 
         def process(match):
             key = match.group(1)
-            if self.footnote[key]:
+            if key in self.footnote and self.footnote[key]:
                 return f" \\footnote{{{self.footnote[key]}}} "
             else:
                 print(f"Footnote {key}")
@@ -545,6 +556,19 @@ class Paragraph(BaseClass):
             ]
 
             text = self.process_references(text)
+
+            text = re.sub(
+                r"(?<!!)\[\[(?!@)([^\]|#]+)(?:\|([^\]]+))?\]\]",
+                lambda match: (
+                    f"\\href{{{match.group(1)}.pdf}}{{{match.group(2) or match.group(1)}}}"
+                ),
+                text,
+            )
+            text = re.sub(
+                r"(?<!!)\[([^\]]+)\]\((https?://[^)]+)\)",
+                lambda match: f"\\href{{{match.group(2)}}}{{{match.group(1)}}}",
+                text,
+            )
 
             text = self.highlight_text2(text)
 
@@ -659,7 +683,7 @@ class Paragraph(BaseClass):
                     next_item.parse == current_item.parse
                     and next_item.reference == current_item.reference
                 ):
-                    current_item.text += " " + current_item.text
+                    current_item.text += " " + next_item.text
                     j += 1
                 else:
                     break

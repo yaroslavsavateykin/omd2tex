@@ -17,9 +17,9 @@ from .path_utils import stem_md
 
 class MarkdownParser(BaseClass):
     re_text_files1 = re.compile(
-        r"!?\[\[([^|\[\]]+?(?:\.(?:md|tex|txt))?)(?:\|([^\[\]]+))?\]\]"
+        r"^!\[\[([^|\[\]]+)(?:\|[^\[\]]+)?\]\]$"
     )
-    re_text_files2 = re.compile(r"!?\[([^\[\]]*)\]\(([^)]*?)(?:\.(md|tex|txt))?\)")
+    re_text_files2 = re.compile(r"^!\[[^\[\]]*\]\(([^)]+?\.(?:md|tex|txt))\)$")
 
     re_reference = re.compile(r"\^([a-zA-Z0-9_-]+)")
 
@@ -147,6 +147,8 @@ class MarkdownParser(BaseClass):
         )
 
         if not self.dir_filename:
+            if not Settings.File.pass_if_not_found:
+                raise FileNotFoundError(f"Included file not found: {filename}")
             return self
 
         else:
@@ -305,6 +307,7 @@ class MarkdownParser(BaseClass):
         i = 0
         in_yaml = False
         in_code_block = False
+        code_fence = ""
         in_equation = False
         in_table = False
         in_quote = False
@@ -337,9 +340,14 @@ class MarkdownParser(BaseClass):
             m = self.re_footnote.match(line)
             if m:
                 footnote_key, footnote_text = m.groups()
-
-                Footnote.append(footnote_key, footnote_text)
+                footnote_lines = [footnote_text.strip()]
                 i += 1
+                while i < len(lines) and (
+                    lines[i].startswith("    ") or lines[i].startswith("\t")
+                ):
+                    footnote_lines.append(lines[i].lstrip())
+                    i += 1
+                Footnote.append(footnote_key, footnote_lines)
                 continue
 
             # READING YAML
@@ -368,16 +376,21 @@ class MarkdownParser(BaseClass):
             #             continue
 
             # БЛОКИ КОДА
-            if line.startswith("```") and not in_code_block:
+            if (
+                Settings.Codeblock.parse
+                and line.lstrip().startswith(("```", "~~~"))
+                and not in_code_block
+            ):
                 START = i
-                blocktype = line.strip("```").strip()
+                code_fence = line.lstrip()[:3]
+                blocktype = line.lstrip()[3:].strip()
                 blocklines = []
                 in_code_block = True
                 i += 1
                 continue
 
-            if in_code_block:
-                if line.startswith("```"):
+            if Settings.Codeblock.parse and in_code_block:
+                if line.lstrip().startswith(code_fence):
                     if blocklines:
                         el = CodeBlock.create(blocktype, blocklines)
                         el._start_line = START
@@ -391,6 +404,23 @@ class MarkdownParser(BaseClass):
                     continue
 
             # УРАВНЕНИЯ
+            if line.strip() == r"\[":
+                START = i
+                equationlines = []
+                i += 1
+                while i < len(lines) and lines[i].strip() != r"\]":
+                    equationlines.append(lines[i])
+                    i += 1
+                if i < len(lines):
+                    text = "\n".join(equationlines)
+                    if text.strip():
+                        eq = Equation(text)
+                        eq._start_line = START
+                        elements.append(eq)
+                    i += 1
+                else:
+                    elements.append(Paragraph("\\[\n" + "\n".join(equationlines)))
+                continue
             if (
                 line.strip().startswith("$$")
                 and line.strip().endswith("$$")
@@ -406,42 +436,26 @@ class MarkdownParser(BaseClass):
                 i += 1
                 continue
 
-            if line.strip().startswith("$$"):
-                if not in_equation:
-                    equationlines = [line.strip("$$")]
-                    in_equation = True
-                    START = i
-                else:
-                    if equationlines:
-                        text = "\n".join(equationlines)
-                        if text.strip().strip("\n"):
-                            eq = Equation("\n".join(equationlines))
-
-                            eq._start_line = START
-                            elements.append(eq)
-                    in_equation = False
-                i += 1
-                continue
-
-            if line.strip().endswith("$$") and in_equation:
-                if in_equation:
-                    equationlines = [line.strip("$$")]
-                    in_equation = True
-                    START = i
-
-                    if equationlines:
-                        text = "\n".join(equationlines)
-                        if text.strip().strip("\n"):
-                            eq = Equation("\n".join(equationlines))
-
-                            eq._start_line = START
-                            elements.append(eq)
-                    in_equation = False
-                i += 1
-                continue
-
             if in_equation:
-                equationlines.append(line.strip("$$"))
+                if line.strip().endswith("$$"):
+                    closing_content = line.strip()[:-2].strip()
+                    if closing_content:
+                        equationlines.append(closing_content)
+                    text = "\n".join(equationlines)
+                    if text.strip():
+                        eq = Equation(text)
+                        eq._start_line = START
+                        elements.append(eq)
+                    in_equation = False
+                else:
+                    equationlines.append(line)
+                i += 1
+                continue
+
+            if line.strip().startswith("$$"):
+                equationlines = [line.strip()[2:].strip()]
+                in_equation = True
+                START = i
                 i += 1
                 continue
 
@@ -461,7 +475,7 @@ class MarkdownParser(BaseClass):
                 stripped_line = stripped_line[4:]
 
             reference = None
-            reference_match = re.search(r"\^([a-zA-Z0-9]{6})$", stripped_line)
+            reference_match = re.search(r"\^([a-zA-Z0-9_-]+)$", stripped_line)
             if reference_match:
                 reference = reference_match.group(1)
                 stripped_line = stripped_line[: reference_match.start()].rstrip()
@@ -541,6 +555,7 @@ class MarkdownParser(BaseClass):
                             caption=caption,
                             width=width,
                             height=height,
+                            source_dir=self._source_dir,
                         )
 
                         image_obj._start_line = START
@@ -594,6 +609,7 @@ class MarkdownParser(BaseClass):
                             caption=caption,
                             width=width,
                             height=height,
+                            source_dir=self._source_dir,
                         )
 
                         image_obj._start_line = START
@@ -611,7 +627,10 @@ class MarkdownParser(BaseClass):
                         raise RecursionError(
                             f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"
                         )
-                    filename, _ = m.groups()
+                    filename = m.group(1)
+                    target = None
+                    if "#" in filename:
+                        filename, target = filename.split("#", 1)
 
                     if any(filename.lower().endswith(ext) for ext in image_extensions):
                         i += 1
@@ -622,6 +641,16 @@ class MarkdownParser(BaseClass):
                         continue
 
                     if filename.startswith("#^"):
+                        el = Paragraph(line)
+                        el._start_line = i
+                        elements.append(el)
+                        i += 1
+                        continue
+
+                    if filename.lstrip().startswith("@"):
+                        el = Paragraph(line)
+                        el._start_line = i
+                        elements.append(el)
                         i += 1
                         continue
 
@@ -634,6 +663,7 @@ class MarkdownParser(BaseClass):
                         parrentdir=self.parrentdir,
                         filedepth=self.filedepth + 1,
                         source_dir=self._source_dir,
+                        target=target,
                     )
 
                     el._start_line = START
@@ -649,26 +679,27 @@ class MarkdownParser(BaseClass):
                         raise RecursionError(
                             f"Maximum file nesting filedepth ({Settings.File.max_file_recursion}) exceeded"
                         )
-                    _, filename, extension = n.groups()
+                    full_filename = n.group(1)
+                    filename = full_filename
                     if any(filename.lower().endswith(ext) for ext in image_extensions):
                         i += 1
                         continue
 
                     if filename.startswith("#^"):
+                        el = Paragraph(line)
+                        el._start_line = i
+                        elements.append(el)
+                        i += 1
+                        continue
+                    if filename.lstrip().startswith("@"):
+                        el = Paragraph(line)
+                        el._start_line = i
+                        elements.append(el)
                         i += 1
                         continue
                     if any(filename.endswith(ext) for ext in non_md_extensions):
                         i += 1
                         continue
-
-                    if extension:
-                        full_filename = f"{filename}.{extension}"
-                    else:
-                        full_filename = (
-                            filename + ".md"
-                            if not filename.endswith(".md")
-                            else filename
-                        )
 
                     el = File(
                         full_filename,
@@ -693,9 +724,13 @@ class MarkdownParser(BaseClass):
                 i += 1
                 continue
 
-            next_is_table = i + 1 < len(lines) and lines[i + 1].strip().startswith("|")
+            next_is_table = (
+                i + 1 < len(lines)
+                and "|" in lines[i + 1]
+                and re.match(r"^\s*\|?\s*:?-+", lines[i + 1])
+            )
 
-            if line.strip().startswith("|"):
+            if in_table or ("|" in line and next_is_table):
                 if not in_table:
                     START = i
                     in_table = True
@@ -729,7 +764,7 @@ class MarkdownParser(BaseClass):
 
             next_is_quote = i + 1 < len(lines) and lines[i + 1].strip().startswith(">")
 
-            if line.strip().startswith(">"):
+            if Settings.Quote.parse and line.strip().startswith(">"):
                 if not in_quote:
                     in_quote = True
                     quotelines = [line]
@@ -747,7 +782,9 @@ class MarkdownParser(BaseClass):
                         quotelines=quotelines,
                         filename=self.filename,
                         parrentdir=self.parrentdir,
+                        filedepth=self.filedepth,
                         quotedepth=self.quotedepth + 1,
+                        source_dir=self._source_dir,
                     )
 
                     el._start_line = START
@@ -759,7 +796,7 @@ class MarkdownParser(BaseClass):
                 continue
 
             else:
-                if in_quote:
+                if Settings.Quote.parse and in_quote:
                     START = i
                     if self.quotedepth >= Settings.Quote.max_quote_recursion:
                         raise RecursionError(
@@ -769,7 +806,9 @@ class MarkdownParser(BaseClass):
                         quotelines=quotelines,
                         filename=self.filename,
                         parrentdir=self.parrentdir,
+                        filedepth=self.filedepth,
                         quotedepth=self.quotedepth + 1,
+                        source_dir=self._source_dir,
                     )
 
                     el._start_line = START
@@ -787,7 +826,13 @@ class MarkdownParser(BaseClass):
                 if n:
                     START = i
                     level, line = n.groups()
+                    heading_reference = re.search(r"\s+\^([a-zA-Z0-9_-]+)$", line)
+                    if heading_reference:
+                        reference = heading_reference.group(1)
+                        line = line[: heading_reference.start()].rstrip()
                     el = Headline(len(level) - 1, line)
+                    if heading_reference:
+                        el.reference = reference
                     el._start_line = START
                     elements.append(el)
                     i += 1
@@ -795,6 +840,8 @@ class MarkdownParser(BaseClass):
 
             START = i
             el = Paragraph(line)
+            if reference:
+                el.reference = reference
             el._start_line = START
             elements.append(el)
             i += 1
@@ -817,5 +864,10 @@ class MarkdownParser(BaseClass):
                 i += 1
             joined = "\n".join(line.strip() for line in paragraph_lines)
             elements.append(Paragraph(joined))
+
+        if in_code_block:
+            elements.append(Paragraph("```\n" + "\n".join(blocklines)))
+        if in_equation:
+            elements.append(Paragraph("$$\n" + "\n".join(equationlines)))
 
         self.elements = self.process_elements_list(elements)

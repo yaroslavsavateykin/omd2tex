@@ -35,9 +35,17 @@ jobs:
       - name: Verify wheel contents
         run: unzip -l dist/*.whl | grep -q 'omd2tex/default/settings.json'
 
+      - name: Install built artifacts
+        run: |
+          python -m venv /tmp/omd2tex-wheel
+          /tmp/omd2tex-wheel/bin/pip install dist/*.whl
+          /tmp/omd2tex-wheel/bin/python -c "import omd2tex"
+          python -m venv /tmp/omd2tex-sdist
+          /tmp/omd2tex-sdist/bin/pip install dist/*.tar.gz
+          /tmp/omd2tex-sdist/bin/python -c "import omd2tex"
+
   build-and-deploy-docs:
     needs: test
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -65,6 +73,7 @@ jobs:
         run: touch docs/_build/html/.nojekyll
 
       - name: Deploy to GitHub Pages
+        if: github.event_name != 'pull_request'
         uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import copy
 from pathlib import Path
 from typing import Any, Dict, Union
 import uuid
@@ -19,6 +20,30 @@ from ..tools.path_utils import (
     package_default_dir,
     stem_md,
 )
+from ..tools.config_base import ConfigBase
+
+
+def _snapshot_config(config_class):
+    snapshot = {}
+    for name, value in vars(config_class).items():
+        if name.startswith("_"):
+            continue
+        if isinstance(value, type) and issubclass(value, ConfigBase):
+            snapshot[name] = _snapshot_config(value)
+        elif not callable(value):
+            snapshot[name] = copy.deepcopy(value)
+    return snapshot
+
+
+def _restore_config(config_class, snapshot) -> None:
+    for name, value in snapshot.items():
+        current = getattr(config_class, name)
+        if isinstance(value, dict) and isinstance(current, type) and issubclass(
+            current, ConfigBase
+        ):
+            _restore_config(current, value)
+        else:
+            setattr(config_class, name, copy.deepcopy(value))
 
 
 class Document(BaseClass):
@@ -44,8 +69,17 @@ class Document(BaseClass):
         from ..tools import SettingsPreamble, Settings, Global
 
         super().__init__()
+        # A new document must not inherit references or citations from a prior one.
+        Global.to_default()
         if settings:
             Settings.update(settings)
+        if preamble:
+            Settings.Preamble.settings_json = preamble
+
+        self._base_settings = _snapshot_config(Settings)
+        self._base_preamble_settings = _snapshot_config(SettingsPreamble)
+        self._render_settings = self._base_settings
+        self._render_preamble_settings = self._base_preamble_settings
 
         self.dir = normalize_export_dir(Settings.Export.export_dir)
 
@@ -77,9 +111,10 @@ class Document(BaseClass):
         )
         file.from_file(filename)
         self.file = file
+        self._remember_render_settings()
         return self
 
-    def from_text(self, text: str) -> "Document":
+    def from_text(self, text: str, source_dir: str = None) -> "Document":
         """Create a document from raw markdown text."""
         from ..tools import SettingsPreamble, Settings, Global
 
@@ -90,9 +125,10 @@ class Document(BaseClass):
             filename=self.filename,
             parrentdir=project_subdir,
         )
-        file.from_text(text)
+        file.from_text(text, source_dir=source_dir)
         # file.filename = self.filename
         self.file = file
+        self._remember_render_settings()
         return self
 
     def from_elements(self, list: list) -> "Document":
@@ -131,8 +167,27 @@ class Document(BaseClass):
         file.from_elements(list)
         # file.filename = self.filename
         self.file = file
+        self._remember_render_settings()
 
         return self
+
+    def _remember_render_settings(self) -> None:
+        from ..tools import Settings, SettingsPreamble
+
+        self._render_settings = _snapshot_config(Settings)
+        self._render_preamble_settings = _snapshot_config(SettingsPreamble)
+
+    def _restore_render_settings(self) -> None:
+        from ..tools import Settings, SettingsPreamble
+
+        _restore_config(Settings, self._render_settings)
+        _restore_config(SettingsPreamble, self._render_preamble_settings)
+
+    def _restore_base_settings(self) -> None:
+        from ..tools import Settings, SettingsPreamble
+
+        _restore_config(Settings, self._base_settings)
+        _restore_config(SettingsPreamble, self._base_preamble_settings)
 
     def _process_settings_logics(self) -> None:
         pass
@@ -153,21 +208,26 @@ class Document(BaseClass):
         """Render the document to a full LaTeX string with preamble and body."""
         from ..tools import SettingsPreamble, Settings, Global
 
-        preamble = self.preamble.to_latex()
+        if not self.file:
+            raise ValueError("Document must be initialized")
 
-        # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
-        file = self.file.to_latex()
+        self._restore_render_settings()
+        try:
+            preamble = self.preamble.to_latex()
 
-        if Global.CITATION_INITIALIZED:
-            citations = Citation.to_latex_preamble()
-            bibliography = "\\newpage\\printbibliography"
-        else:
-            citations = ""
-            bibliography = ""
+            # НЕЛЬЗЯ ПЕРЕДАВАТЬ parrentfilename
+            file = self.file.to_latex()
 
-        beamer_titlepage = getattr(self.preamble, "beamer_titlepage", False)
+            if Global.CITATION_INITIALIZED:
+                citations = Citation.to_latex_preamble()
+                bibliography = "\\newpage\\printbibliography"
+            else:
+                citations = ""
+                bibliography = ""
 
-        document = rf"""
+            beamer_titlepage = getattr(self.preamble, "beamer_titlepage", False)
+
+            document = rf"""
 {preamble}
 
 {citations}
@@ -181,8 +241,9 @@ class Document(BaseClass):
 
 \end{{document}}"""
 
-        Global.to_default()
-        return document
+            return document
+        finally:
+            self._restore_base_settings()
 
     def to_latex_file(self, filename: str = "") -> None:
         """Write the rendered LaTeX document to a file.
@@ -216,7 +277,6 @@ class Document(BaseClass):
         if Settings.Export.makefile:
             Makefile.to_file(self.dir)
 
-        Global.to_default()
 
     def to_latex_project(self) -> None:
         """Create a full LaTeX project directory with includes and assets.
@@ -242,6 +302,8 @@ class Document(BaseClass):
 
         if not self.filename or not self.file:
             raise ValueError("Document must be initialized")
+
+        self._restore_render_settings()
 
         if self.file:
             main = self.file
@@ -303,4 +365,4 @@ class Document(BaseClass):
             else:
                 print(f"{SettingsPreamble.Beamer.theme} not found in JSON file")
 
-        Global.to_default()
+        self._restore_base_settings()

@@ -20,11 +20,11 @@ class Citation(BaseClass):
 
         from ..tools import Global
         super().__init__()
-        Global.CITATION_INITIALIZED = True
-
         self.key = key
         self.text = self._found_citation()
-        self.__class__.citation_list.append(self)
+        if self.text:
+            Global.CITATION_INITIALIZED = True
+            self.__class__.citation_list.append(self)
 
     def _found_citation(self) -> str:
         """Locate and parse citation text from a markdown file."""
@@ -59,7 +59,7 @@ class Citation(BaseClass):
         text = text.replace("```", "").replace("bibtex", "")
 
         for obj in objects:
-            text.replace(obj, "")
+            text = text.replace(obj, "")
 
         text = re.sub(
             r"(?<=\S),(?=\S)", " and ", text
@@ -73,7 +73,7 @@ class Citation(BaseClass):
         """Render citation content into LaTeX filecontents and bibliography declaration."""
         text = ""
         if self.text:
-            key = self.key.strip(".md").strip("@")
+            key = self.key.removesuffix(".md").lstrip("@")
 
             text = f"""\\begin{{filecontents*}}{{{key}.bib}}
 {self.text}
@@ -85,6 +85,11 @@ class Citation(BaseClass):
     @classmethod
     def to_latex_preamble(cls) -> str:
         """Concatenate LaTeX preamble entries for all registered citations."""
-        citation_text = "\n\n".join(cit.to_latex() for cit in cls.citation_list)
+        unique_citations = {}
+        for citation in cls.citation_list:
+            unique_citations.setdefault(citation.key, citation)
+        citation_text = "\n\n".join(
+            citation.to_latex() for citation in unique_citations.values()
+        )
 
         return citation_text

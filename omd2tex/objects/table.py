@@ -1,4 +1,5 @@
 from typing import List
+import re
 from pylatexenc.latex2text import LatexNodes2Text
 import numpy as np
 
@@ -51,10 +52,10 @@ class Table(BaseClass):
             if i == 1:
                 for box in line:
                     box = box.strip()
-                    if box.startswith(":"):
-                        self.alignments.append("l")
-                    elif box.startswith(":") and box.endswith(":"):
+                    if box.startswith(":") and box.endswith(":"):
                         self.alignments.append("c")
+                    elif box.startswith(":"):
+                        self.alignments.append("l")
                     elif box.endswith(":"):
                         self.alignments.append("r")
                     else:

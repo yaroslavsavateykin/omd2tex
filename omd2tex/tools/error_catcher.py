@@ -378,7 +378,6 @@ class ErrorCompileCatcher:
                 result = subprocess.run(
                     [
                         "pdflatex",
-                        "-shell-escape",
                         "-interaction=nonstopmode",
                         doc.filename + ".tex",
                     ],
@@ -393,7 +392,6 @@ class ErrorCompileCatcher:
                 result = subprocess.run(
                     [
                         "pdflatex",
-                        "-shell-escape",
                         "-interaction=nonstopmode",
                         doc.filename + ".tex",
                     ],
@@ -428,7 +426,6 @@ class ErrorCompileCatcher:
                         result = subprocess.run(
                             [
                                 "pdflatex",
-                                "-shell-escape",
                                 "-interaction=nonstopmode",
                                 doc.filename + ".tex",
                             ],
@@ -443,7 +440,6 @@ class ErrorCompileCatcher:
                         result = subprocess.run(
                             [
                                 "pdflatex",
-                                "-shell-escape",
                                 "-interaction=nonstopmode",
                                 doc.filename + ".tex",
                             ],

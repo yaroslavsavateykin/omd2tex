@@ -7,9 +7,9 @@ class Makefile:
     def to_string(cls) -> str:
         """Generate Makefile content tailored to citation and reference usage."""
         if Global.CITATION_INITIALIZED:
-            biber = "\n\tbiber main # Используем имя файла БЕЗ расширения .tex!\n\tpdflatex -shell-escape main.tex\n\tpdflatex -shell-escape main.tex"
+            biber = "\n\tbiber main # Используем имя файла БЕЗ расширения .tex!\n\tpdflatex main.tex\n\tpdflatex main.tex"
         elif Global.REFERENCE_DICT:
-            biber = "\n\tpdflatex -shell-escape main.tex"
+            biber = "\n\tpdflatex main.tex"
         else:
             biber = ""
 
@@ -21,8 +21,7 @@ python:
 
 compile:
 \trm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml
-\tpdflatex -shell-escape main.tex{biber}
-\trm -rf _minted*
+\tpdflatex main.tex{biber}
 \trm -f *.bib *.bbl *.blg *.aux *.log *.out *.toc *.bcf *.run.xml
 \tmv main.pdf "{Global.DOCUMENT_NAME}.pdf"
 
@@ -31,7 +30,6 @@ open:
 
 clean:
 \trm -f main.pdf *.aux *.log *.out *.toc *.ps
-\trm -rf _minted*
 \trm -f *.bib *.bcf *.run.xml *.bbl *.blg
 """
         return string

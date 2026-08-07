@@ -21,15 +21,14 @@ class CodeBlock(BaseClass):
         self.caption = None
 
     @staticmethod
-    def _minted_python(blocklines: list) -> Paragraph:
-        """Render a Python code block using minted."""
+    def _listed_code(blocklines: list, language: str) -> Paragraph:
+        """Render a code block without requiring LaTeX shell escape."""
 
         joined_lines = "\n".join(blocklines)
         block = (
-            "\\usemintedstyle{default}\n"
-            "\\begin{minted}[mathescape, linenos, numbersep=5pt, frame=lines, framesep=2mm, breaklines]{python} \n"
+            f"\\begin{{lstlisting}}[language={language}, numbers=left, frame=single, breaklines=true]\n"
             f"{joined_lines}\n"
-            "\\end{minted}"
+            "\\end{lstlisting}"
         )
 
         return Paragraph(block, parse=False)
@@ -223,12 +222,12 @@ class CodeBlock(BaseClass):
             "text": lambda content: Paragraph("\n".join(content), parse=False),
             "caption": lambda content: Caption(" ".join(content)),
             "pause": lambda content: Paragraph("\\pause", parse=False),
-            "python": self._minted_python,
-            "c": self._minted_python,
-            "cpp": self._minted_python,
-            "c++": self._minted_python,
-            "java": self._minted_python,
-            "bash": self._minted_python,
+            "python": lambda content: self._listed_code(content, "Python"),
+            "c": lambda content: self._listed_code(content, "C"),
+            "cpp": lambda content: self._listed_code(content, "C++"),
+            "c++": lambda content: self._listed_code(content, "C++"),
+            "java": lambda content: self._listed_code(content, "Java"),
+            "bash": lambda content: self._listed_code(content, "bash"),
             "smiles": self._create_picture_from_smiles,
             "preamble": self._add_preamble_commands,
         }

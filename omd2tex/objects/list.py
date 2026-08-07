@@ -149,35 +149,22 @@ class List(BaseClass):
             return []
 
         result = []
-        i = 0
-        
+        parents = []
 
-        while i < len(items):
-            current_item = items[i]
-
-            if not isinstance(current_item, List):
-                result.append(current_item)
-                i += 1
+        for item in items:
+            if not isinstance(item, List):
+                result.append(item)
+                parents = []
                 continue
 
-            j = i + 1
-            while j < len(items):
-                current_line = items[i]._start_line
-                
-                next_item = items[j]
-                next_item._start_line = current_line
+            while parents and item.depth <= parents[-1].depth:
+                parents.pop()
 
-                if not isinstance(next_item, List):
-                    break
-
-                if next_item.depth > current_item.depth:
-                    current_item.merge(next_item)
-                    j += 1
-                else:
-                    break
-
-            result.append(current_item)
-            i = j if j > i + 1 else i + 1
+            if parents:
+                parents[-1].merge(item)
+            else:
+                result.append(item)
+            parents.append(item)
 
         return result
 

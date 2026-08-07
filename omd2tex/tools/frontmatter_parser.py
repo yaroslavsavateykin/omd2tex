@@ -87,7 +87,7 @@ class FrontMatterParser:
         else:
             text = list(text)
 
-        if text and text[0].startswith("---"):
+        if text and text[0].strip() == "---":
             in_frontmatter = True
 
         if filename:
@@ -97,7 +97,7 @@ class FrontMatterParser:
 
             with open(abs_path, "r") as f:
                 text = f.read()
-                if text.startswith("---"):
+                if text.startswith("---\n") or text == "---":
                     in_frontmatter = True
                     text = text.splitlines()
 
@@ -105,7 +105,7 @@ class FrontMatterParser:
             self.abs_path = abs_path
             with open(abs_path, "r") as f:
                 text = f.read()
-                if text.startswith("---"):
+                if text.startswith("---\n") or text == "---":
                     in_frontmatter = True
                     text = text.splitlines()
 
@@ -120,7 +120,7 @@ class FrontMatterParser:
 
             i += 1
 
-            if line.startswith("---"):
+            if line.strip() == "---":
                 in_frontmatter = False
                 closed_frontmatter = True
                 j = i

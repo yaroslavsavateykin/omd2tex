@@ -7,6 +7,7 @@ from .headline import Headline
 from .image import Image
 from .table import Table
 from .quote import Quote
+from .paragraph import Paragraph
 
 
 class Reference(BaseClass):
@@ -93,7 +94,7 @@ class Reference(BaseClass):
         from ..tools import Global
 
         new_list = []
-        types = [Headline, Equation, Image, Table, Quote]
+        types = [Headline, Equation, Image, Table, Quote, Paragraph]
         heading_occurrences = {}
 
         for el in elements:

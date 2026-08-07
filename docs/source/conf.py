@@ -6,11 +6,12 @@ from pathlib import Path
 # -- Path setup --------------------------------------------------------------
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+import omd2tex
 
 # -- Project information -----------------------------------------------------
 project = "omd2tex"
 author = "omd2tex contributors"
-release = "0.0.0"
+release = omd2tex.__version__
 year = datetime.now().year
 copyright = f"{year}, {author}"
 

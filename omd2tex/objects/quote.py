@@ -15,6 +15,7 @@ class Quote(BaseClass):
         parrentdir="",
         filedepth=0,
         quotedepth=0,
+        source_dir=None,
     ) -> None:
         """Initialize a quote block with nested markdown parsing.
 
@@ -35,6 +36,7 @@ class Quote(BaseClass):
         self.filename = filename
         self.quotedepth = quotedepth
         self.filedepth = filedepth
+        self.source_dir = source_dir
 
         self.quotetype = None
         self.heading = None
@@ -126,11 +128,12 @@ class Quote(BaseClass):
             parrentdir=self.parrentdir,
             filedepth=self.filedepth,
             quotedepth=self.quotedepth,
+            source_dir=self.source_dir,
         )
 
         parser.from_text(new_lines)
 
-        self.elements = parser.process_elements_list()
+        self.elements = parser.elements
 
     @classmethod
     def create(
@@ -140,6 +143,7 @@ class Quote(BaseClass):
         parrentdir="",
         filedepth=0,
         quotedepth=0,
+        source_dir=None,
     ) -> BaseClass:
         """Factory to create and process quote content in one step.
 
@@ -160,6 +164,7 @@ class Quote(BaseClass):
         instance.filename = filename
         instance.quotedepth = quotedepth
         instance.filedepth = filedepth
+        instance.source_dir = source_dir
 
         instance.quotetype = None
         instance.heading = None
@@ -203,7 +208,7 @@ class Quote(BaseClass):
 
         functions = {
             "example": lambda content: Paragraph(
-                "\\begin{example}\n" + "\n".join(content) + "\n\\end{example}"
+                "\\begin{example}\n" + content + "\n\\end{example}", parse=False
             ),
             "hidden": lambda content: Paragraph("", parse=False),
             "text": lambda content: Paragraph(content, parse=False),
@@ -213,7 +218,7 @@ class Quote(BaseClass):
                 parse=False,
             ),
             "solution": lambda content: Paragraph(content, parse=False),
-            "caption": lambda content: Caption(" ".join(content)),
+            "caption": lambda content: Caption(content),
             "pause": lambda content: Paragraph("\\pause", parse=False),
             "default": lambda content: Paragraph(
                 rf"\begin{{quote}}\slshape\noindent\n{text}\n\end{{quote}}", parse=False
@@ -221,6 +226,11 @@ class Quote(BaseClass):
         }
         if self.quotetype in functions:
             return functions[self.quotetype](text)
+        if self.quotetype:
+            return Paragraph(
+                f"\\begin{{breakableframe}}\n\\textbf{{{task_title}}}\n{text}\n\\end{{breakableframe}}",
+                parse=False,
+            )
         else:
             return self._default_quoteline(text)
 

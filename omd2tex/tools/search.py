@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 from typing import List, Optional, Tuple
+from PIL import Image
 
 
 import os
@@ -226,5 +227,5 @@ def get_image_dimensions(file_path: str) -> Optional[Tuple[int, int]]:
     try:
         with Image.open(file_path) as img:
             return img.width, img.height
-    except FileNotFoundError:
+    except (FileNotFoundError, OSError, ValueError):
         return None

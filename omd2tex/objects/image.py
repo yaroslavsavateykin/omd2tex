@@ -22,6 +22,7 @@ class Image(BaseClass):
         width: Optional[int] = None,
         height: Optional[int] = None,
         dir: Optional[str] = None,
+        source_dir: Optional[str] = None,
     ) -> None:
         """Initialize an image element with sizing and caption metadata.
 
@@ -41,7 +42,9 @@ class Image(BaseClass):
         self.parrentdir = parrentdir
 
         if dir is None:
-            self.dir = find_file(filename, Settings.Export.search_dir)
+            self.dir = find_file(
+                filename, Settings.Export.search_dir, source_dir=source_dir
+            )
         else:
             self.dir = dir
         self.source_dir = self.dir
@@ -51,6 +54,7 @@ class Image(BaseClass):
         self.width = width
         self.height = height
         self.original_width, self.original_height = self._get_image_dimensions()
+        self.missing = self.original_width is None
 
         self.reference = None
 
@@ -58,19 +62,20 @@ class Image(BaseClass):
         """Register the image reference in the global reference dictionary."""
         if self.reference:
             Global.REFERENCE_DICT[self.reference] = "fig"
-        else:
-            Global.REFERENCE_DICT[self.reference] = "not_found_fig"
 
     def _get_image_dimensions(self) -> Tuple[Optional[int], Optional[int]]:
         """Return the intrinsic width and height of the image if available."""
         try:
             with PillowImage.open(self.dir) as img:
                 return img.width, img.height
-        except FileNotFoundError:
+        except (AttributeError, FileNotFoundError, OSError, TypeError, ValueError):
             return None, None
 
     def to_latex(self) -> str:
         """Render the image as a LaTeX figure block respecting settings."""
+        if self.missing:
+            return f"\\fbox{{Missing image: \\texttt{{{self.filename}}}}}"
+
         if self.caption:
             caption = f"\\caption{{{Paragraph(self.caption).to_latex()}}}"
         else:
@@ -139,6 +144,7 @@ class Image(BaseClass):
         dir_path.mkdir(parents=True, exist_ok=True)
 
         destination = dir_path / self.filename
+        destination.parent.mkdir(parents=True, exist_ok=True)
         source = Path(self.source_dir or self.dir)
 
         if destination.exists():
@@ -171,6 +177,8 @@ class Image(BaseClass):
         Side Effects:
             May copy image files to the project directory and mutate internal path attributes.
         """
+        if self.missing:
+            return self.to_latex()
         if Settings.Image.copy_to_folder_in_project_export:
             self._copy_to_folder()
         old_dir = self.dir

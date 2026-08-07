@@ -18,6 +18,7 @@ class File(BaseClass):
         parrentdir: Optional[str] = None,
         filedepth: int = 0,
         source_dir: Optional[str] = None,
+        target: Optional[str] = None,
     ) -> None:
         """Initialize a file container for parsed markdown content.
 
@@ -36,17 +37,54 @@ class File(BaseClass):
         self.parrentdir = parrentdir
         self.filedepth = filedepth
         self.source_dir = source_dir
+        self.target = target
 
         if filename and parrentdir and filedepth:
-            parser = MarkdownParser(
-                filename=filename,
-                parrentdir=parrentdir,
-                filedepth=filedepth,
-                source_dir=source_dir,
-            ).from_file(filename)
-            self.elements = parser.elements
+            from .document import _restore_config, _snapshot_config
+            from ..tools import SettingsPreamble
+
+            settings_before = _snapshot_config(Settings)
+            preamble_settings_before = _snapshot_config(SettingsPreamble)
+            try:
+                parser = MarkdownParser(
+                    filename=filename,
+                    parrentdir=parrentdir,
+                    filedepth=filedepth,
+                    source_dir=source_dir,
+                ).from_file(filename)
+                self.elements = parser.elements
+                self.parrentdir = parser.parrentdir
+                if target:
+                    self.elements = self._select_target(self.elements, target)
+            finally:
+                _restore_config(Settings, settings_before)
+                _restore_config(SettingsPreamble, preamble_settings_before)
         else:
             self.elements = []
+
+    @staticmethod
+    def _select_target(elements: list, target: str) -> list:
+        """Select an embedded Obsidian heading or block target."""
+        from .headline import Headline
+
+        if target.startswith("^"):
+            block_id = target[1:]
+            return [
+                element
+                for element in elements
+                if getattr(element, "reference", None) == block_id
+            ]
+
+        normalized = target.strip().lower()
+        for index, element in enumerate(elements):
+            if isinstance(element, Headline) and element.text.strip().lower() == normalized:
+                selected = [element]
+                for following in elements[index + 1 :]:
+                    if isinstance(following, Headline) and following.level <= element.level:
+                        break
+                    selected.append(following)
+                return selected
+        return []
 
     def from_file(self, filename: str) -> "File":
         """Parse markdown from disk into this File instance."""
@@ -116,7 +154,7 @@ class File(BaseClass):
 
         return self
 
-    def from_text(self, text: str) -> "File":
+    def from_text(self, text: str, source_dir: Optional[str] = None) -> "File":
         """Parse markdown text directly into this File instance."""
         from ..tools import MarkdownParser
 
@@ -130,6 +168,7 @@ class File(BaseClass):
             filename=self.filename,
             parrentdir=self.parrentdir,
             filedepth=self.filedepth,
+            source_dir=source_dir,
         )
         parser = parser.from_text(text)
         self.elements = parser.elements
@@ -162,14 +201,19 @@ class File(BaseClass):
         text = "\n\n".join([elem._to_latex_project() for elem in self.elements])
 
         if self.filename:
-            filename_tex = export_project_name(self.filename) + ".tex"
+            normalized = str(self.filename).replace("\\", "/")
+            if Path(normalized).is_absolute():
+                filename_tex = export_project_name(normalized) + ".tex"
+            else:
+                filename_tex = stem_md(normalized).replace("/", "__") + ".tex"
         else:
             filename_tex = "main.tex"
 
+        Path(self.parrentdir).mkdir(parents=True, exist_ok=True)
         with open(str(Path(self.parrentdir) / filename_tex), "w") as f:
             f.write(text)
 
         if Settings.File.divide_with_new_page:
-            return f"\\input{{{filename_tex}}}\\newpage"
+            return f"\\input{{\\detokenize{{{filename_tex}}}}}\\newpage"
         else:
-            return f"\\input{{{filename_tex}}}"
+            return f"\\input{{\\detokenize{{{filename_tex}}}}}"

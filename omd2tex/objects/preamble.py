@@ -183,7 +183,7 @@ class Preamble(BaseClass):
 \DeclareFieldFormat{{title}}{{#1}}
 
 \usepackage{{indentfirst}}
-\usepackage{{minted}} % Выделение кода   
+\usepackage{{listings}} % Выделение кода
 
 \usepackage{{tabularx,ragged2e}}
 \usepackage{{float}}
@@ -385,7 +385,7 @@ class Preamble(BaseClass):
 {NewComands.fill()}
 
 %----------------------Code Highlighting-----------------------------
-\usepackage{{minted}}
+\usepackage{{listings}}
 \usepackage{{adjustbox}}
 \usepackage{{tikz}}
 %----------------------Style Settings--------------------------------

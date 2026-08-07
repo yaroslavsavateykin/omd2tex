@@ -12,6 +12,7 @@ from omd2tex.objects.file import File
 from omd2tex.objects.footnote import Footnote
 from omd2tex.objects.fragment import Caption, SplitLine
 from omd2tex.objects.image import Image as MdImage
+from omd2tex.objects.makefile import Makefile
 from omd2tex.objects.paragraph import Paragraph
 from omd2tex.objects.preamble import Preamble
 from omd2tex.objects.quote import Quote
@@ -85,9 +86,11 @@ def test_markdown_parser_handles_file_and_image_lines_without_sticky_state(tmp_p
 
     parser = MarkdownParser().from_text("[[note]]\n![[pic.png]]\n[x](other.md)")
 
-    assert [type(el).__name__ for el in parser.elements] == ["File", "Image", "File"]
-    assert parser.elements[0].filename == "note.md"
-    assert parser.elements[2].filename == "other.md"
+    assert [type(el).__name__ for el in parser.elements] == [
+        "Paragraph",
+        "Image",
+        "Paragraph",
+    ]
 
 
 def test_markdown_parser_from_elements_runs_post_processing():
@@ -533,3 +536,181 @@ def test_escaped_wiki_reference_is_rendered_as_literal_text():
 
     assert "\\cref{" not in latex
     assert r"[[note\#^missing]]" in latex
+
+
+def test_document_can_be_rendered_more_than_once_with_references():
+    document = Document().from_text("[[#^eq1]]\n\n$$x$$\n^eq1")
+
+    assert "\\cref{eq:eq1}" in document.to_latex()
+    assert "\\cref{eq:eq1}" in document.to_latex()
+
+
+def test_missing_footnote_does_not_crash_rendering():
+    latex = Document().from_text("text[^missing]").to_latex()
+
+    assert "text" in latex
+
+
+def test_missing_image_renders_placeholder(tmp_path):
+    Settings.Export.search_dir = str(tmp_path)
+
+    latex = Document().from_text("![[missing.png]]").to_latex()
+
+    assert "Missing image" in latex
+
+
+def test_multiline_equation_keeps_all_content():
+    latex = Document().from_text("$$\nx + 1\n$$").to_latex()
+
+    assert "x + 1" in latex
+
+
+def test_unterminated_blocks_are_preserved_as_text():
+    latex = Document().from_text("```\nimportant\n\n$$\nx + 1").to_latex()
+
+    assert "important" in latex
+    assert "x + 1" in latex
+
+
+def test_quote_and_codeblock_parse_flags_are_honored():
+    Settings.Quote.parse = False
+    Settings.Codeblock.parse = False
+
+    latex = Document().from_text("> quoted\n\n```python\nprint(1)\n```").to_latex()
+
+    assert "\\begin{quote}" not in latex
+    assert "lstlisting" not in latex
+    assert "quoted" in latex
+    assert "print(1)" in latex
+
+
+def test_code_languages_use_listings_without_shell_escape():
+    latex = Document().from_text("```java\nclass A {}\n```").to_latex()
+
+    assert "language=Java" in latex
+    assert "minted" not in latex
+    assert "-shell-escape" not in Makefile.to_string()
+
+
+def test_table_center_alignment_is_preserved():
+    latex = Document().from_text("| A |\n|:---:|\n| x |").to_latex()
+
+    assert "Q[c]" in latex
+
+
+def test_duplicate_and_missing_citations_do_not_create_invalid_bibliography(tmp_path):
+    (tmp_path / "@mad.md").write_text("@article{mad, title={A}}", encoding="utf-8")
+    Settings.Export.search_dir = str(tmp_path)
+
+    latex = Document().from_text("[[@mad]] [[@mad]] [[@missing]]").to_latex()
+
+    assert latex.count("\\addbibresource{mad.bib}") == 1
+    assert "missing.bib" not in latex
+
+
+def test_same_file_heading_reference_resolves():
+    latex = Document().from_text("# Heading\n\nSee [[#Heading]]").to_latex()
+
+    assert "\\cref{sec:head_" in latex
+
+
+def test_list_nesting_is_recursive():
+    latex = Document().from_text("- parent\n    - child\n        - grandchild").to_latex()
+
+    child_position = latex.index("child")
+    grandchild_position = latex.index("grandchild")
+    assert latex.rfind("\\begin{itemize}", 0, grandchild_position) > child_position
+
+
+def test_frontmatter_settings_do_not_leak_to_next_document():
+    beamer = Document().from_text("---\ndocumentclass: beamer\n---\ntext")
+
+    assert "\\documentclass[12pt]{beamer}" in beamer.to_latex()
+    assert "\\documentclass[12pt]{article}" in Document().from_text("text").to_latex()
+
+
+def test_document_preamble_argument_loads_configuration(tmp_path):
+    config = tmp_path / "preamble.json"
+    config.write_text('{"documentclass": "beamer"}', encoding="utf-8")
+
+    latex = Document(preamble=str(config)).from_text("text").to_latex()
+
+    assert "\\documentclass[12pt]{beamer}" in latex
+
+
+def test_obsidian_links_are_not_treated_as_transclusions():
+    latex = Document().from_text(
+        "[[Related note|shown text]]\n[web](https://example.com)"
+    ).to_latex()
+
+    assert r"\href{Related note.pdf}{shown text}" in latex
+    assert r"\href{https://example.com}{web}" in latex
+
+
+def test_obsidian_block_ids_accept_hyphens_and_underscores():
+    latex = Document().from_text("Text ^eq-abc_123\n\n[[#^eq-abc_123]]").to_latex()
+
+    assert r"\cref" in latex
+
+
+def test_obsidian_table_without_outer_pipes_and_escaped_pipe():
+    latex = Document().from_text("A | B\n:--- | ---:\na\\|b | c").to_latex()
+
+    assert "Q[l]Q[r]" in latex
+    assert "a|b" in latex
+
+
+def test_obsidian_nested_image_uses_referring_note_directory(tmp_path):
+    vault = tmp_path / "vault"
+    chapter = vault / "chapter"
+    assets = chapter / "assets"
+    assets.mkdir(parents=True)
+    PillowImage.new("RGB", (10, 10), "red").save(assets / "plot.png")
+    other = vault / "other"
+    other.mkdir()
+    PillowImage.new("RGB", (20, 20), "blue").save(other / "plot.png")
+    (chapter / "note.md").write_text("![[assets/plot.png]]", encoding="utf-8")
+    Settings.Export.search_dir = str(vault)
+
+    latex = Document().from_file("chapter/note.md").to_latex()
+
+    assert str(assets / "plot.png") in latex
+
+
+def test_branching_project_export_creates_nested_directories(tmp_path):
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    (vault / "root.md").write_text("![[chapter]]", encoding="utf-8")
+    (vault / "chapter.md").write_text("content", encoding="utf-8")
+    Settings.Export.search_dir = str(vault)
+    Settings.Export.export_dir = str(tmp_path / "export")
+    Settings.Export.branching_project = True
+
+    Document().from_file("root.md").to_latex_project()
+
+    assert (tmp_path / "export" / "root" / "chapter" / "chapter.tex").is_file()
+
+
+def test_obsidian_embed_can_select_heading_or_block_target(tmp_path):
+    (tmp_path / "note.md").write_text(
+        "# First\nfirst\n\n# Selected\nselected text ^block_id\n\n# Last\nlast",
+        encoding="utf-8",
+    )
+    (tmp_path / "root.md").write_text(
+        "![[note#Selected]]\n\n![[note#^block_id]]", encoding="utf-8"
+    )
+    Settings.Export.search_dir = str(tmp_path)
+
+    latex = Document().from_file("root.md").to_latex()
+
+    assert "selected text" in latex
+    assert "\\section{First}" not in latex
+    assert "\\section{Last}" not in latex
+
+
+def test_missing_include_can_be_required(tmp_path):
+    Settings.Export.search_dir = str(tmp_path)
+    Settings.File.pass_if_not_found = False
+
+    with pytest.raises(FileNotFoundError):
+        Document().from_text("![[missing]]")
