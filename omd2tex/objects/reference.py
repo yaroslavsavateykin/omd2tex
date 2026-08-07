@@ -1,3 +1,6 @@
+import hashlib
+import re
+
 from .base import BaseClass
 from .equation import Equation
 from .headline import Headline
@@ -47,6 +50,29 @@ class Reference(BaseClass):
         super().__init__()
         self.ref_text = ref_text
 
+    @staticmethod
+    def _heading_lookup_key(text: str) -> str:
+        if not text:
+            return ""
+
+        cleaned = re.sub(r"[*_`~=#]+", "", str(text))
+        cleaned = Headline._clean_markdown_numeration(cleaned)
+        cleaned = re.sub(r"\s+", " ", cleaned).strip().lower()
+        cleaned = cleaned.replace("ё", "е")
+        cleaned = cleaned.replace("–", "-").replace("—", "-")
+        return cleaned
+
+    @staticmethod
+    def _auto_heading_ref_id(
+        filename: str, heading_text: str, occurrence: int
+    ) -> str:
+        normalized = str(filename).strip().replace("\\", "/")
+        lookup_key = Reference._heading_lookup_key(heading_text)
+        digest = hashlib.sha1(
+            f"{normalized}#{lookup_key}#{occurrence}".encode("utf-8")
+        ).hexdigest()[:12]
+        return f"head_{digest}"
+
     def to_latex(self) -> str:
         """Render reference placeholder; no direct LaTeX output."""
         return ""
@@ -68,17 +94,34 @@ class Reference(BaseClass):
 
         new_list = []
         types = [Headline, Equation, Image, Table, Quote]
+        heading_occurrences = {}
 
         for el in elements:
             if type(el) in types:
+                source_filename = getattr(el, "_source_filename", "")
+                heading_key = None
+
+                if type(el) is Headline:
+                    heading_key = Reference._heading_lookup_key(getattr(el, "text", ""))
+                    if source_filename and heading_key and not getattr(el, "reference", None):
+                        occurrence_key = (source_filename, heading_key)
+                        occurrence = heading_occurrences.get(occurrence_key, 0) + 1
+                        heading_occurrences[occurrence_key] = occurrence
+                        el.reference = Reference._auto_heading_ref_id(
+                            source_filename, el.text, occurrence
+                        )
+
                 el._identify_reference()
                 ref_id = getattr(el, "reference", None)
                 if ref_id:
                     ref_type = Global.REFERENCE_DICT.get(ref_id)
                     if ref_type:
-                        source_filename = getattr(el, "_source_filename", "")
                         for variant in Reference._filename_variants(source_filename):
                             Global.REFERENCE_DICT[f"{variant}#^{ref_id}"] = ref_type
+                            if heading_key:
+                                Global.HEADING_REFERENCE_DICT.setdefault(
+                                    f"{variant}#{heading_key}", ref_id
+                                )
                 new_list.append(el)
             else:
                 new_list.append(el)

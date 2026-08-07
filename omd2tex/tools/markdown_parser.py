@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 from typing import List, Optional, Tuple, Union
 import yaml
 import uuid
@@ -11,6 +12,7 @@ from .settings import Settings
 from .search import find_file
 from .globals import Global
 from .settings_preamble import SettingsPreamble
+from .path_utils import stem_md
 
 
 class MarkdownParser(BaseClass):
@@ -44,6 +46,7 @@ class MarkdownParser(BaseClass):
         filename: str = "",
         filedepth: int = 0,
         quotedepth=0,
+        source_dir: Optional[str] = None,
     ) -> None:
         """Instantiate a parser for a markdown document fragment.
 
@@ -63,12 +66,13 @@ class MarkdownParser(BaseClass):
         """
         super().__init__()
         self.filename = filename
+        self._source_dir = source_dir
 
         if self.filename and (
             Settings.Export.branching_project
-            and not parrentdir.endswith(self.filename.strip(".md"))
+            and not parrentdir.endswith(stem_md(self.filename))
         ):
-            self.parrentdir = parrentdir + "/" + self.filename.strip(".md")
+            self.parrentdir = str(Path(parrentdir) / stem_md(self.filename))
         else:
             self.parrentdir = parrentdir
 
@@ -136,13 +140,18 @@ class MarkdownParser(BaseClass):
         Raises:
             FileNotFoundError: Propagated if the search path does not exist.
         """
-        self.dir_filename = find_file(filename, search_path=Settings.Export.search_dir)
+        self.dir_filename = find_file(
+            filename,
+            search_path=Settings.Export.search_dir,
+            source_dir=self._source_dir,
+        )
 
         if not self.dir_filename:
             return self
 
         else:
             self.filename = filename
+            self._source_dir = str(Path(self.dir_filename).parent)
             with open(self.dir_filename, "r", encoding="utf-8") as f:
                 lines = f.read().splitlines()
                 self.__parse(lines)
@@ -624,6 +633,7 @@ class MarkdownParser(BaseClass):
                         else filename,
                         parrentdir=self.parrentdir,
                         filedepth=self.filedepth + 1,
+                        source_dir=self._source_dir,
                     )
 
                     el._start_line = START
@@ -664,6 +674,7 @@ class MarkdownParser(BaseClass):
                         full_filename,
                         parrentdir=self.parrentdir,
                         filedepth=self.filedepth + 1,
+                        source_dir=self._source_dir,
                     )
                     el._start_line = START
 

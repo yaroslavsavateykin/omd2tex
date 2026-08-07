@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+from pathlib import Path
 from typing import Any, Dict, Union
 import uuid
 
@@ -12,6 +13,12 @@ from .paragraph import Paragraph
 from .preamble import Preamble
 from .file import File
 from .quote import Quote
+from ..tools.path_utils import (
+    export_project_name,
+    normalize_export_dir,
+    package_default_dir,
+    stem_md,
+)
 
 
 class Document(BaseClass):
@@ -37,13 +44,10 @@ class Document(BaseClass):
         from ..tools import SettingsPreamble, Settings, Global
 
         super().__init__()
-        if preamble is None:
-            preamble = os.path.join(os.getcwd(), "../default/preamble.json")
         if settings:
             Settings.update(settings)
 
-        dir = Settings.Export.export_dir
-        self.dir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
+        self.dir = normalize_export_dir(Settings.Export.export_dir)
 
         self.filename = filename
         self.file = None
@@ -65,10 +69,11 @@ class Document(BaseClass):
         from ..tools import SettingsPreamble, Settings, Global
 
         self.filename = filename
-        Global.DOCUMENT_NAME = self.filename.replace(".md", "")
+        Global.DOCUMENT_NAME = export_project_name(self.filename)
+        project_subdir = str(Path(self.dir) / export_project_name(self.filename))
         file = File(
             filename=self.filename,
-            parrentdir=self.dir + "/" + self.filename.replace(".md", ""),
+            parrentdir=project_subdir,
         )
         file.from_file(filename)
         self.file = file
@@ -80,9 +85,10 @@ class Document(BaseClass):
 
         self.filename = str(uuid.uuid4())[0:7]
         Global.DOCUMENT_NAME = self.filename
+        project_subdir = str(Path(self.dir) / stem_md(self.filename))
         file = File(
             filename=self.filename,
-            parrentdir=self.dir + "/" + self.filename.replace(".md", ""),
+            parrentdir=project_subdir,
         )
         file.from_text(text)
         # file.filename = self.filename
@@ -102,11 +108,12 @@ class Document(BaseClass):
 
         if not self.dir:
             dir = Settings.Export.export_dir
-            self.dir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
+            self.dir = normalize_export_dir(dir)
 
+        project_subdir = str(Path(self.dir) / stem_md(self.filename))
         file = File(
             filename=self.filename,
-            parrentdir=self.dir + "/" + self.filename.replace(".md", ""),
+            parrentdir=project_subdir,
         )
 
         dir_depended_classes = [File, Quote]
@@ -194,7 +201,11 @@ class Document(BaseClass):
         file = self.to_latex()
 
         if not filename:
-            filename = self.filename.replace(".md", "") + ".tex"
+            filename = export_project_name(self.filename) + ".tex"
+        else:
+            filename = Path(filename).name
+            if filename in {"", ".", ".."}:
+                raise ValueError("Output filename must be a file name")
 
         # with open(os.getcwd() + "/" + filename, "w") as f:
         os.makedirs(self.dir, exist_ok=True)
@@ -238,7 +249,7 @@ class Document(BaseClass):
             raise ValueError("Document is not initialized")
 
         try:
-            os.makedirs(self.dir + "/" + self.filename.replace(".md", ""))
+            os.makedirs(str(Path(self.dir) / export_project_name(self.filename)))
         except:
             # print("Не удалось создать директорию проекта или она уже создана")
             pass
@@ -246,7 +257,7 @@ class Document(BaseClass):
         main = main._to_latex_project()
 
         if Settings.Export.makefile:
-            Makefile.to_file(self.dir + "/" + self.filename.replace(".md", ""))
+            Makefile.to_file(str(Path(self.dir) / export_project_name(self.filename)))
 
         if Global.CITATION_INITIALIZED:
             citations = Citation.to_latex_preamble()
@@ -272,23 +283,21 @@ class Document(BaseClass):
 \\end{{document}}"""
 
         with open(
-            os.path.join(self.dir, self.filename.replace(".md", ""), "main.tex"), "w"
+            str(Path(self.dir) / export_project_name(self.filename) / "main.tex"), "w"
         ) as f:
             f.write(document)
 
         if SettingsPreamble.documentclass == "beamer":
-            style_json = os.path.join(
-                os.path.dirname(__file__), "../default/beamer-themes.json"
-            )
+            style_json = str(package_default_dir() / "beamer-themes.json")
             with open(style_json, "r") as f:
                 style_dict = json.loads(f.read())
             if SettingsPreamble.Beamer.theme in style_dict:
-                style_dir = os.path.join(
-                    os.path.dirname(__file__),
-                    "../default/beamer-themes/",
-                    style_dict[SettingsPreamble.Beamer.theme],
+                style_dir = str(
+                    package_default_dir()
+                    / "beamer-themes"
+                    / style_dict[SettingsPreamble.Beamer.theme]
                 )
-                copy_dir = os.path.join(self.dir, self.filename.replace(".md", ""))
+                copy_dir = str(Path(self.dir) / export_project_name(self.filename))
 
                 shutil.copy2(style_dir, copy_dir)
             else:

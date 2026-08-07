@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 
 import pytest
 import yaml
@@ -294,3 +295,241 @@ def test_image_inside_quote_is_parsed_as_image(tmp_path):
 
     assert "\\includegraphics" in latex
     assert "pic.png" in latex
+
+
+# ──────────────────────────────────────────────────────────────────────
+# Path resolution tests
+# ──────────────────────────────────────────────────────────────────────
+
+from omd2tex.tools.path_utils import (
+    export_project_name,
+    normalize_export_dir,
+    package_default_dir,
+    stem_md,
+)
+from omd2tex.tools.search import find_file
+
+
+def test_stem_md_removes_suffix_correctly():
+    """stem_md must remove the literal '.md' suffix, NOT strip characters."""
+    assert stem_md("damage.md") == "damage"
+    assert stem_md("readme") == "readme"
+    assert stem_md("a.md") == "a"
+    assert stem_md(".md") == ""
+    assert stem_md("my.module.md") == "my.module"
+    # Old code used strip(".md") which would break these:
+    assert stem_md("dim.md") == "dim"     # strip(".md") → ""
+    assert stem_md("mad.md") == "mad"     # strip(".md") → ""
+
+
+def test_find_file_absolute_path_inside_search_dir(tmp_path):
+    """Absolute paths inside the configured vault remain supported."""
+    f = tmp_path / "note.md"
+    f.write_text("hello", encoding="utf-8")
+    Settings.Export.search_dir = str(tmp_path)
+
+    result = find_file(str(f))
+    assert result == str(f)
+
+
+def test_find_file_rejects_paths_outside_search_dir(tmp_path):
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    outside = tmp_path / "outside.md"
+    outside.write_text("secret", encoding="utf-8")
+    source = vault / "note.md"
+    source.write_text("body", encoding="utf-8")
+    Settings.Export.search_dir = str(vault)
+
+    assert find_file(str(outside)) is None
+    assert find_file("../outside.md", source_dir=str(vault)) is None
+
+
+def test_find_file_source_relative(tmp_path):
+    """When source_dir is given, resolve paths relative to it first."""
+    sub = tmp_path / "sub"
+    sub.mkdir()
+    target = sub / "b.md"
+    target.write_text("body", encoding="utf-8")
+
+    Settings.Export.search_dir = str(tmp_path)
+
+    # Without source_dir — finds by basename walk
+    result1 = find_file("b.md", source_dir=None)
+    assert result1 is not None
+    assert result1.endswith("b.md")
+
+    # With source_dir — resolves relative to source directory
+    result2 = find_file("b.md", source_dir=str(sub))
+    assert result2 is not None
+    assert result2.endswith("b.md")
+
+    # Subdirectory path relative to source_dir
+    result3 = find_file("sub/b.md", source_dir=str(tmp_path))
+    assert result3 is not None
+    assert result3.endswith("b.md")
+
+
+def test_find_file_parent_traversal_stays_inside_search_dir(tmp_path):
+    """Parent components are allowed only when their target remains in the vault."""
+    parent = tmp_path / "parent"
+    parent.mkdir()
+    child = parent / "child"
+    child.mkdir()
+    sibling = parent / "sibling"
+    sibling.mkdir()
+    target = sibling / "note.md"
+    target.write_text("content", encoding="utf-8")
+
+    Settings.Export.search_dir = str(tmp_path)
+
+    result = find_file("../sibling/note.md", source_dir=str(child))
+    assert result is not None
+    assert result.endswith("note.md")
+
+
+def test_find_file_fallback_basename(tmp_path):
+    """When source_dir doesn't contain the file, fall back to basename walk."""
+    deep = tmp_path / "a" / "b" / "c"
+    deep.mkdir(parents=True)
+    target = deep / "hidden.md"
+    target.write_text("found", encoding="utf-8")
+
+    empty_dir = tmp_path / "empty"
+    empty_dir.mkdir()
+
+    Settings.Export.search_dir = str(tmp_path)
+
+    # source_dir doesn't have it, but walk finds it
+    result = find_file("hidden.md", source_dir=str(empty_dir))
+    assert result is not None
+    assert result.endswith("hidden.md")
+
+
+def test_find_file_not_found_diagnostic(tmp_path, capsys):
+    """Not-found diagnostic should include search context."""
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    Settings.Export.search_dir = str(empty)
+
+    result = find_file("nonexistent.md", source_dir=str(tmp_path))
+    assert result is None
+
+    captured = capsys.readouterr()
+    assert "nonexistent.md" in captured.out
+    assert "not found" in captured.out.lower()
+
+
+def test_find_file_same_name_different_dirs(tmp_path):
+    """source_dir should give priority to the local copy."""
+    dir_a = tmp_path / "a"
+    dir_a.mkdir()
+    (dir_a / "note.md").write_text("A version", encoding="utf-8")
+
+    dir_b = tmp_path / "b"
+    dir_b.mkdir()
+    (dir_b / "note.md").write_text("B version", encoding="utf-8")
+
+    Settings.Export.search_dir = str(tmp_path)
+
+    result = find_file("note.md", source_dir=str(dir_a))
+    assert result is not None
+    assert "/a/" in result  # should resolve to dir_a, not arbitrary walk order
+
+
+def test_package_default_dir_points_to_real_directory():
+    """package_default_dir() must point to the existing default/ directory."""
+    p = package_default_dir()
+    assert p.is_dir()
+    assert (p / "settings.json").is_file()
+
+
+def test_normalize_export_dir_strips_trailing_slash():
+    """normalize_export_dir should handle trailing slashes and ~."""
+    result = normalize_export_dir("./output/")
+    assert not result.endswith("/")
+    result2 = normalize_export_dir("./output")
+    assert result == result2
+
+
+def test_export_project_name_cannot_escape_export_dir():
+    assert export_project_name("nested/note.md") == "note"
+    assert export_project_name("/tmp/note.md") == "note"
+    assert export_project_name(r"nested\\note.md") == "note"
+    with pytest.raises(ValueError):
+        export_project_name(".md")
+
+
+def test_document_project_export_uses_safe_basename(tmp_path):
+    source = tmp_path / "vault" / "nested"
+    source.mkdir(parents=True)
+    note = source / "note.md"
+    note.write_text("body", encoding="utf-8")
+    export = tmp_path / "export"
+    Settings.Export.search_dir = str(tmp_path / "vault")
+    Settings.Export.export_dir = str(export)
+
+    Document().from_file(str(note)).to_latex_project()
+
+    assert (export / "note" / "main.tex").is_file()
+    assert not (source / "note.tex").exists()
+
+
+def test_document_file_export_rejects_output_path_escape(tmp_path):
+    Settings.Export.export_dir = str(tmp_path / "export")
+
+    Document().from_text("body").to_latex_file("../outside.tex")
+
+    assert (tmp_path / "export" / "outside.tex").is_file()
+    assert not (tmp_path / "outside.tex").exists()
+
+
+def test_find_file_resolves_from_source_file_context(tmp_path):
+    """End-to-end: file references should resolve relative to the referring file."""
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    sub = vault / "sub"
+    sub.mkdir()
+    (sub / "included.md").write_text("included content", encoding="utf-8")
+    (vault / "root.md").write_text("![[sub/included]]", encoding="utf-8")
+
+    Settings.Export.search_dir = str(vault)
+
+    doc = Document().from_file("root.md")
+    # The included file should have been found and parsed
+    latex = doc.to_latex()
+    assert "included content" in latex
+
+
+def test_nested_file_references_resolve_relative_to_including_file(tmp_path):
+    vault = tmp_path / "vault"
+    (vault / "chapter" / "nested").mkdir(parents=True)
+    (vault / "root.md").write_text("![[chapter/a]]", encoding="utf-8")
+    (vault / "chapter" / "a.md").write_text(
+        "![[nested/target]]", encoding="utf-8"
+    )
+    (vault / "chapter" / "nested" / "target.md").write_text(
+        "correct nested file", encoding="utf-8"
+    )
+    (vault / "target.md").write_text("wrong global match", encoding="utf-8")
+    Settings.Export.search_dir = str(vault)
+
+    latex = Document().from_file("root.md").to_latex()
+
+    assert "correct nested file" in latex
+    assert "wrong global match" not in latex
+
+
+def test_duplicate_headings_receive_distinct_labels():
+    latex = Document().from_text("# Same\n\n# Same").to_latex()
+
+    labels = re.findall(r"\\label\{sec:(head_[^}]+)\}", latex)
+    assert len(labels) == 2
+    assert len(set(labels)) == 2
+
+
+def test_escaped_wiki_reference_is_rendered_as_literal_text():
+    latex = Document().from_text(r"\[[note#^missing]]").to_latex()
+
+    assert "\\cref{" not in latex
+    assert r"[[note\#^missing]]" in latex

@@ -17,5 +17,6 @@ test_projects/
 
 build/
 dist/
+docs/_build/
 !tests/
 omd2tex.egg-info/

@@ -1,3 +1,7 @@
+import os
+import uuid
+from pathlib import Path
+
 from ..tools.settings import Settings
 from ..tools.globals import Global
 from .image import Image
@@ -52,8 +56,6 @@ class CodeBlock(BaseClass):
         from rdkit.Chem.Draw import IPythonConsole
         from rdkit.Chem import rdChemReactions
         from PIL import Image as PILImage, ImageDraw, ImageFont
-        import uuid
-        import os
 
         font_path = os.path.join(
             os.path.dirname(os.path.realpath(__file__)), "../default/fonts/cmunrm.ttf"
@@ -166,10 +168,8 @@ class CodeBlock(BaseClass):
         # --- сохранение результата ---
         unique_filename = str(uuid.uuid4()) + ".png"
 
-        export_dir = os.path.expanduser(
-            os.path.join(
-                Settings.Export.export_dir, Global.DOCUMENT_NAME.replace(".md", "")
-            )
+        export_dir = str(
+            Path(Settings.Export.export_dir).expanduser() / Global.DOCUMENT_NAME
         )
         pic_abs_path = os.path.expanduser(
             os.path.join(export_dir, "images", unique_filename)
@@ -220,7 +220,7 @@ class CodeBlock(BaseClass):
                 "\\begin{example}\n" + "\n".join(content) + "\n\\end{example}"
             ),
             "hidden": lambda content: Paragraph("", parse=False),
-            "text": lambda content: Paragraph("\n".join(content)),
+            "text": lambda content: Paragraph("\n".join(content), parse=False),
             "caption": lambda content: Caption(" ".join(content)),
             "pause": lambda content: Paragraph("\\pause", parse=False),
             "python": self._minted_python,

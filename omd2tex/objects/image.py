@@ -1,6 +1,7 @@
 import shutil
 from PIL import Image as PillowImage
 import os
+from pathlib import Path
 from typing import Optional, Tuple
 
 from .base import BaseClass
@@ -134,25 +135,27 @@ class Image(BaseClass):
 
     def _copy_to_folder(self) -> None:
         """Copy the source image into the export project images folder."""
-        dir_path = os.path.join(self.parrentdir, "images")
-        os.makedirs(dir_path, exist_ok=True)
+        dir_path = Path(self.parrentdir) / "images"
+        dir_path.mkdir(parents=True, exist_ok=True)
 
-        filename = self.filename
-        destination = os.path.join(dir_path, filename)
-        source = self.source_dir or self.dir
+        destination = dir_path / self.filename
+        source = Path(self.source_dir or self.dir)
 
-        if os.path.exists(destination):
-            os.remove(destination)
+        if destination.exists():
+            destination.unlink()
 
-        if not os.path.isfile(source):
+        if not source.is_file():
             found = find_file(self.filename, Settings.Export.search_dir)
             if found:
-                source = found
+                source = Path(found)
 
-        if os.path.isfile(source):
-            shutil.copy2(source, destination)
+        if source.is_file():
+            shutil.copy2(str(source), str(destination))
         else:
-            raise FileNotFoundError(f"Файл {source} не найден")
+            raise FileNotFoundError(
+                f"Image file not found: {source} "
+                f"(searched for '{self.filename}' in '{Settings.Export.search_dir}')"
+            )
 
     def _relative_paths(self) -> None:
         """Adjust paths to be relative for project export."""
@@ -172,7 +175,7 @@ class Image(BaseClass):
             self._copy_to_folder()
         old_dir = self.dir
         if not Settings.Image.absolute_path_in_project_export:
-            self.dir = os.path.join(".", "images", self.filename)
+            self.dir = "./images/" + self.filename
         latex = self.to_latex()
         self.dir = old_dir
 

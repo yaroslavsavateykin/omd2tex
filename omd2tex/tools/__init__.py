@@ -6,6 +6,14 @@ from omd2tex.tools.search import (
     list_files_in_directory,
     get_image_dimensions,
 )
+from omd2tex.tools.path_utils import (
+    package_default_dir,
+    normalize_export_dir,
+    stem_md,
+    export_project_name,
+    is_relative_to,
+    resolve_relative_to,
+)
 from omd2tex.tools.markdown_parser import MarkdownParser
 from omd2tex.tools.counter import Counter
 from omd2tex.tools.settings_preamble import SettingsPreamble
@@ -20,6 +28,12 @@ __all__ = [
     "find_file_flexible",
     "list_files_in_directory",
     "get_image_dimensions",
+    "package_default_dir",
+    "normalize_export_dir",
+    "stem_md",
+    "export_project_name",
+    "is_relative_to",
+    "resolve_relative_to",
     "MarkdownParser",
     "Counter",
     "SettingsPreamble",

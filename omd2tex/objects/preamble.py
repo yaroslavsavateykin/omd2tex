@@ -4,6 +4,7 @@ from typing import Dict, Any
 
 from omd2tex.tools.dict_loader import DictLoader
 from omd2tex.tools.globals import Global
+from omd2tex.tools.path_utils import package_default_dir
 
 from .base import BaseClass
 
@@ -64,9 +65,7 @@ class Preamble(BaseClass):
         if Settings.Preamble.settings_json:
             config_path = os.path.expanduser(Settings.Preamble.settings_json)
         else:
-            config_path = (
-                os.path.abspath(os.path.dirname(__file__)) + "/../default/preamble.json"
-            )
+            config_path = str(package_default_dir() / "preamble.json")
 
         try:
             loader = DictLoader().load_json_file(config_path).from_obs_dict()
@@ -156,12 +155,12 @@ class Preamble(BaseClass):
 \Crefname{{longtblr}}{{Табл.}}{{Табл.}}
 \crefname{{table}}{{табл.}}{{табл.}}
 \Crefname{{table}}{{Табл.}}{{Табл.}}
-\crefname{{section}}{{раздел}}{{раздел}}
-\Crefname{{section}}{{Раздел}}{{Раздел}}
-\crefname{{subsection}}{{подраздел}}{{подраздел}}
-\Crefname{{subsection}}{{Подраздел}}{{Подраздел}}
-\crefname{{subsubsection}}{{пункт}}{{пункт}}
-\Crefname{{subsubsection}}{{Пункт}}{{Пункт}}
+\crefname{{section}}{{гл.}}{{гл.}}
+\Crefname{{section}}{{Гл.}}{{Гл.}}
+\crefname{{subsection}}{{разд.}}{{разд.}}
+\Crefname{{subsection}}{{Разд.}}{{Разд.}}
+\crefname{{subsubsection}}{{подразд.}}{{подразд.}}
+\Crefname{{subsubsection}}{{Подразд.}}{{Подразд.}}
 \crefname{{exercise}}{{упражнение}}{{упражнения}}
 \Crefname{{exercise}}{{Упражнение}}{{Упражнения}}
 
@@ -364,12 +363,12 @@ class Preamble(BaseClass):
 \Crefname{{longtblr}}{{Табл.}}{{Табл.}}
 \crefname{{table}}{{табл.}}{{табл.}}
 \Crefname{{table}}{{Табл.}}{{Табл.}}
-\crefname{{section}}{{раздел}}{{раздел}}
-\Crefname{{section}}{{Раздел}}{{Раздел}}
-\crefname{{subsection}}{{подраздел}}{{подраздел}}
-\Crefname{{subsection}}{{Подраздел}}{{Подраздел}}
-\crefname{{subsubsection}}{{пункт}}{{пункт}}
-\Crefname{{subsubsection}}{{Пункт}}{{Пункт}}
+\crefname{{section}}{{гл.}}{{гл.}}
+\Crefname{{section}}{{Гл.}}{{Гл.}}
+\crefname{{subsection}}{{разд.}}{{разд.}}
+\Crefname{{subsection}}{{Разд.}}{{Разд.}}
+\crefname{{subsubsection}}{{подразд.}}{{подразд.}}
+\Crefname{{subsubsection}}{{Подразд.}}{{Подразд.}}
 \crefname{{exercise}}{{упражнение}}{{упражнения}}
 \Crefname{{exercise}}{{Упражнение}}{{Упражнения}}
 

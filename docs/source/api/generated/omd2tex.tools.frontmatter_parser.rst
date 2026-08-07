@@ -8,5 +8,6 @@ omd2tex.tools.frontmatter\_parser
 
    .. autosummary::
    
+      FrontMatterLoader
       FrontMatterParser
    

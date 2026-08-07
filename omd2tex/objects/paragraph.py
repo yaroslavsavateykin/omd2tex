@@ -7,6 +7,7 @@ from .base import BaseClass
 
 from .citation import Citation
 from .footnote import Footnote
+from ..tools.path_utils import package_default_dir
 
 
 class Paragraph(BaseClass):
@@ -54,9 +55,7 @@ class Paragraph(BaseClass):
         if dict_file:
             dict_file = Settings.Paragraph.formulas_json
         else:
-            dict_file = os.path.join(
-                os.path.dirname((__file__)), "..", "default/formulas.json"
-            )
+            dict_file = str(package_default_dir() / "formulas.json")
 
         with open(os.path.expanduser(dict_file), "r") as f:
             change_dict = json.load(f)
@@ -87,8 +86,61 @@ class Paragraph(BaseClass):
     _highlight_text1 = highlight_text1
 
     @staticmethod
+    def replace_escaped_markdown_chars(text: str) -> tuple[str, list[str]]:
+        """Replace escaped markdown punctuation with placeholders."""
+        escaped_chars = []
+        escapable_chars = "!\"#$%&'()*+,./:;<=>?@[]\\^_`{|}~-"
+        pattern = re.compile(r"\\([" + re.escape(escapable_chars) + r"])")
+
+        def replace_escaped(match):
+            escaped_chars.append(match.group(1))
+            return f"@@ESCAPED-MARKDOWN-{len(escaped_chars)}@@"
+
+        text = pattern.sub(replace_escaped, text)
+        return text, escaped_chars
+
+    _replace_escaped_markdown_chars = replace_escaped_markdown_chars
+
+    @staticmethod
+    def restore_escaped_markdown_chars(
+        text: str,
+        escaped_chars: list[str] | None = None,
+        mode: str = "latex",
+    ) -> str:
+        """Restore escaped markdown placeholders either as markdown or LaTeX-safe text."""
+        if not escaped_chars:
+            return text
+
+        latex_map = {
+            "\\": r"\textbackslash{}",
+            "#": r"\#",
+            "$": r"\$",
+            "%": r"\%",
+            "&": r"\&",
+            "_": r"\_",
+            "{": r"\{",
+            "}": r"\}",
+            "~": r"\textasciitilde{}",
+            "^": r"\textasciicircum{}",
+            "<": r"$<$",
+            ">": r"$>$",
+        }
+
+        for i, escaped_char in enumerate(escaped_chars):
+            if mode == "markdown":
+                replacement = f"\\{escaped_char}"
+            else:
+                replacement = latex_map.get(escaped_char, escaped_char)
+            text = text.replace(f"@@ESCAPED-MARKDOWN-{i + 1}@@", replacement)
+
+        return text
+
+    _restore_escaped_markdown_chars = restore_escaped_markdown_chars
+
+    @staticmethod
     def highlight_text2(text: str) -> str:
         """Convert markdown emphasis markers to LaTeX formatting."""
+        text, escaped_chars = Paragraph.replace_escaped_markdown_chars(text)
         change_dict = {
             r"\*\*(.*?)\*\*": lambda x: f"\\textbf{{{x.group(1)}}}",
             r"__(.*?)__": lambda x: f"\\textbf{{{x.group(1)}}}",
@@ -105,7 +157,7 @@ class Paragraph(BaseClass):
                 change_dict[regular],
                 text,
             )
-        return text
+        return Paragraph.restore_escaped_markdown_chars(text, escaped_chars)
 
     _highlight_text2 = highlight_text2
 
@@ -201,9 +253,7 @@ class Paragraph(BaseClass):
         if change_dict:
             change_dict = Settings.Paragraph.latinify_json
         else:
-            change_dict = os.path.join(
-                os.path.dirname((__file__)), "..", "default/latinify.json"
-            )
+            change_dict = str(package_default_dir() / "latinify.json")
 
         with open(change_dict, "r") as f:
             repl_map = json.load(f)
@@ -286,7 +336,10 @@ class Paragraph(BaseClass):
         from ..tools import Global, Settings
 
         ref_pattern = re.compile(
-            r"\[\[(?:([^\|\]#]+)?#)?\^([^\|\]]+)(?:\|([^\]]+))?\]\]"
+            r"(?<!\\)\[\[(?:([^\|\]#]+)?#)?\^([^\|\]]+)(?:\|([^\]]+))?\]\]"
+        )
+        heading_ref_pattern = re.compile(
+            r"(?<!\\)\[\[([^\|\]#]+)#(?!\^)([^\|\]]+)(?:\|([^\]]+))?\]\]"
         )
 
         def filename_variants(filename: str) -> list:
@@ -337,6 +390,39 @@ class Paragraph(BaseClass):
             if text:
                 return text + " " + latex_ref
             return latex_ref
+
+        def heading_lookup_key(heading: str) -> str:
+            from .headline import Headline
+
+            cleaned = re.sub(r"[*_`~=#]+", "", str(heading))
+            cleaned = Headline._clean_markdown_numeration(cleaned)
+            cleaned = re.sub(r"\s+", " ", cleaned).strip().lower()
+            cleaned = cleaned.replace("ё", "е")
+            cleaned = cleaned.replace("–", "-").replace("—", "-")
+            return cleaned
+
+        def process_heading_ref_match(match):
+            file_reference = match.group(1) or ""
+            heading = match.group(2)
+            text = match.group(3)
+
+            ref_id = None
+            heading_key = heading_lookup_key(heading)
+            if file_reference and heading_key:
+                for variant in filename_variants(file_reference):
+                    key = f"{variant}#{heading_key}"
+                    if key in Global.HEADING_REFERENCE_DICT:
+                        ref_id = Global.HEADING_REFERENCE_DICT[key]
+                        break
+
+            ref_type = Global.REFERENCE_DICT.get(ref_id) if ref_id else None
+            latex_ref = f"\\cref{{{ref_type}:{ref_id}}}" if ref_type and ref_id else ""
+
+            if text:
+                return text + " " + latex_ref
+            return latex_ref
+
+        text = heading_ref_pattern.sub(process_heading_ref_match, text)
 
         text = ref_pattern.sub(process_ref_match, text)
 
@@ -448,6 +534,8 @@ class Paragraph(BaseClass):
 
             text, inline_equations = self.replace_inline_equation(text)
 
+            text, escaped_markdown_chars = self.replace_escaped_markdown_chars(text)
+
             outline_equations = [
                 self.eq_ru_letter_workaround(x) for x in outline_equations
             ]
@@ -455,6 +543,8 @@ class Paragraph(BaseClass):
             inline_equations = [
                 self.eq_ru_letter_workaround(x) for x in inline_equations
             ]
+
+            text = self.process_references(text)
 
             text = self.highlight_text2(text)
 
@@ -465,13 +555,15 @@ class Paragraph(BaseClass):
                 outline_equations=outline_equations,
             )
 
-            text = self.process_references(text)
-
             text = self._process_footnotes(text)
 
             text = self.process_citations(text)
 
             text = self.text_errors_workaround(text)
+
+            text = self.restore_escaped_markdown_chars(
+                text, escaped_markdown_chars
+            )
 
             if Settings.Paragraph.latinify:
                 text = self.latinify_lines(
@@ -497,9 +589,8 @@ class Paragraph(BaseClass):
         Returns:
             str: Строка с экранированными специальными символами LaTeX
         """
-        # Список специальных символов LaTeX, которые нужно экранировать
-        special_chars = ["#", "$", "\%", "&", "_", "{", "}", "~", "^", "\\"]
-        special_chars = ["\%", "&"]
+        # Escape only percent and ampersand; other markup is handled separately.
+        special_chars = [r"\%", "&"]
 
         # Регулярное выражение для поиска неэкранированных специальных символов
         pattern = r"(?<!\\)([" + re.escape("".join(special_chars)) + r"])"
@@ -512,6 +603,7 @@ class Paragraph(BaseClass):
     @staticmethod
     def remove_all_highlight(text: str) -> str:
         """Strip all markdown-style highlighting and emphasis markers."""
+        text, escaped_chars = Paragraph.replace_escaped_markdown_chars(text)
         change_dict = {
             r"\*\*(.*?)\*\*": lambda x: x.group(1),
             r"__(.*?)__": lambda x: x.group(1),
@@ -533,7 +625,9 @@ class Paragraph(BaseClass):
                 change_dict[regular],
                 text,
             )
-        return text
+        return Paragraph.restore_escaped_markdown_chars(
+            text, escaped_chars, mode="markdown"
+        )
 
     _remove_all_highlight = remove_all_highlight
 

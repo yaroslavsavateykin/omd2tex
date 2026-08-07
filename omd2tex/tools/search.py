@@ -1,47 +1,78 @@
 import os
 import sys
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 
 import os
 from .settings import Settings
+from .path_utils import is_relative_to, resolve_relative_to
 
 
-def find_file(filename: str, search_path: Optional[str] = None) -> Optional[str]:
-    """Locate a file by name within a search path honoring ignore rules.
+def find_file(
+    filename: str,
+    search_path: Optional[str] = None,
+    source_dir: Optional[str] = None,
+) -> Optional[str]:
+    """Locate a file by name using a multi-strategy resolution order.
 
-    Performs a recursive walk starting from the configured or provided directory, skipping ignored directories, and returns the first path matching the target filename (case-sensitive first, then case-insensitive).
+    Resolution order:
+      1. If *filename* is an absolute path and exists, return it immediately.
+      2. If *source_dir* is given, try ``source_dir / filename`` (preserving
+         any directory component in *filename*, e.g. ``sub/b.md``).
+      3. Walk *search_path* (or ``Settings.Export.search_dir`` / CWD) looking
+         for a file whose **basename** matches (case-sensitive first, then
+         case-insensitive).
 
     Args:
-        filename: Target filename; path segments are stripped, and trailing whitespace is trimmed.
-        search_path: Optional root directory to search; defaults to `Settings.Export.search_dir`, expanded to user home. Falls back to CWD if None.
+        filename: Target filename — may include path segments.
+        search_path: Root directory for recursive walk.  Defaults to
+            ``Settings.Export.search_dir``, expanded for ``~``.
+        source_dir: Optional directory of the *referring* document.  When
+            given, relative paths are tried against this directory first.
 
     Returns:
-        Absolute path to the first matching file, or None if not found.
+        Absolute path to the first matching file, or ``None``.
 
     Raises:
-        FileNotFoundError: If the search directory does not exist.
-
-    Side Effects:
-        Prints a not-found message to stdout if no match is located; prints comparison errors if they occur.
+        FileNotFoundError: If the resolved search directory does not exist.
     """
     exclude_dirs = Settings.Export.search_ignore_dirs
 
     if search_path is None:
         search_path = Settings.Export.search_dir
 
-    if "/" in filename:
-        filename = filename.split("/")[-1]
-
     if search_path is None:
         search_path = os.getcwd()
     else:
         search_path = os.path.expanduser(search_path)
 
-    if not os.path.exists(search_path):
-        raise FileNotFoundError(f"Directory doesn't exist: {search_path}")
+    search_root = Path(search_path).resolve()
+    if not search_root.is_dir():
+        raise FileNotFoundError(f"Search directory does not exist: {search_path}")
 
-    target_filename = filename.strip()
+    # Absolute paths are supported only inside the configured vault.
+    if os.path.isabs(filename):
+        candidate = Path(filename).resolve()
+        if candidate.is_file() and is_relative_to(candidate, search_root):
+            return str(candidate)
+        return None
+
+    # --- Strategy 2: relative to source_dir --------------------------------
+    if source_dir is not None:
+        source_path = Path(source_dir)
+        candidate = resolve_relative_to(filename, source_path)
+        if candidate is not None and is_relative_to(candidate, search_root):
+            return str(candidate)
+
+    # --- Strategy 3: recursive walk ----------------------------------------
+    # Strip path segments for walk-based search (basename only)
+    if "/" in filename:
+        basename = filename.rsplit("/", 1)[-1]
+    else:
+        basename = filename
+
+    target_filename = basename.strip()
     target_filename_lower = target_filename.lower()
 
     if exclude_dirs is None:
@@ -72,10 +103,15 @@ def find_file(filename: str, search_path: Optional[str] = None) -> Optional[str]
                     return full_path
 
             except Exception as e:
-                print(f"Ошибка при сравнении файла {f}: {e}")
+                print(f"Error comparing file {f}: {e}")
                 continue
 
-    print(f"File '{filename}' not found")
+    # --- Diagnostic message -------------------------------------------------
+    parts = [f"File '{filename}' not found."]
+    if source_dir:
+        parts.append(f"  tried relative to source dir: {source_dir}")
+    parts.append(f"  tried recursive walk in: {search_path}")
+    print(" ".join(parts))
     return None
 
 

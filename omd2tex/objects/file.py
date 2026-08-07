@@ -1,11 +1,13 @@
 import uuid
 import os
+from pathlib import Path
 from typing import List, Optional
 
 from .base import BaseClass
 
 from .list import List
 from ..tools import Settings
+from ..tools.path_utils import export_project_name, normalize_export_dir, stem_md
 from .quote import Quote
 
 
@@ -15,6 +17,7 @@ class File(BaseClass):
         filename: Optional[str] = None,
         parrentdir: Optional[str] = None,
         filedepth: int = 0,
+        source_dir: Optional[str] = None,
     ) -> None:
         """Initialize a file container for parsed markdown content.
 
@@ -32,12 +35,14 @@ class File(BaseClass):
         self.filename = filename
         self.parrentdir = parrentdir
         self.filedepth = filedepth
+        self.source_dir = source_dir
 
         if filename and parrentdir and filedepth:
             parser = MarkdownParser(
                 filename=filename,
                 parrentdir=parrentdir,
                 filedepth=filedepth,
+                source_dir=source_dir,
             ).from_file(filename)
             self.elements = parser.elements
         else:
@@ -48,13 +53,13 @@ class File(BaseClass):
         from ..tools import MarkdownParser
 
         if not self.parrentdir:
-            dir = Settings.Export.export_dir
-            self.parrentdir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
+            self.parrentdir = normalize_export_dir(Settings.Export.export_dir)
 
         parser = MarkdownParser(
             filename=filename,
             parrentdir=self.parrentdir,
             filedepth=self.filedepth,
+            source_dir=self.source_dir,
         )
         parser = parser.from_file(filename)
         self.elements = parser.elements
@@ -71,8 +76,7 @@ class File(BaseClass):
             self.filename = str(uuid.uuid4())[:7]
 
         if not self.parrentdir:
-            dir = Settings.Export.export_dir
-            self.parrentdir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
+            self.parrentdir = normalize_export_dir(Settings.Export.export_dir)
 
         parser = MarkdownParser(
             filename=self.filename,
@@ -94,12 +98,12 @@ class File(BaseClass):
                 if not list[i].filename:
                     list[i].filename = new_filename
                 if list[i].parrentdir:
-                    list[i].parrentdir = os.path.join(
-                        list[i].parrentdir, self.filename.replace(".md", "")
+                    list[i].parrentdir = str(
+                        Path(list[i].parrentdir) / stem_md(self.filename)
                     )
                 else:
-                    list[i].parrentdir = os.path.join(
-                        self.parrentdir, self.filename.replace(".md", "")
+                    list[i].parrentdir = str(
+                        Path(self.parrentdir) / stem_md(self.filename)
                     )
                 list[i].filedepth += 1
                 # print(list[i].parrentdir)
@@ -120,8 +124,7 @@ class File(BaseClass):
             self.filename = str(uuid.uuid4())[:7]
 
         if not self.parrentdir:
-            dir = Settings.Export.export_dir
-            self.parrentdir = os.path.expanduser(dir[:-1] if dir.endswith("/") else dir)
+            self.parrentdir = normalize_export_dir(Settings.Export.export_dir)
 
         parser = MarkdownParser(
             filename=self.filename,
@@ -159,11 +162,11 @@ class File(BaseClass):
         text = "\n\n".join([elem._to_latex_project() for elem in self.elements])
 
         if self.filename:
-            filename_tex = self.filename.replace(".md", "") + ".tex"
+            filename_tex = export_project_name(self.filename) + ".tex"
         else:
             filename_tex = "main.tex"
 
-        with open(self.parrentdir + "/" + filename_tex, "w") as f:
+        with open(str(Path(self.parrentdir) / filename_tex), "w") as f:
             f.write(text)
 
         if Settings.File.divide_with_new_page:
